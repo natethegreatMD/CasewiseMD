@@ -41,6 +41,7 @@ frontend/dist/
 .idea/
 
 # Casewise specific
+demo_cases/
 demo_cases/**/*.dcm
 demo_cases/**/temp/
 memory-bank/*.tmp
