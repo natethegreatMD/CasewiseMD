@@ -1,0 +1,162 @@
+{
+  "rubric_id": "ultrasound_obstetric_v1",
+  "version": "1.0",
+  "case_name": "Obstetric Ultrasound Interpretation",
+  "patient_id": "GENERIC",
+  "subspecialty": "Obstetric Radiology",
+  "created_by": "Casewise System",
+  "grading_scale": "0-2",
+  "score_guide": {
+    "0": "Incorrect or missing",
+    "1": "Partially correct or incomplete",
+    "2": "Fully correct and complete"
+  },
+  "criteria": [
+    {
+      "id": "biometric_measurements",
+      "name": "Biometric Measurements",
+      "description": "Accurate fetal measurements and gestational age assessment.",
+      "modality": "US",
+      "orientation": "Standard Views",
+      "weight": 0.25,
+      "required": true,
+      "scoring_guide": {
+        "0": "No biometric measurements or incorrect measurements",
+        "1": "Some measurements but incomplete or inaccurate",
+        "2": "Complete and accurate biometric measurements with gestational age"
+      },
+      "expected_keywords": [
+        "BPD",
+        "HC",
+        "AC",
+        "FL",
+        "gestational age",
+        "measurements",
+        "growth",
+        "percentile"
+      ],
+      "rationale": "Accurate biometric measurements are essential for fetal growth assessment and dating."
+    },
+    {
+      "id": "fetal_anatomy",
+      "name": "Fetal Anatomy Survey",
+      "description": "Systematic evaluation of fetal anatomy including all major organ systems.",
+      "modality": "US",
+      "orientation": "Standard Views",
+      "weight": 0.3,
+      "required": true,
+      "scoring_guide": {
+        "0": "No systematic anatomy evaluation or missed major structures",
+        "1": "Partial anatomy evaluation with some structures missing",
+        "2": "Complete systematic anatomy evaluation of all major structures"
+      },
+      "expected_keywords": [
+        "brain",
+        "face",
+        "heart",
+        "lungs",
+        "abdomen",
+        "spine",
+        "extremities",
+        "genitalia",
+        "anatomy"
+      ],
+      "rationale": "Comprehensive anatomy survey is crucial for detecting fetal anomalies and normal development."
+    },
+    {
+      "id": "placenta_fluid",
+      "name": "Placenta and Amniotic Fluid",
+      "description": "Assessment of placental location, appearance, and amniotic fluid volume.",
+      "modality": "US",
+      "orientation": "Standard Views",
+      "weight": 0.15,
+      "required": true,
+      "scoring_guide": {
+        "0": "No assessment of placenta or amniotic fluid",
+        "1": "Basic assessment but incomplete evaluation",
+        "2": "Comprehensive assessment of placenta and amniotic fluid"
+      },
+      "expected_keywords": [
+        "placental location",
+        "placental appearance",
+        "amniotic fluid",
+        "oligohydramnios",
+        "polyhydramnios",
+        "umbilical cord",
+        "placenta previa"
+      ],
+      "rationale": "Placental and amniotic fluid assessment is critical for pregnancy management and delivery planning."
+    },
+    {
+      "id": "maternal_structures",
+      "name": "Maternal Pelvic Assessment",
+      "description": "Evaluation of maternal pelvic structures and adnexa.",
+      "modality": "US",
+      "orientation": "Standard Views",
+      "weight": 0.1,
+      "required": true,
+      "scoring_guide": {
+        "0": "No maternal structure evaluation",
+        "1": "Basic evaluation of some maternal structures",
+        "2": "Complete evaluation of maternal pelvic structures and adnexa"
+      },
+      "expected_keywords": [
+        "uterus",
+        "ovaries",
+        "cervix",
+        "adnexa",
+        "maternal structures",
+        "fibroids",
+        "ovarian cysts"
+      ],
+      "rationale": "Maternal pelvic assessment identifies conditions that may affect pregnancy or delivery."
+    },
+    {
+      "id": "documentation_quality",
+      "name": "Documentation and Image Quality",
+      "description": "Complete documentation with appropriate image capture and quality.",
+      "modality": "US",
+      "orientation": "Standard Views",
+      "weight": 0.1,
+      "required": true,
+      "scoring_guide": {
+        "0": "Poor documentation or inadequate image quality",
+        "1": "Adequate documentation with some quality issues",
+        "2": "Complete documentation with excellent image quality"
+      },
+      "expected_keywords": [
+        "standard views",
+        "image quality",
+        "documentation",
+        "measurements",
+        "abnormal findings",
+        "image capture"
+      ],
+      "rationale": "Complete documentation ensures proper record keeping and facilitates follow-up care."
+    },
+    {
+      "id": "clinical_impression",
+      "name": "Clinical Impression and Recommendations",
+      "description": "Provides clinical impression with appropriate recommendations and follow-up.",
+      "modality": "US",
+      "orientation": "Standard Views",
+      "weight": 0.1,
+      "required": true,
+      "scoring_guide": {
+        "0": "No clinical impression or recommendations",
+        "1": "Basic impression without specific recommendations",
+        "2": "Comprehensive impression with specific recommendations and follow-up"
+      },
+      "expected_keywords": [
+        "impression",
+        "recommendations",
+        "follow-up",
+        "genetic counseling",
+        "high-risk",
+        "normal",
+        "abnormal"
+      ],
+      "rationale": "Clear clinical impression and recommendations guide obstetric management and patient counseling."
+    }
+  ]
+} 
