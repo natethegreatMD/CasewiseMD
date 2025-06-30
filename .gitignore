@@ -47,3 +47,7 @@ memory-bank/*.tmp
 
 # Python wheels
 *.whl
+
+Viewer deploy/
+ViewerDeploy/
+viewer-deploy/
