@@ -18,7 +18,11 @@ app = FastAPI(
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://casewisemd.org"],
+    allow_origins=[
+        "https://casewisemd.org",
+        "https://app.casewisemd.org",
+        "https://www.casewisemd.org"
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

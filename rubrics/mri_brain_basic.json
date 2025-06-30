@@ -1,0 +1,130 @@
+{
+  "id": "mri_brain_basic",
+  "metadata": {
+    "title": "MRI Brain Interpretation (Basic)",
+    "description": "Rubric for basic MRI brain interpretation skills.",
+    "modality": "MRI",
+    "body_region": "brain",
+    "difficulty_level": "beginner",
+    "target_audience": ["medical student", "resident"],
+    "tags": ["mri", "brain", "neuro", "basic"],
+    "author": "Casewise System",
+    "institution": null,
+    "references": [],
+    "estimated_time": 10,
+    "passing_score": 70.0
+  },
+  "categories": [
+    {
+      "id": "mri_brain_assessment",
+      "name": "MRI Brain Assessment",
+      "description": "Core components of MRI brain interpretation.",
+      "weight": 1.0,
+      "criteria": [
+        {
+          "id": "sequence_identification",
+          "name": "Sequence Identification",
+          "description": "Identifies and utilizes appropriate MRI sequences for interpretation.",
+          "max_score": 2.0,
+          "weight": 0.1,
+          "expected_keywords": ["T1", "T2", "FLAIR", "DWI", "ADC", "T1+C", "SWI", "GRE"],
+          "expected_concepts": [],
+          "rationale": "Proper sequence identification is fundamental to accurate MRI interpretation.",
+          "scoring_guide": {
+            "0": "No mention of sequences or incorrect sequence identification",
+            "1": "Mentions some sequences but incomplete identification",
+            "2": "Comprehensive identification and utilization of all relevant sequences"
+          }
+        },
+        {
+          "id": "anatomical_assessment",
+          "name": "Anatomical Assessment",
+          "description": "Systematic evaluation of brain anatomy and symmetry.",
+          "max_score": 2.0,
+          "weight": 0.15,
+          "expected_keywords": ["cerebral hemispheres", "ventricles", "basal ganglia", "thalamus", "brainstem", "cerebellum", "symmetry", "midline"],
+          "expected_concepts": [],
+          "rationale": "Comprehensive anatomical assessment is essential for detecting structural abnormalities.",
+          "scoring_guide": {
+            "0": "No anatomical assessment provided",
+            "1": "Partial anatomical evaluation or missing key structures",
+            "2": "Complete evaluation of all major anatomical structures and symmetry"
+          }
+        },
+        {
+          "id": "pathology_detection",
+          "name": "Pathology Detection",
+          "description": "Identifies and characterizes brain pathology across sequences.",
+          "max_score": 2.0,
+          "weight": 0.3,
+          "expected_keywords": ["mass", "lesion", "edema", "hemorrhage", "infarction", "tumor", "metastasis", "abscess"],
+          "expected_concepts": [],
+          "rationale": "Accurate pathology detection is critical for diagnosis and treatment planning.",
+          "scoring_guide": {
+            "0": "No pathology identified or missed significant findings",
+            "1": "Identifies some pathology but incomplete characterization",
+            "2": "Comprehensive identification and characterization of all pathology"
+          }
+        },
+        {
+          "id": "signal_analysis",
+          "name": "Signal Analysis",
+          "description": "Analyzes signal characteristics across different sequences.",
+          "max_score": 2.0,
+          "weight": 0.2,
+          "expected_keywords": ["T1 signal", "T2 signal", "FLAIR signal", "enhancement", "diffusion restriction", "susceptibility", "signal intensity"],
+          "expected_concepts": [],
+          "rationale": "Signal analysis across sequences is crucial for accurate diagnosis and differential.",
+          "scoring_guide": {
+            "0": "No signal analysis provided",
+            "1": "Basic signal analysis without comprehensive evaluation",
+            "2": "Detailed signal analysis across all relevant sequences"
+          }
+        },
+        {
+          "id": "differential_diagnosis",
+          "name": "Differential Diagnosis",
+          "description": "Provides appropriate differential diagnosis based on imaging findings.",
+          "max_score": 2.0,
+          "weight": 0.15,
+          "expected_keywords": ["differential diagnosis", "primary", "metastatic", "inflammatory", "neoplastic", "clinical correlation", "age appropriate"],
+          "expected_concepts": [],
+          "rationale": "Focused differential diagnosis guides further workup and management decisions.",
+          "scoring_guide": {
+            "0": "No differential diagnosis provided",
+            "1": "General differential without prioritization or clinical correlation",
+            "2": "Prioritized differential with clinical correlation and reasoning"
+          }
+        },
+        {
+          "id": "clinical_correlation",
+          "name": "Clinical Correlation and Recommendations",
+          "description": "Provides clinical correlation and appropriate recommendations.",
+          "max_score": 2.0,
+          "weight": 0.1,
+          "expected_keywords": ["clinical correlation", "recommendations", "follow-up", "biopsy", "additional imaging", "neurology referral", "tumor board"],
+          "expected_concepts": [],
+          "rationale": "Clinical correlation and recommendations guide patient management and follow-up.",
+          "scoring_guide": {
+            "0": "No clinical correlation or recommendations",
+            "1": "General recommendations without specificity",
+            "2": "Specific recommendations with clinical correlation and follow-up"
+          }
+        }
+      ]
+    }
+  ],
+  "versions": [
+    {
+      "version": "1.0.0",
+      "created_at": "2024-06-23T00:00:00",
+      "created_by": "Casewise System",
+      "change_notes": "Initial conversion from legacy format.",
+      "is_active": true,
+      "file_path": "rubrics/mri_brain_basic.json",
+      "file_hash": null
+    }
+  ],
+  "current_version": "1.0.0",
+  "version": "1.0.0"
+} 

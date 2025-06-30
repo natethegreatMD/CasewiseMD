@@ -1,0 +1,14 @@
+{
+  "Name": "CasewiseMD-DICOM-Server",
+  "DicomWebEnabled": true,
+  "DicomWebRoot": "/dicom-web/",
+  "RemoteAccessAllowed": true,
+  "RegisteredUsers": {
+    "casewise": "casewise123"
+  },
+  "StorageDirectory": "/var/lib/orthanc/db",
+  "MaximumStorageSize": "10GB",
+  "MaximumPatientCount": 1000,
+  "MaximumStudyCount": 10000,
+  "MaximumInstanceCount": 100000
+} 

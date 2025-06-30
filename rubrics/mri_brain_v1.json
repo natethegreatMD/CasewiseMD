@@ -1,0 +1,163 @@
+{
+  "rubric_id": "mri_brain_v1",
+  "version": "1.0",
+  "case_name": "MRI Brain Interpretation",
+  "patient_id": "GENERIC",
+  "subspecialty": "Neuroradiology",
+  "created_by": "Casewise System",
+  "grading_scale": "0-2",
+  "score_guide": {
+    "0": "Incorrect or missing",
+    "1": "Partially correct or incomplete",
+    "2": "Fully correct and complete"
+  },
+  "criteria": [
+    {
+      "id": "sequence_identification",
+      "name": "Sequence Identification",
+      "description": "Identifies and utilizes appropriate MRI sequences for interpretation.",
+      "modality": "MRI",
+      "orientation": "Axial, Sagittal, Coronal",
+      "weight": 0.1,
+      "required": true,
+      "scoring_guide": {
+        "0": "No mention of sequences or incorrect sequence identification",
+        "1": "Mentions some sequences but incomplete identification",
+        "2": "Comprehensive identification and utilization of all relevant sequences"
+      },
+      "expected_keywords": [
+        "T1",
+        "T2",
+        "FLAIR",
+        "DWI",
+        "ADC",
+        "T1+C",
+        "SWI",
+        "GRE"
+      ],
+      "rationale": "Proper sequence identification is fundamental to accurate MRI interpretation."
+    },
+    {
+      "id": "anatomical_assessment",
+      "name": "Anatomical Assessment",
+      "description": "Systematic evaluation of brain anatomy and symmetry.",
+      "modality": "MRI",
+      "orientation": "Axial, Sagittal, Coronal",
+      "weight": 0.15,
+      "required": true,
+      "scoring_guide": {
+        "0": "No anatomical assessment provided",
+        "1": "Partial anatomical evaluation or missing key structures",
+        "2": "Complete evaluation of all major anatomical structures and symmetry"
+      },
+      "expected_keywords": [
+        "cerebral hemispheres",
+        "ventricles",
+        "basal ganglia",
+        "thalamus",
+        "brainstem",
+        "cerebellum",
+        "symmetry",
+        "midline"
+      ],
+      "rationale": "Comprehensive anatomical assessment is essential for detecting structural abnormalities."
+    },
+    {
+      "id": "pathology_detection",
+      "name": "Pathology Detection",
+      "description": "Identifies and characterizes brain pathology across sequences.",
+      "modality": "MRI",
+      "orientation": "Axial, Sagittal, Coronal",
+      "weight": 0.3,
+      "required": true,
+      "scoring_guide": {
+        "0": "No pathology identified or missed significant findings",
+        "1": "Identifies some pathology but incomplete characterization",
+        "2": "Comprehensive identification and characterization of all pathology"
+      },
+      "expected_keywords": [
+        "mass",
+        "lesion",
+        "edema",
+        "hemorrhage",
+        "infarction",
+        "tumor",
+        "metastasis",
+        "abscess"
+      ],
+      "rationale": "Accurate pathology detection is critical for diagnosis and treatment planning."
+    },
+    {
+      "id": "signal_analysis",
+      "name": "Signal Analysis",
+      "description": "Analyzes signal characteristics across different sequences.",
+      "modality": "MRI",
+      "orientation": "Axial",
+      "weight": 0.2,
+      "required": true,
+      "scoring_guide": {
+        "0": "No signal analysis provided",
+        "1": "Basic signal analysis without comprehensive evaluation",
+        "2": "Detailed signal analysis across all relevant sequences"
+      },
+      "expected_keywords": [
+        "T1 signal",
+        "T2 signal",
+        "FLAIR signal",
+        "enhancement",
+        "diffusion restriction",
+        "susceptibility",
+        "signal intensity"
+      ],
+      "rationale": "Signal analysis across sequences is crucial for accurate diagnosis and differential."
+    },
+    {
+      "id": "differential_diagnosis",
+      "name": "Differential Diagnosis",
+      "description": "Provides appropriate differential diagnosis based on imaging findings.",
+      "modality": "MRI",
+      "orientation": "Axial, Sagittal, Coronal",
+      "weight": 0.15,
+      "required": true,
+      "scoring_guide": {
+        "0": "No differential diagnosis provided",
+        "1": "General differential without prioritization or clinical correlation",
+        "2": "Prioritized differential with clinical correlation and reasoning"
+      },
+      "expected_keywords": [
+        "differential diagnosis",
+        "primary",
+        "metastatic",
+        "inflammatory",
+        "neoplastic",
+        "clinical correlation",
+        "age appropriate"
+      ],
+      "rationale": "Focused differential diagnosis guides further workup and management decisions."
+    },
+    {
+      "id": "clinical_correlation",
+      "name": "Clinical Correlation and Recommendations",
+      "description": "Provides clinical correlation and appropriate recommendations.",
+      "modality": "MRI",
+      "orientation": "Axial, Sagittal, Coronal",
+      "weight": 0.1,
+      "required": true,
+      "scoring_guide": {
+        "0": "No clinical correlation or recommendations",
+        "1": "General recommendations without specificity",
+        "2": "Specific recommendations with clinical correlation and follow-up"
+      },
+      "expected_keywords": [
+        "clinical correlation",
+        "recommendations",
+        "follow-up",
+        "biopsy",
+        "additional imaging",
+        "neurology referral",
+        "tumor board"
+      ],
+      "rationale": "Clinical correlation and recommendations guide patient management and follow-up."
+    }
+  ]
+} 
