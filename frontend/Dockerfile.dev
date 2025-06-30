@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 FROM node:18-alpine
 
 WORKDIR /app
@@ -9,4 +10,17 @@ COPY . .
 
 EXPOSE 5173
 
+=======
+FROM node:18-alpine
+
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm install
+
+COPY . .
+
+EXPOSE 5173
+
+>>>>>>> da6d34f279c03146f63538b30f43f508521da53d
 CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"] 

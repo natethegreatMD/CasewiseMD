@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {
   "rubric_id": "TCGA-09-0364_case_rubric",
   "version": "1.0",
@@ -142,4 +143,150 @@
       "rationale": "Linking imaging findings to clinical steps reflects applied diagnostic reasoning."
     }
   ]
+=======
+{
+  "rubric_id": "TCGA-09-0364_case_rubric",
+  "version": "1.0",
+  "case_name": "Ovarian Cancer with Peritoneal Spread",
+  "patient_id": "TCGA-09-0364",
+  "subspecialty": "Abdominal/Pelvic Radiology",
+  "created_by": "Michael Okafor, MD",
+  "grading_scale": "0-2",
+  "score_guide": {
+    "0": "Incorrect or missing",
+    "1": "Partially correct or incomplete",
+    "2": "Fully correct and complete"
+  },
+  "criteria": [
+    {
+      "id": "findings_mass",
+      "name": "Description of Adnexal Masses",
+      "description": "Describes bilateral adnexal masses: architecture (solid/cystic), margins, calcifications, septations.",
+      "modality": "CT",
+      "orientation": "Axial and Coronal",
+      "weight": 0.25,
+      "required": true,
+      "scoring_guide": {
+        "0": "No mention of adnexal masses or critical features (architecture, laterality)",
+        "1": "Mentions mass(es) but omits key descriptors (e.g., cystic vs. solid, laterality)",
+        "2": "Fully describes both masses including architecture, septations, calcifications, and laterality"
+      },
+      "expected_keywords": [
+        "bilateral",
+        "cystic",
+        "solid",
+        "septations",
+        "calcifications",
+        "complex"
+      ],
+      "rationale": "Characterization of adnexal masses is critical for staging and guiding further workup."
+    },
+    {
+      "id": "findings_spread",
+      "name": "Peritoneal Disease Identification",
+      "description": "Mentions presence and location of peritoneal implants in spleen LUQ and paracolic gutters.",
+      "modality": "CT",
+      "orientation": "Axial",
+      "weight": 0.2,
+      "required": true,
+      "scoring_guide": {
+        "0": "No mention of peritoneal disease",
+        "1": "Mentions general peritoneal spread but not specific locations",
+        "2": "Accurately describes peritoneal implants in spleen LUQ and paracolic gutters"
+      },
+      "expected_keywords": [
+        "peritoneal implants",
+        "paracolic gutters",
+        "spleen",
+        "LUQ"
+      ],
+      "rationale": "Precise documentation of spread impacts FIGO staging and prognosis."
+    },
+    {
+      "id": "ascites_commentary",
+      "name": "Ascites Assessment",
+      "description": "Identifies presence of ascites and comments on diagnostic relevance.",
+      "modality": "CT",
+      "orientation": "Axial",
+      "weight": 0.1,
+      "required": false,
+      "scoring_guide": {
+        "0": "No mention of ascites",
+        "1": "Mentions ascites without characterizing volume or significance",
+        "2": "Correctly identifies trace/small ascites and notes clinical implication"
+      },
+      "expected_keywords": [
+        "ascites",
+        "trace",
+        "small",
+        "peritoneal fluid"
+      ],
+      "rationale": "Ascites is a key feature of advanced disease and should be described."
+    },
+    {
+      "id": "ddx_ovarian",
+      "name": "Differential Diagnosis",
+      "description": "Provides a prioritized differential including epithelial ovarian carcinoma and others.",
+      "modality": "CT",
+      "orientation": "Axial and Coronal",
+      "weight": 0.2,
+      "required": true,
+      "scoring_guide": {
+        "0": "No differential given",
+        "1": "General or broad differential without prioritization",
+        "2": "Includes epithelial ovarian carcinoma and considers other cystic/solid neoplasms"
+      },
+      "expected_keywords": [
+        "epithelial ovarian",
+        "primary ovarian cancer",
+        "metastasis",
+        "serous cystadenocarcinoma"
+      ],
+      "rationale": "A focused differential guides early management and biopsy strategy."
+    },
+    {
+      "id": "staging_estimate",
+      "name": "FIGO Staging Estimate",
+      "description": "Estimates likely FIGO stage and supports with findings.",
+      "modality": "CT",
+      "orientation": "Axial",
+      "weight": 0.15,
+      "required": false,
+      "scoring_guide": {
+        "0": "No staging estimate provided",
+        "1": "Mentions stage without justification",
+        "2": "Estimates FIGO stage III or higher based on peritoneal spread and ascites"
+      },
+      "expected_keywords": [
+        "FIGO",
+        "stage III",
+        "advanced stage",
+        "peritoneal metastasis"
+      ],
+      "rationale": "Staging impacts treatment planning and surgical candidacy."
+    },
+    {
+      "id": "followup",
+      "name": "Management / Follow-Up",
+      "description": "Suggests logical next steps based on findings.",
+      "modality": "CT",
+      "orientation": "Axial and Coronal",
+      "weight": 0.1,
+      "required": false,
+      "scoring_guide": {
+        "0": "No follow-up discussed",
+        "1": "General recommendation without specificity",
+        "2": "Suggests CA-125, biopsy, gynecologic oncology referral"
+      },
+      "expected_keywords": [
+        "CA-125",
+        "biopsy",
+        "referral",
+        "gynecologic oncology",
+        "tumor board"
+      ],
+      "rationale": "Linking imaging findings to clinical steps reflects applied diagnostic reasoning."
+    }
+  ]
+>>>>>>> da6d34f279c03146f63538b30f43f508521da53d
 }

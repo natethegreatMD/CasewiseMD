@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {
   "rubric_id": "chest_xray_v1",
   "version": "1.0",
@@ -148,4 +149,156 @@
       "rationale": "Clear impression guides clinical decision-making and next steps."
     }
   ]
+=======
+{
+  "rubric_id": "chest_xray_v1",
+  "version": "1.0",
+  "case_name": "Chest X-Ray Interpretation",
+  "patient_id": "GENERIC",
+  "subspecialty": "Thoracic Radiology",
+  "created_by": "Casewise System",
+  "grading_scale": "0-2",
+  "score_guide": {
+    "0": "Incorrect or missing",
+    "1": "Partially correct or incomplete",
+    "2": "Fully correct and complete"
+  },
+  "criteria": [
+    {
+      "id": "technique_assessment",
+      "name": "Technical Assessment",
+      "description": "Evaluates image quality, positioning, and technical factors affecting interpretation.",
+      "modality": "CXR",
+      "orientation": "PA and Lateral",
+      "weight": 0.15,
+      "required": true,
+      "scoring_guide": {
+        "0": "No mention of technical factors or poor image quality",
+        "1": "Mentions some technical factors but incomplete assessment",
+        "2": "Comprehensive evaluation of positioning, exposure, and image quality"
+      },
+      "expected_keywords": [
+        "adequate inspiration",
+        "penetration",
+        "positioning",
+        "rotation",
+        "motion artifact",
+        "adequate exposure"
+      ],
+      "rationale": "Technical assessment ensures reliable interpretation and identifies limitations."
+    },
+    {
+      "id": "cardiac_assessment",
+      "name": "Cardiac Evaluation",
+      "description": "Assesses cardiac size, shape, and position including cardiothoracic ratio.",
+      "modality": "CXR",
+      "orientation": "PA",
+      "weight": 0.2,
+      "required": true,
+      "scoring_guide": {
+        "0": "No cardiac assessment provided",
+        "1": "Mentions cardiac size without specific measurements or descriptors",
+        "2": "Accurately measures cardiothoracic ratio and describes cardiac configuration"
+      },
+      "expected_keywords": [
+        "cardiothoracic ratio",
+        "normal cardiac silhouette",
+        "cardiac enlargement",
+        "pericardial effusion",
+        "cardiac configuration"
+      ],
+      "rationale": "Cardiac assessment is fundamental to chest X-ray interpretation and guides further workup."
+    },
+    {
+      "id": "pulmonary_vessels",
+      "name": "Pulmonary Vascular Assessment",
+      "description": "Evaluates pulmonary vascular pattern, including vessel size and distribution.",
+      "modality": "CXR",
+      "orientation": "PA",
+      "weight": 0.15,
+      "required": true,
+      "scoring_guide": {
+        "0": "No mention of pulmonary vasculature",
+        "1": "General mention of vessels without specific assessment",
+        "2": "Detailed assessment of vascular pattern, size, and distribution"
+      },
+      "expected_keywords": [
+        "pulmonary vascular pattern",
+        "vascular redistribution",
+        "cephalization",
+        "pulmonary hypertension",
+        "vascular engorgement"
+      ],
+      "rationale": "Pulmonary vascular assessment is crucial for detecting pulmonary hypertension and heart failure."
+    },
+    {
+      "id": "lung_fields",
+      "name": "Lung Field Analysis",
+      "description": "Systematic evaluation of lung fields for infiltrates, masses, or other abnormalities.",
+      "modality": "CXR",
+      "orientation": "PA and Lateral",
+      "weight": 0.25,
+      "required": true,
+      "scoring_guide": {
+        "0": "No systematic lung field evaluation",
+        "1": "Partial evaluation of lung fields or missing key areas",
+        "2": "Complete systematic evaluation of all lung zones including apices and bases"
+      },
+      "expected_keywords": [
+        "lung fields clear",
+        "infiltrate",
+        "consolidation",
+        "nodule",
+        "mass",
+        "atelectasis",
+        "pneumonia"
+      ],
+      "rationale": "Comprehensive lung field analysis is essential for detecting pulmonary pathology."
+    },
+    {
+      "id": "pleural_assessment",
+      "name": "Pleural Space Evaluation",
+      "description": "Assesses for pleural effusions, pneumothorax, or pleural thickening.",
+      "modality": "CXR",
+      "orientation": "PA and Lateral",
+      "weight": 0.15,
+      "required": true,
+      "scoring_guide": {
+        "0": "No pleural assessment provided",
+        "1": "Mentions pleural space without specific findings",
+        "2": "Detailed assessment of pleural spaces including costophrenic angles"
+      },
+      "expected_keywords": [
+        "pleural effusion",
+        "pneumothorax",
+        "costophrenic angles",
+        "pleural thickening",
+        "blunting"
+      ],
+      "rationale": "Pleural assessment is critical for detecting effusions and pneumothorax."
+    },
+    {
+      "id": "impression_prioritization",
+      "name": "Clinical Impression",
+      "description": "Provides prioritized list of findings with clinical correlation.",
+      "modality": "CXR",
+      "orientation": "PA and Lateral",
+      "weight": 0.1,
+      "required": true,
+      "scoring_guide": {
+        "0": "No impression or findings summary",
+        "1": "General impression without prioritization",
+        "2": "Prioritized impression with clinical significance and recommendations"
+      },
+      "expected_keywords": [
+        "impression",
+        "findings",
+        "clinical correlation",
+        "recommendations",
+        "follow-up"
+      ],
+      "rationale": "Clear impression guides clinical decision-making and next steps."
+    }
+  ]
+>>>>>>> da6d34f279c03146f63538b30f43f508521da53d
 } 
