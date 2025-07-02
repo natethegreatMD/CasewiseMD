@@ -48,3 +48,9 @@ memory-bank/*.tmp
 
 # Python wheels
 *.whl
+
+# OHIF Viewer / Viewer deployment (separate module - should not be tracked)
+Viewer deploy/
+viewer-deploy/
+**/viewer-deploy/
+**/Viewer deploy/
