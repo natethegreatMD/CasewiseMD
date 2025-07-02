@@ -40,9 +40,7 @@ frontend/dist/
 .vscode/
 .idea/
 
-# Casewise specific
-demo_cases/
-demo_cases/**/*.dcm
+# Casewise specific - removing demo_cases exclusion so case data is tracked
 demo_cases/**/temp/
 memory-bank/*.tmp
 

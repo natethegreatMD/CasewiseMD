@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import React, { useState, useEffect } from 'react';
 import './App.css';
 // Import DiagnosticWorkflow with proper error handling
@@ -319,7 +318,6 @@ function App() {
 }
 
 export default App;
-=======
 import React, { useState, useEffect } from 'react';
 import './App.css';
 // Import DiagnosticWorkflow with proper error handling
@@ -640,4 +638,3 @@ function App() {
 }
 
 export default App;
->>>>>>> da6d34f279c03146f63538b30f43f508521da53d

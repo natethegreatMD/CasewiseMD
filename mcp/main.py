@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 """
 MCP-style FastAPI backend for CaseWise
 Multi-Agent routing architecture
@@ -50,7 +49,6 @@ async def health_check():
         "status": "healthy",
         "service": "mcp-backend",
         "agents": ["diagnostic", "grade", "config"]
-=======
 """
 MCP-style FastAPI backend for CaseWise
 Multi-Agent routing architecture
@@ -102,5 +100,4 @@ async def health_check():
         "status": "healthy",
         "service": "mcp-backend",
         "agents": ["diagnostic", "grade", "config"]
->>>>>>> da6d34f279c03146f63538b30f43f508521da53d
     } 

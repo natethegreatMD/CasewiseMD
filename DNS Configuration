@@ -1,0 +1,47 @@
+{
+  "domain": "casewisemd.org",
+  "dns_records": [
+    {
+      "host": "@",
+      "url": "https://casewisemd.org",
+      "type": "A",
+      "points_to": "143.244.154.89",
+      "ttl": "4h"
+    },
+    {
+      "host": "www",
+      "url": "https://www.casewisemd.org",
+      "type": "CNAME",
+      "points_to": "casewisemd.org",
+      "ttl": "4h"
+    },
+    {
+      "host": "app",
+      "url": "https://app.casewisemd.org",
+      "type": "A",
+      "points_to": "143.244.154.89",
+      "ttl": "4h"
+    },
+    {
+      "host": "api",
+      "url": "https://api.casewisemd.org",
+      "type": "A",
+      "points_to": "143.244.154.89",
+      "ttl": "4h"
+    },
+    {
+      "host": "viewer",
+      "url": "https://viewer.casewisemd.org",
+      "type": "A",
+      "points_to": "143.244.154.89",
+      "ttl": "4h"
+    },
+    {
+      "host": "dicom",
+      "url": "https://dicom.casewisemd.org",
+      "type": "A",
+      "points_to": "143.244.154.89",
+      "ttl": "4h"
+    }
+  ]
+}

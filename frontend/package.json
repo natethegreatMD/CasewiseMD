@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 {
   "name": "frontend",
   "private": true,
@@ -34,7 +33,6 @@
     "vite": "^6.3.5"
   }
 }
-=======
 {
   "name": "frontend",
   "private": true,
@@ -70,4 +68,3 @@
     "vite": "^6.3.5"
   }
 }
->>>>>>> da6d34f279c03146f63538b30f43f508521da53d

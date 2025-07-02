@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import React, { useState, useEffect, Suspense, lazy } from 'react';
 
 // Lazy load the OHIF iframe viewer
@@ -568,7 +567,6 @@ function DiagnosticWorkflow({ onBackToHome }: DiagnosticWorkflowProps) {
   );
 }
 
-=======
 import React, { useState, useEffect, Suspense, lazy } from 'react';
 
 // Lazy load the OHIF iframe viewer
@@ -1138,5 +1136,4 @@ function DiagnosticWorkflow({ onBackToHome }: DiagnosticWorkflowProps) {
   );
 }
 
->>>>>>> da6d34f279c03146f63538b30f43f508521da53d
 export default DiagnosticWorkflow; 

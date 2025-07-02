@@ -3,6 +3,6 @@ description:
 globs: 
 alwaysApply: true
 ---
-Do not run any server hosting without asking me first
+- Do not run any server hosting without asking me first
 
-Do not run any tests without asking me first, or unless explicitly directed to test after making changes
+- Do not run any tests without asking me first, or unless explicitly directed to test after making changes

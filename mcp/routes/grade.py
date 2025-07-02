@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 """
 Grading agent routes
 """
@@ -184,7 +183,6 @@ async def get_grade_result(grading_id: str):
         }
         
     except Exception as e:
-=======
 """
 Grading agent routes
 """
@@ -370,5 +368,4 @@ async def get_grade_result(grading_id: str):
         }
         
     except Exception as e:
->>>>>>> da6d34f279c03146f63538b30f43f508521da53d
         raise HTTPException(status_code=500, detail=f"Error retrieving grade result: {str(e)}") 
