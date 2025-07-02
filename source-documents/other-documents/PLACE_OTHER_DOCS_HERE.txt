@@ -1,0 +1,20 @@
+<<<<<<< HEAD
+Place other document types here (PDFs, Word docs, etc.).
+
+Example files:
+- case-reports.pdf
+- grading-criteria.docx
+- radiology-protocols.txt
+- clinical-guidelines.pdf
+
+=======
+Place other document types here (PDFs, Word docs, etc.).
+
+Example files:
+- case-reports.pdf
+- grading-criteria.docx
+- radiology-protocols.txt
+- clinical-guidelines.pdf
+
+>>>>>>> da6d34f279c03146f63538b30f43f508521da53d
+The AI can analyze these documents to extract information for rubric generation. 

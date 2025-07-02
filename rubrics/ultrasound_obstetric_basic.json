@@ -1,0 +1,262 @@
+<<<<<<< HEAD
+{
+  "id": "ultrasound_obstetric_basic",
+  "metadata": {
+    "title": "Obstetric Ultrasound Interpretation (Basic)",
+    "description": "Rubric for basic obstetric ultrasound interpretation skills.",
+    "modality": "Ultrasound",
+    "body_region": "pelvis",
+    "difficulty_level": "beginner",
+    "target_audience": ["medical student", "resident"],
+    "tags": ["ultrasound", "obstetric", "pregnancy", "basic"],
+    "author": "Casewise System",
+    "institution": null,
+    "references": [],
+    "estimated_time": 10,
+    "passing_score": 70.0
+  },
+  "categories": [
+    {
+      "id": "obstetric_us_assessment",
+      "name": "Obstetric Ultrasound Assessment",
+      "description": "Core components of obstetric ultrasound interpretation.",
+      "weight": 1.0,
+      "criteria": [
+        {
+          "id": "biometric_measurements",
+          "name": "Biometric Measurements",
+          "description": "Accurate fetal measurements and gestational age assessment.",
+          "max_score": 2.0,
+          "weight": 0.25,
+          "expected_keywords": ["BPD", "HC", "AC", "FL", "gestational age", "measurements", "growth", "percentile"],
+          "expected_concepts": [],
+          "rationale": "Accurate biometric measurements are essential for fetal growth assessment and dating.",
+          "scoring_guide": {
+            "0": "No biometric measurements or incorrect measurements",
+            "1": "Some measurements but incomplete or inaccurate",
+            "2": "Complete and accurate biometric measurements with gestational age"
+          }
+        },
+        {
+          "id": "fetal_anatomy",
+          "name": "Fetal Anatomy Survey",
+          "description": "Systematic evaluation of fetal anatomy including all major organ systems.",
+          "max_score": 2.0,
+          "weight": 0.3,
+          "expected_keywords": ["brain", "face", "heart", "lungs", "abdomen", "spine", "extremities", "genitalia", "anatomy"],
+          "expected_concepts": [],
+          "rationale": "Comprehensive anatomy survey is crucial for detecting fetal anomalies and normal development.",
+          "scoring_guide": {
+            "0": "No systematic anatomy evaluation or missed major structures",
+            "1": "Partial anatomy evaluation with some structures missing",
+            "2": "Complete systematic anatomy evaluation of all major structures"
+          }
+        },
+        {
+          "id": "placenta_fluid",
+          "name": "Placenta and Amniotic Fluid",
+          "description": "Assessment of placental location, appearance, and amniotic fluid volume.",
+          "max_score": 2.0,
+          "weight": 0.15,
+          "expected_keywords": ["placental location", "placental appearance", "amniotic fluid", "oligohydramnios", "polyhydramnios", "umbilical cord", "placenta previa"],
+          "expected_concepts": [],
+          "rationale": "Placental and amniotic fluid assessment is critical for pregnancy management and delivery planning.",
+          "scoring_guide": {
+            "0": "No assessment of placenta or amniotic fluid",
+            "1": "Basic assessment but incomplete evaluation",
+            "2": "Comprehensive assessment of placenta and amniotic fluid"
+          }
+        },
+        {
+          "id": "maternal_structures",
+          "name": "Maternal Pelvic Assessment",
+          "description": "Evaluation of maternal pelvic structures and adnexa.",
+          "max_score": 2.0,
+          "weight": 0.1,
+          "expected_keywords": ["uterus", "ovaries", "cervix", "adnexa", "maternal structures", "fibroids", "ovarian cysts"],
+          "expected_concepts": [],
+          "rationale": "Maternal pelvic assessment identifies conditions that may affect pregnancy or delivery.",
+          "scoring_guide": {
+            "0": "No maternal structure evaluation",
+            "1": "Basic evaluation of some maternal structures",
+            "2": "Complete evaluation of maternal pelvic structures and adnexa"
+          }
+        },
+        {
+          "id": "documentation_quality",
+          "name": "Documentation and Image Quality",
+          "description": "Complete documentation with appropriate image capture and quality.",
+          "max_score": 2.0,
+          "weight": 0.1,
+          "expected_keywords": ["standard views", "image quality", "documentation", "measurements", "abnormal findings", "image capture"],
+          "expected_concepts": [],
+          "rationale": "Complete documentation ensures proper record keeping and facilitates follow-up care.",
+          "scoring_guide": {
+            "0": "Poor documentation or inadequate image quality",
+            "1": "Adequate documentation with some quality issues",
+            "2": "Complete documentation with excellent image quality"
+          }
+        },
+        {
+          "id": "clinical_impression",
+          "name": "Clinical Impression and Recommendations",
+          "description": "Provides clinical impression with appropriate recommendations and follow-up.",
+          "max_score": 2.0,
+          "weight": 0.1,
+          "expected_keywords": ["impression", "recommendations", "follow-up", "genetic counseling", "high-risk", "normal", "abnormal"],
+          "expected_concepts": [],
+          "rationale": "Clear clinical impression and recommendations guide obstetric management and patient counseling.",
+          "scoring_guide": {
+            "0": "No clinical impression or recommendations",
+            "1": "Basic impression without specific recommendations",
+            "2": "Comprehensive impression with specific recommendations and follow-up"
+          }
+        }
+      ]
+    }
+  ],
+  "versions": [
+    {
+      "version": "1.0.0",
+      "created_at": "2024-06-23T00:00:00",
+      "created_by": "Casewise System",
+      "change_notes": "Initial conversion from legacy format.",
+      "is_active": true,
+      "file_path": "rubrics/ultrasound_obstetric_basic.json",
+      "file_hash": null
+    }
+  ],
+  "current_version": "1.0.0",
+  "version": "1.0.0"
+=======
+{
+  "id": "ultrasound_obstetric_basic",
+  "metadata": {
+    "title": "Obstetric Ultrasound Interpretation (Basic)",
+    "description": "Rubric for basic obstetric ultrasound interpretation skills.",
+    "modality": "Ultrasound",
+    "body_region": "pelvis",
+    "difficulty_level": "beginner",
+    "target_audience": ["medical student", "resident"],
+    "tags": ["ultrasound", "obstetric", "pregnancy", "basic"],
+    "author": "Casewise System",
+    "institution": null,
+    "references": [],
+    "estimated_time": 10,
+    "passing_score": 70.0
+  },
+  "categories": [
+    {
+      "id": "obstetric_us_assessment",
+      "name": "Obstetric Ultrasound Assessment",
+      "description": "Core components of obstetric ultrasound interpretation.",
+      "weight": 1.0,
+      "criteria": [
+        {
+          "id": "biometric_measurements",
+          "name": "Biometric Measurements",
+          "description": "Accurate fetal measurements and gestational age assessment.",
+          "max_score": 2.0,
+          "weight": 0.25,
+          "expected_keywords": ["BPD", "HC", "AC", "FL", "gestational age", "measurements", "growth", "percentile"],
+          "expected_concepts": [],
+          "rationale": "Accurate biometric measurements are essential for fetal growth assessment and dating.",
+          "scoring_guide": {
+            "0": "No biometric measurements or incorrect measurements",
+            "1": "Some measurements but incomplete or inaccurate",
+            "2": "Complete and accurate biometric measurements with gestational age"
+          }
+        },
+        {
+          "id": "fetal_anatomy",
+          "name": "Fetal Anatomy Survey",
+          "description": "Systematic evaluation of fetal anatomy including all major organ systems.",
+          "max_score": 2.0,
+          "weight": 0.3,
+          "expected_keywords": ["brain", "face", "heart", "lungs", "abdomen", "spine", "extremities", "genitalia", "anatomy"],
+          "expected_concepts": [],
+          "rationale": "Comprehensive anatomy survey is crucial for detecting fetal anomalies and normal development.",
+          "scoring_guide": {
+            "0": "No systematic anatomy evaluation or missed major structures",
+            "1": "Partial anatomy evaluation with some structures missing",
+            "2": "Complete systematic anatomy evaluation of all major structures"
+          }
+        },
+        {
+          "id": "placenta_fluid",
+          "name": "Placenta and Amniotic Fluid",
+          "description": "Assessment of placental location, appearance, and amniotic fluid volume.",
+          "max_score": 2.0,
+          "weight": 0.15,
+          "expected_keywords": ["placental location", "placental appearance", "amniotic fluid", "oligohydramnios", "polyhydramnios", "umbilical cord", "placenta previa"],
+          "expected_concepts": [],
+          "rationale": "Placental and amniotic fluid assessment is critical for pregnancy management and delivery planning.",
+          "scoring_guide": {
+            "0": "No assessment of placenta or amniotic fluid",
+            "1": "Basic assessment but incomplete evaluation",
+            "2": "Comprehensive assessment of placenta and amniotic fluid"
+          }
+        },
+        {
+          "id": "maternal_structures",
+          "name": "Maternal Pelvic Assessment",
+          "description": "Evaluation of maternal pelvic structures and adnexa.",
+          "max_score": 2.0,
+          "weight": 0.1,
+          "expected_keywords": ["uterus", "ovaries", "cervix", "adnexa", "maternal structures", "fibroids", "ovarian cysts"],
+          "expected_concepts": [],
+          "rationale": "Maternal pelvic assessment identifies conditions that may affect pregnancy or delivery.",
+          "scoring_guide": {
+            "0": "No maternal structure evaluation",
+            "1": "Basic evaluation of some maternal structures",
+            "2": "Complete evaluation of maternal pelvic structures and adnexa"
+          }
+        },
+        {
+          "id": "documentation_quality",
+          "name": "Documentation and Image Quality",
+          "description": "Complete documentation with appropriate image capture and quality.",
+          "max_score": 2.0,
+          "weight": 0.1,
+          "expected_keywords": ["standard views", "image quality", "documentation", "measurements", "abnormal findings", "image capture"],
+          "expected_concepts": [],
+          "rationale": "Complete documentation ensures proper record keeping and facilitates follow-up care.",
+          "scoring_guide": {
+            "0": "Poor documentation or inadequate image quality",
+            "1": "Adequate documentation with some quality issues",
+            "2": "Complete documentation with excellent image quality"
+          }
+        },
+        {
+          "id": "clinical_impression",
+          "name": "Clinical Impression and Recommendations",
+          "description": "Provides clinical impression with appropriate recommendations and follow-up.",
+          "max_score": 2.0,
+          "weight": 0.1,
+          "expected_keywords": ["impression", "recommendations", "follow-up", "genetic counseling", "high-risk", "normal", "abnormal"],
+          "expected_concepts": [],
+          "rationale": "Clear clinical impression and recommendations guide obstetric management and patient counseling.",
+          "scoring_guide": {
+            "0": "No clinical impression or recommendations",
+            "1": "Basic impression without specific recommendations",
+            "2": "Comprehensive impression with specific recommendations and follow-up"
+          }
+        }
+      ]
+    }
+  ],
+  "versions": [
+    {
+      "version": "1.0.0",
+      "created_at": "2024-06-23T00:00:00",
+      "created_by": "Casewise System",
+      "change_notes": "Initial conversion from legacy format.",
+      "is_active": true,
+      "file_path": "rubrics/ultrasound_obstetric_basic.json",
+      "file_hash": null
+    }
+  ],
+  "current_version": "1.0.0",
+  "version": "1.0.0"
+>>>>>>> da6d34f279c03146f63538b30f43f508521da53d
+} 

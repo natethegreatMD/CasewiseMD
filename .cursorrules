@@ -1,0 +1,175 @@
+# Casewise Project Intelligence - .cursorrules
+
+## Memory Bank Protocol (CRITICAL)
+- **ALWAYS read ALL memory bank files at the start of EVERY session**
+- Memory bank files are the ONLY source of context after session resets
+- Memory bank MUST be updated when discovering new patterns or making significant changes
+- If user says "update memory bank", review ALL files even if some don't need updates
+
+## Core Project Understanding
+
+### Project Identity
+- **Casewise**: AI-powered medical education platform for radiology residents
+- **Primary Use Case**: Oral board exam preparation with real medical cases
+- **MVP Focus**: Single case TCGA-09-0364 validation before expansion
+- **Zero Tolerance**: No medical misinformation or AI hallucination - accuracy is paramount
+
+### User Profile (Mike - Radiology Resident)
+- **Experience Level**: Clinical expertise with strong technical understanding
+- **Work Style**: Pragmatic, ship-first MVP mentality with architectural rigor
+- **Quality Standards**: Extremely high accuracy requirements, explainable AI decisions
+- **Communication**: Prefers direct technical discussion, minimal fluff
+- **Tools Preference**: CLI workflows, systematic prompt tracking, audit trails
+
+## Technical Architecture Patterns
+
+### System Design Philosophy
+- **Medical-First**: All decisions prioritize clinical accuracy and medical standards
+- **Modular Architecture**: Clean separation between frontend, backend, viewer, and data
+- **Multiple Integration Strategies**: Parallel approaches (iframe + embedded OHIF)
+- **Scalability-Ready**: Architecture designed for multi-case, multi-user expansion
+
+### Technology Stack Conventions
+```
+Frontend: React 18.3 + TypeScript + Vite
+Backend: Python FastAPI + Uvicorn + Pydantic
+Medical: OHIF Viewer + DICOM + TCIA data
+Infrastructure: Docker + Docker Compose + Orthanc
+```
+
+### Code Organization Rules
+- **Frontend**: Component-based architecture with clear separation of concerns
+- **Backend**: Modular routes (diagnostic.py, grade.py, config.py)
+- **Data**: Structured directories for DICOM (UID-based), rubrics (JSON), cases
+- **Configuration**: Environment-based with .env files and Docker configuration
+
+### File Naming and Structure Patterns
+```
+frontend/src/components/
+├── DiagnosticWorkflow.tsx    (Main orchestrator)
+├── DicomViewer.tsx          (Primary viewer)
+├── OhifViewer.tsx           (Direct integration)
+└── OhifIframeViewer.tsx     (Iframe fallback)
+
+mcp/routes/
+├── diagnostic.py            (Case presentation logic)
+├── grade.py                 (Evaluation and scoring)
+└── config.py               (System configuration)
+
+demo_cases/case001/
+├── metadata.json           (Case metadata)
+├── report.txt             (Radiology report)
+└── slices/               (DICOM series by UID)
+```
+
+## Development Workflow Intelligence
+
+### Current Status Awareness
+- **OHIF Integration**: Primary technical challenge - iframe working, embedding in progress
+- **Diagnostic Workflow**: Core structure exists, needs viewer integration
+- **Evaluation System**: Rubric structure defined, processing logic in development
+- **Data Pipeline**: TCGA-09-0364 properly organized, needs validation
+
+### Critical Path Items
+1. **OHIF Embedding**: Complex build system integration is the main blocker
+2. **End-to-End Workflow**: Connecting viewer to diagnostic questions and evaluation
+3. **Performance**: Large DICOM files (100MB+) require optimization
+4. **Medical Validation**: Need clinical expert review for accuracy
+
+### Known Technical Challenges
+- **OHIF Complexity**: Large platform with complex webpack configuration
+- **DICOM Performance**: Loading and memory issues with large files
+- **Cross-Platform**: Docker environment vs local development differences
+- **Medical Standards**: HIPAA, DICOM compliance requirements
+
+## User Interaction Patterns
+
+### Communication Style
+- **Technical Focus**: Dive directly into technical details
+- **No Placeholders**: Never use "TODO" or placeholder text - ask for clarification
+- **Systematic Approach**: Document patterns, version changes, track progress
+- **Iterative Development**: Ship functional pieces, improve incrementally
+
+### Decision Making Process
+- **Medical Accuracy First**: If uncertain about medical aspects, pause and ask
+- **Performance Conscious**: Always consider DICOM file size and loading implications  
+- **Architecture Consistency**: Maintain modular, scalable patterns
+- **Documentation Driven**: Update memory bank when discovering new patterns
+
+### Problem Solving Approach
+- **Multiple Strategies**: Implement parallel approaches (iframe + embedding)
+- **Progressive Enhancement**: Working solution first, optimization second
+- **Explicit Validation**: Don't assume medical accuracy - verify with data
+- **Audit Trail**: Log all decisions and changes for medical compliance
+
+## Code Quality Standards
+
+### Medical Software Requirements
+- **Data Integrity**: Validate all DICOM and medical data handling
+- **Error Handling**: Graceful degradation with medical-appropriate error messages
+- **Performance**: Sub-5-second DICOM loading, <2GB memory usage
+- **Security**: HIPAA-aware data handling, even for educational data
+
+### Development Standards
+- **TypeScript**: Use strict typing for medical data structures
+- **API Design**: RESTful with consistent JSON, proper HTTP status codes
+- **Component Design**: Single responsibility, clear medical domain separation
+- **Testing**: Validate with real medical data (TCGA-09-0364)
+
+### Documentation Requirements
+- **Medical Context**: Always explain medical significance of technical decisions
+- **Architecture Decisions**: Document why specific patterns were chosen
+- **Performance Implications**: Note DICOM-specific considerations
+- **Scalability Notes**: How decisions impact multi-case expansion
+
+## Specific Implementation Notes
+
+### OHIF Integration Lessons
+- **Iframe Approach**: Works but limited customization and communication complexity
+- **Direct Embedding**: Complex build system, but better React integration
+- **Bundle Size**: Major concern - OHIF is large, impacts loading performance
+- **Configuration**: Custom OHIF builds needed for medical education use case
+
+### Data Handling Patterns
+- **DICOM Structure**: UID-based directory naming for series organization
+- **Metadata Approach**: Separate JSON files for quick access without DICOM parsing
+- **Report Integration**: Text-based radiology reports as evaluation source of truth
+- **Rubric System**: JSON-structured evaluation criteria with versioning
+
+### Performance Optimization Insights
+- **Lazy Loading**: Load DICOM data on demand to manage memory
+- **Progressive Enhancement**: Show thumbnails first, full resolution on request
+- **Caching Strategy**: Browser caching for static DICOM data
+- **Memory Management**: Critical for large medical imaging files
+
+## Error Patterns and Solutions
+
+### Common Issues
+- **OHIF Build Errors**: Complex webpack configuration requires specific Node versions
+- **DICOM Loading**: Large files cause browser memory issues
+- **Cross-Origin**: DICOM servers need proper CORS configuration
+- **Docker Networking**: Container communication requires proper port mapping
+
+### Debugging Approach
+- **Medical Data First**: Verify DICOM integrity before troubleshooting code
+- **Component Isolation**: Test viewer, API, and evaluation systems separately
+- **Real Data Testing**: Always test with actual TCGA-09-0364 case data
+- **Performance Monitoring**: Track memory usage and loading times
+
+## Future Enhancement Patterns
+
+### Planned Expansions
+- **Multi-Case**: Architecture ready for case library expansion
+- **GPT Integration**: Prompt versioning and natural language evaluation
+- **Advanced Viewer**: Annotation tools and measurement capabilities
+- **User Management**: Multi-user support with progress tracking
+
+### Scalability Considerations
+- **Database Integration**: PostgreSQL for persistent data and user management
+- **Caching Layer**: Redis for frequently accessed medical data
+- **Microservices**: Service decomposition for larger scale deployment
+- **Cloud Deployment**: Kubernetes orchestration for production scaling
+
+---
+
+**REMEMBER**: This is a medical education platform where accuracy is life-critical. When in doubt about medical aspects, always ask for clarification rather than making assumptions. The memory bank is the foundation - read it completely at the start of every session. 

@@ -1,0 +1,316 @@
+<<<<<<< HEAD
+{
+  "rubric_id": "ct_abdomen_v1",
+  "version": "1.0",
+  "case_name": "CT Abdomen Interpretation",
+  "patient_id": "GENERIC",
+  "subspecialty": "Abdominal/Pelvic Radiology",
+  "created_by": "Casewise System",
+  "grading_scale": "0-2",
+  "score_guide": {
+    "0": "Incorrect or missing",
+    "1": "Partially correct or incomplete",
+    "2": "Fully correct and complete"
+  },
+  "criteria": [
+    {
+      "id": "technique_evaluation",
+      "name": "Technical Evaluation",
+      "description": "Assesses contrast administration, image quality, and technical factors.",
+      "modality": "CT",
+      "orientation": "Axial and Coronal",
+      "weight": 0.1,
+      "required": true,
+      "scoring_guide": {
+        "0": "No mention of technical factors or contrast",
+        "1": "Mentions contrast but incomplete technical assessment",
+        "2": "Comprehensive evaluation of contrast, slice thickness, and image quality"
+      },
+      "expected_keywords": [
+        "intravenous contrast",
+        "oral contrast",
+        "slice thickness",
+        "image quality",
+        "adequate coverage",
+        "motion artifact"
+      ],
+      "rationale": "Technical assessment ensures reliable interpretation and identifies study limitations."
+    },
+    {
+      "id": "solid_organs",
+      "name": "Solid Organ Assessment",
+      "description": "Systematic evaluation of liver, spleen, pancreas, and kidneys.",
+      "modality": "CT",
+      "orientation": "Axial",
+      "weight": 0.25,
+      "required": true,
+      "scoring_guide": {
+        "0": "No systematic organ evaluation",
+        "1": "Partial organ evaluation or missing key organs",
+        "2": "Complete evaluation of all solid organs with size, enhancement, and pathology"
+      },
+      "expected_keywords": [
+        "liver",
+        "spleen",
+        "pancreas",
+        "kidneys",
+        "enhancement",
+        "size",
+        "masses",
+        "cysts"
+      ],
+      "rationale": "Solid organ assessment is fundamental to abdominal CT interpretation."
+    },
+    {
+      "id": "bowel_evaluation",
+      "name": "Bowel and Mesentery",
+      "description": "Evaluates bowel loops, mesentery, and vascular structures.",
+      "modality": "CT",
+      "orientation": "Axial",
+      "weight": 0.2,
+      "required": true,
+      "scoring_guide": {
+        "0": "No bowel evaluation provided",
+        "1": "General mention of bowel without specific assessment",
+        "2": "Detailed evaluation of bowel wall, lumen, and mesenteric structures"
+      },
+      "expected_keywords": [
+        "bowel wall thickening",
+        "bowel obstruction",
+        "mesentery",
+        "vessels",
+        "lymph nodes",
+        "fat stranding"
+      ],
+      "rationale": "Bowel evaluation is crucial for detecting obstruction, inflammation, and ischemia."
+    },
+    {
+      "id": "pathology_characterization",
+      "name": "Pathology Characterization",
+      "description": "Identifies and characterizes pathological findings with measurements.",
+      "modality": "CT",
+      "orientation": "Axial and Coronal",
+      "weight": 0.25,
+      "required": true,
+      "scoring_guide": {
+        "0": "No pathology identified or characterized",
+        "1": "Mentions pathology without detailed characterization",
+        "2": "Detailed characterization with measurements, enhancement, and location"
+      },
+      "expected_keywords": [
+        "mass",
+        "lesion",
+        "measurements",
+        "enhancement pattern",
+        "attenuation",
+        "location",
+        "size"
+      ],
+      "rationale": "Accurate pathology characterization guides treatment planning and follow-up."
+    },
+    {
+      "id": "differential_diagnosis",
+      "name": "Differential Diagnosis",
+      "description": "Provides appropriate differential diagnosis based on findings.",
+      "modality": "CT",
+      "orientation": "Axial and Coronal",
+      "weight": 0.15,
+      "required": true,
+      "scoring_guide": {
+        "0": "No differential diagnosis provided",
+        "1": "General differential without prioritization",
+        "2": "Prioritized differential with clinical correlation"
+      },
+      "expected_keywords": [
+        "differential diagnosis",
+        "primary",
+        "metastatic",
+        "benign",
+        "malignant",
+        "clinical correlation"
+      ],
+      "rationale": "Focused differential diagnosis guides further workup and management."
+    },
+    {
+      "id": "clinical_impression",
+      "name": "Clinical Impression and Recommendations",
+      "description": "Provides prioritized impression with management recommendations.",
+      "modality": "CT",
+      "orientation": "Axial and Coronal",
+      "weight": 0.05,
+      "required": true,
+      "scoring_guide": {
+        "0": "No impression or recommendations",
+        "1": "General impression without specific recommendations",
+        "2": "Prioritized impression with specific follow-up recommendations"
+      },
+      "expected_keywords": [
+        "impression",
+        "recommendations",
+        "follow-up",
+        "biopsy",
+        "additional imaging",
+        "clinical correlation"
+      ],
+      "rationale": "Clear impression and recommendations guide clinical decision-making."
+    }
+  ]
+=======
+{
+  "rubric_id": "ct_abdomen_v1",
+  "version": "1.0",
+  "case_name": "CT Abdomen Interpretation",
+  "patient_id": "GENERIC",
+  "subspecialty": "Abdominal/Pelvic Radiology",
+  "created_by": "Casewise System",
+  "grading_scale": "0-2",
+  "score_guide": {
+    "0": "Incorrect or missing",
+    "1": "Partially correct or incomplete",
+    "2": "Fully correct and complete"
+  },
+  "criteria": [
+    {
+      "id": "technique_evaluation",
+      "name": "Technical Evaluation",
+      "description": "Assesses contrast administration, image quality, and technical factors.",
+      "modality": "CT",
+      "orientation": "Axial and Coronal",
+      "weight": 0.1,
+      "required": true,
+      "scoring_guide": {
+        "0": "No mention of technical factors or contrast",
+        "1": "Mentions contrast but incomplete technical assessment",
+        "2": "Comprehensive evaluation of contrast, slice thickness, and image quality"
+      },
+      "expected_keywords": [
+        "intravenous contrast",
+        "oral contrast",
+        "slice thickness",
+        "image quality",
+        "adequate coverage",
+        "motion artifact"
+      ],
+      "rationale": "Technical assessment ensures reliable interpretation and identifies study limitations."
+    },
+    {
+      "id": "solid_organs",
+      "name": "Solid Organ Assessment",
+      "description": "Systematic evaluation of liver, spleen, pancreas, and kidneys.",
+      "modality": "CT",
+      "orientation": "Axial",
+      "weight": 0.25,
+      "required": true,
+      "scoring_guide": {
+        "0": "No systematic organ evaluation",
+        "1": "Partial organ evaluation or missing key organs",
+        "2": "Complete evaluation of all solid organs with size, enhancement, and pathology"
+      },
+      "expected_keywords": [
+        "liver",
+        "spleen",
+        "pancreas",
+        "kidneys",
+        "enhancement",
+        "size",
+        "masses",
+        "cysts"
+      ],
+      "rationale": "Solid organ assessment is fundamental to abdominal CT interpretation."
+    },
+    {
+      "id": "bowel_evaluation",
+      "name": "Bowel and Mesentery",
+      "description": "Evaluates bowel loops, mesentery, and vascular structures.",
+      "modality": "CT",
+      "orientation": "Axial",
+      "weight": 0.2,
+      "required": true,
+      "scoring_guide": {
+        "0": "No bowel evaluation provided",
+        "1": "General mention of bowel without specific assessment",
+        "2": "Detailed evaluation of bowel wall, lumen, and mesenteric structures"
+      },
+      "expected_keywords": [
+        "bowel wall thickening",
+        "bowel obstruction",
+        "mesentery",
+        "vessels",
+        "lymph nodes",
+        "fat stranding"
+      ],
+      "rationale": "Bowel evaluation is crucial for detecting obstruction, inflammation, and ischemia."
+    },
+    {
+      "id": "pathology_characterization",
+      "name": "Pathology Characterization",
+      "description": "Identifies and characterizes pathological findings with measurements.",
+      "modality": "CT",
+      "orientation": "Axial and Coronal",
+      "weight": 0.25,
+      "required": true,
+      "scoring_guide": {
+        "0": "No pathology identified or characterized",
+        "1": "Mentions pathology without detailed characterization",
+        "2": "Detailed characterization with measurements, enhancement, and location"
+      },
+      "expected_keywords": [
+        "mass",
+        "lesion",
+        "measurements",
+        "enhancement pattern",
+        "attenuation",
+        "location",
+        "size"
+      ],
+      "rationale": "Accurate pathology characterization guides treatment planning and follow-up."
+    },
+    {
+      "id": "differential_diagnosis",
+      "name": "Differential Diagnosis",
+      "description": "Provides appropriate differential diagnosis based on findings.",
+      "modality": "CT",
+      "orientation": "Axial and Coronal",
+      "weight": 0.15,
+      "required": true,
+      "scoring_guide": {
+        "0": "No differential diagnosis provided",
+        "1": "General differential without prioritization",
+        "2": "Prioritized differential with clinical correlation"
+      },
+      "expected_keywords": [
+        "differential diagnosis",
+        "primary",
+        "metastatic",
+        "benign",
+        "malignant",
+        "clinical correlation"
+      ],
+      "rationale": "Focused differential diagnosis guides further workup and management."
+    },
+    {
+      "id": "clinical_impression",
+      "name": "Clinical Impression and Recommendations",
+      "description": "Provides prioritized impression with management recommendations.",
+      "modality": "CT",
+      "orientation": "Axial and Coronal",
+      "weight": 0.05,
+      "required": true,
+      "scoring_guide": {
+        "0": "No impression or recommendations",
+        "1": "General impression without specific recommendations",
+        "2": "Prioritized impression with specific follow-up recommendations"
+      },
+      "expected_keywords": [
+        "impression",
+        "recommendations",
+        "follow-up",
+        "biopsy",
+        "additional imaging",
+        "clinical correlation"
+      ],
+      "rationale": "Clear impression and recommendations guide clinical decision-making."
+    }
+  ]
+>>>>>>> da6d34f279c03146f63538b30f43f508521da53d
+} 

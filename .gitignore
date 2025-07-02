@@ -1,0 +1,50 @@
+# Byte-compiled / compiled files
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Virtual environments
+.env
+.venv
+env/
+venv/
+
+# dotenv environment variable files
+*.env
+*.env.*
+
+# Docker
+*.pid
+
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+*.sqlite3
+
+# Build artifacts
+/dist
+/build
+*.egg-info/
+
+# Node.js frontend
+frontend/node_modules/
+frontend/dist/
+
+# VSCode and editor settings
+.vscode/
+.idea/
+
+# Casewise specific
+demo_cases/
+demo_cases/**/*.dcm
+demo_cases/**/temp/
+memory-bank/*.tmp
+
+# Python wheels
+*.whl
