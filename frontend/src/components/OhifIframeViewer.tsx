@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import React, { useState } from 'react';
 
 interface OhifIframeViewerProps {
@@ -113,7 +112,6 @@ const OhifIframeViewer: React.FC<OhifIframeViewerProps> = ({ caseId = 'case001',
   );
 };
 
-=======
 import React, { useState } from 'react';
 
 interface OhifIframeViewerProps {
@@ -228,5 +226,4 @@ const OhifIframeViewer: React.FC<OhifIframeViewerProps> = ({ caseId = 'case001',
   );
 };
 
->>>>>>> da6d34f279c03146f63538b30f43f508521da53d
 export default OhifIframeViewer; 

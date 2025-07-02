@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Source Documents Directory
 
 This directory contains source documents that can be used to generate rubrics for the Casewise v2 system.
@@ -61,7 +60,6 @@ Place other document types (PDFs, Word documents, etc.) in the `other-documents/
 - Keep source documents organized by type and date
 - Include metadata about the source when possible
 - Reference specific rows/sections when creating rubrics
-=======
 # Source Documents Directory
 
 This directory contains source documents that can be used to generate rubrics for the Casewise v2 system.
@@ -124,5 +122,4 @@ Place other document types (PDFs, Word documents, etc.) in the `other-documents/
 - Keep source documents organized by type and date
 - Include metadata about the source when possible
 - Reference specific rows/sections when creating rubrics
->>>>>>> da6d34f279c03146f63538b30f43f508521da53d
 - Maintain backup copies of important source documents 

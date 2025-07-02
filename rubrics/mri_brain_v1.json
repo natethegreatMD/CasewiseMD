@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 {
   "rubric_id": "mri_brain_v1",
   "version": "1.0",
@@ -161,7 +160,6 @@
       "rationale": "Clinical correlation and recommendations guide patient management and follow-up."
     }
   ]
-=======
 {
   "rubric_id": "mri_brain_v1",
   "version": "1.0",
@@ -324,5 +322,4 @@
       "rationale": "Clinical correlation and recommendations guide patient management and follow-up."
     }
   ]
->>>>>>> da6d34f279c03146f63538b30f43f508521da53d
 } 

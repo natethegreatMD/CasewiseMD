@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 {
   "id": "chest_xray_basic",
   "metadata": {
@@ -167,7 +166,6 @@
   ],
   "current_version": "1.0.0",
   "version": "1.0.0"
-=======
 {
   "id": "chest_xray_basic",
   "metadata": {
@@ -336,5 +334,4 @@
   ],
   "current_version": "1.0.0",
   "version": "1.0.0"
->>>>>>> da6d34f279c03146f63538b30f43f508521da53d
 } 

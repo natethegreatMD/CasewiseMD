@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # DICOM Viewer Component
 
 ## Overview
@@ -128,7 +127,6 @@ public/demo_cases/
 4. **Display Issues**: Check CSS and canvas sizing
 
 ### Debug Mode
-=======
 # DICOM Viewer Component
 
 ## Overview
@@ -258,5 +256,4 @@ public/demo_cases/
 4. **Display Issues**: Check CSS and canvas sizing
 
 ### Debug Mode
->>>>>>> da6d34f279c03146f63538b30f43f508521da53d
 Enable debug logging by setting `localStorage.debug = 'cornerstone*'` in browser console. 

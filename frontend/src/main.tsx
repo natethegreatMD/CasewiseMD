@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
@@ -9,7 +8,6 @@ createRoot(document.getElementById('root')!).render(
     <App />
   </StrictMode>,
 )
-=======
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
@@ -20,4 +18,3 @@ createRoot(document.getElementById('root')!).render(
     <App />
   </StrictMode>,
 )
->>>>>>> da6d34f279c03146f63538b30f43f508521da53d

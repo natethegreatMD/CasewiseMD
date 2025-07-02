@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 {
   "rubric_id": "ct_abdomen_v1",
   "version": "1.0",
@@ -155,7 +154,6 @@
       "rationale": "Clear impression and recommendations guide clinical decision-making."
     }
   ]
-=======
 {
   "rubric_id": "ct_abdomen_v1",
   "version": "1.0",
@@ -312,5 +310,4 @@
       "rationale": "Clear impression and recommendations guide clinical decision-making."
     }
   ]
->>>>>>> da6d34f279c03146f63538b30f43f508521da53d
 } 

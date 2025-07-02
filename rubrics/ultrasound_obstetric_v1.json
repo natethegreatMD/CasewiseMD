@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 {
   "rubric_id": "ultrasound_obstetric_v1",
   "version": "1.0",
@@ -160,7 +159,6 @@
       "rationale": "Clear clinical impression and recommendations guide obstetric management and patient counseling."
     }
   ]
-=======
 {
   "rubric_id": "ultrasound_obstetric_v1",
   "version": "1.0",
@@ -322,5 +320,4 @@
       "rationale": "Clear clinical impression and recommendations guide obstetric management and patient counseling."
     }
   ]
->>>>>>> da6d34f279c03146f63538b30f43f508521da53d
 } 

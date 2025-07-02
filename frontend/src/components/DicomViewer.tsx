@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import React, { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import * as cornerstone from 'cornerstone-core';
 import * as cornerstoneTools from 'cornerstone-tools';
@@ -557,7 +556,6 @@ const DicomViewer: React.FC<DicomViewerProps> = ({ caseId = 'case001', className
   );
 };
 
-=======
 import React, { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import * as cornerstone from 'cornerstone-core';
 import * as cornerstoneTools from 'cornerstone-tools';
@@ -1116,5 +1114,4 @@ const DicomViewer: React.FC<DicomViewerProps> = ({ caseId = 'case001', className
   );
 };
 
->>>>>>> da6d34f279c03146f63538b30f43f508521da53d
 export default DicomViewer; 

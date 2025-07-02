@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
@@ -26,7 +25,6 @@ export default defineConfig({
     }
   }
 })
-=======
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
@@ -54,4 +52,3 @@ export default defineConfig({
     }
   }
 })
->>>>>>> da6d34f279c03146f63538b30f43f508521da53d

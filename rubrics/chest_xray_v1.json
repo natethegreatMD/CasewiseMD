@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 {
   "rubric_id": "chest_xray_v1",
   "version": "1.0",
@@ -149,7 +148,6 @@
       "rationale": "Clear impression guides clinical decision-making and next steps."
     }
   ]
-=======
 {
   "rubric_id": "chest_xray_v1",
   "version": "1.0",
@@ -300,5 +298,4 @@
       "rationale": "Clear impression guides clinical decision-making and next steps."
     }
   ]
->>>>>>> da6d34f279c03146f63538b30f43f508521da53d
 } 

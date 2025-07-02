@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import React, { useEffect, useRef, useState } from 'react';
 
 interface OhifViewerProps {
@@ -86,7 +85,6 @@ const OhifViewer: React.FC<OhifViewerProps> = ({ caseId = 'case001', className =
   );
 };
 
-=======
 import React, { useEffect, useRef, useState } from 'react';
 
 interface OhifViewerProps {
@@ -174,5 +172,4 @@ const OhifViewer: React.FC<OhifViewerProps> = ({ caseId = 'case001', className =
   );
 };
 
->>>>>>> da6d34f279c03146f63538b30f43f508521da53d
 export default OhifViewer; 

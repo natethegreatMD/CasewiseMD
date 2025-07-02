@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Casewise: AI-Powered Radiology Education Platform
 
 **Casewise** is an advanced AI-powered oral board simulator designed specifically for radiology training and assessment. It combines professional DICOM image viewing with intelligent AI agents to create realistic, interactive diagnostic scenarios that mirror real-world radiology practice and oral board examinations.
@@ -327,7 +326,6 @@ For development questions or deployment issues:
 
 ---
 
-=======
 # Casewise: AI-Powered Radiology Education Platform
 
 **Casewise** is an advanced AI-powered oral board simulator designed specifically for radiology training and assessment. It combines professional DICOM image viewing with intelligent AI agents to create realistic, interactive diagnostic scenarios that mirror real-world radiology practice and oral board examinations.
@@ -656,5 +654,4 @@ For development questions or deployment issues:
 
 ---
 
->>>>>>> da6d34f279c03146f63538b30f43f508521da53d
 **Casewise** represents the future of medical education, combining cutting-edge AI technology with clinical-grade medical imaging to create an immersive, effective learning platform for radiology professionals worldwide. 

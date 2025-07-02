@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 {
   "rubric_id": "TCGA-09-0364_case_rubric",
   "version": "1.0",
@@ -143,7 +142,6 @@
       "rationale": "Linking imaging findings to clinical steps reflects applied diagnostic reasoning."
     }
   ]
-=======
 {
   "rubric_id": "TCGA-09-0364_case_rubric",
   "version": "1.0",
@@ -288,5 +286,4 @@
       "rationale": "Linking imaging findings to clinical steps reflects applied diagnostic reasoning."
     }
   ]
->>>>>>> da6d34f279c03146f63538b30f43f508521da53d
 }

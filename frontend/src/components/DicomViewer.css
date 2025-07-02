@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 /* DICOM Viewer Styles */
 .dicom-viewer {
   background: rgba(15, 20, 25, 0.95);
@@ -438,7 +437,6 @@
 
 .control-group input[type="range"]::-webkit-scrollbar-thumb:hover {
   background: #3182ce;
-=======
 /* DICOM Viewer Styles */
 .dicom-viewer {
   background: rgba(15, 20, 25, 0.95);
@@ -878,5 +876,4 @@
 
 .control-group input[type="range"]::-webkit-scrollbar-thumb:hover {
   background: #3182ce;
->>>>>>> da6d34f279c03146f63538b30f43f508521da53d
 } 
