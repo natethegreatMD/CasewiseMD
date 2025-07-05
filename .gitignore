@@ -42,6 +42,7 @@ frontend/dist/
 
 # Casewise specific - removing demo_cases exclusion so case data is tracked
 demo_cases/**/temp/
+demo_cases/**/*.dcm
 demo_cases/
 memory-bank/*.tmp
 
