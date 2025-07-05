@@ -90,7 +90,7 @@ function DiagnosticWorkflow({ onBackToHome }: DiagnosticWorkflowProps) {
   const [showDicomViewer, setShowDicomViewer] = useState(true);
 
   // API Base URL from environment variables
-  const API_URL = `${import.meta.env.VITE_API_URL}/api/v1`;
+  const API_URL = `${import.meta.env.VITE_API_URL || 'https://api.casewisemd.org'}/api/v1`;
 
   // Start diagnostic session
   const startDiagnosticSession = async () => {
@@ -659,7 +659,7 @@ function DiagnosticWorkflow({ onBackToHome }: DiagnosticWorkflowProps) {
   const [showDicomViewer, setShowDicomViewer] = useState(true);
 
   // API Base URL from environment variables
-  const API_URL = `${import.meta.env.VITE_API_URL}/api/v1`;
+  const API_URL = `${import.meta.env.VITE_API_URL || 'https://api.casewisemd.org'}/api/v1`;
 
   // Start diagnostic session
   const startDiagnosticSession = async () => {
