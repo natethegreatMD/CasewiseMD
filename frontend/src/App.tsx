@@ -105,6 +105,26 @@ function App() {
     }
   }, []);
 
+  // Handle browser back/forward button
+  useEffect(() => {
+    const handlePopState = (event: PopStateEvent) => {
+      const path = window.location.pathname;
+      if (path === '/diagnostic') {
+        setCurrentRoute('diagnostic');
+      } else {
+        setCurrentRoute('home');
+        setCurrentPage('home');
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    
+    // Cleanup
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, []);
+
   const handleCaseClick = (categoryId: string) => {
     const category = CASE_CATEGORIES.find(cat => cat.id === categoryId);
     

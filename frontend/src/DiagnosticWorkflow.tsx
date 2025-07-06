@@ -513,16 +513,7 @@ function DiagnosticWorkflow({ onBackToHome }: DiagnosticWorkflowProps) {
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', maxWidth: '1200px', margin: '0 auto', width: '100%' }}>
             <button 
               onClick={onBackToHome}
-              style={{
-                background: 'rgba(45, 55, 72, 0.6)',
-                border: '1px solid #4a5568',
-                color: '#e2e8f0',
-                padding: '0.5rem 1rem',
-                borderRadius: '6px',
-                cursor: 'pointer',
-                fontSize: '0.9rem',
-                transition: 'all 0.3s ease'
-              }}
+              className="action-btn secondary"
             >
               ← Back to Home
             </button>
@@ -535,81 +526,84 @@ function DiagnosticWorkflow({ onBackToHome }: DiagnosticWorkflowProps) {
         </header>
 
         <main className="app-main">
-          <section className="follow-up-section">
-            <div className="follow-up-header">
-              <h2>Follow-up Questions</h2>
-              <p className="follow-up-explanation">
-                Based on your responses, we've identified some areas where additional discussion could enhance your learning.
-                These questions are designed to help you think more deeply about the case.
-              </p>
-              <div className="follow-up-progress">
-                <span>Question {currentFollowUpIndex + 1} of {followUpQuestions.length}</span>
-                <div className="progress-bar">
-                  <div 
-                    className="progress-fill" 
-                    style={{ width: `${((currentFollowUpIndex + 1) / followUpQuestions.length) * 100}%` }}
-                  ></div>
-                </div>
+          <section className="follow-up-questions">
+            <h2>Follow-up Questions</h2>
+            <p className="follow-up-intro">
+              Based on your responses, we've identified some areas where additional discussion could enhance your learning.
+              These questions are designed to help you think more deeply about the case.
+            </p>
+            
+            {/* Progress Information */}
+            <div className="progress-info">
+              <span className="progress-text">
+                Question {currentFollowUpIndex + 1} of {followUpQuestions.length}
+              </span>
+              <div className="progress-bar">
+                <div 
+                  className="progress-fill" 
+                  style={{ width: `${((currentFollowUpIndex + 1) / followUpQuestions.length) * 100}%` }}
+                />
               </div>
+              <span className="progress-text">
+                {Math.round(((currentFollowUpIndex + 1) / followUpQuestions.length) * 100)}% Complete
+              </span>
             </div>
 
-            <div className="follow-up-question-card">
-              <div className="category-badge">
-                <span className="category-name">{currentFollowUp.category}</span>
-                <span className="category-score">Score: {currentFollowUp.score}%</span>
+            <div className="follow-up-question">
+              <div className="follow-up-header">
+                <span className="follow-up-category">{currentFollowUp.category}</span>
+                <span className="follow-up-score">Score: {currentFollowUp.score}%</span>
               </div>
               
-              <div className="question-content">
-                <h3>Follow-up Question</h3>
-                <p className="question-text">{currentFollowUp.question}</p>
-                
-                <div className="question-purpose">
-                  <h4>Purpose</h4>
-                  <p>{currentFollowUp.purpose}</p>
-                </div>
+              <div className="follow-up-content">
+                <p className="follow-up-question-text">{currentFollowUp.question}</p>
+                <p className="follow-up-purpose">{currentFollowUp.purpose}</p>
               </div>
             </div>
 
-            <div className="follow-up-answer-section">
-              <form onSubmit={(e) => { e.preventDefault(); submitFollowUpAnswer(); }}>
-                <div className="form-group">
-                  <label htmlFor="followup-answer">Your Reflection:</label>
-                  <textarea
-                    id="followup-answer"
-                    value={currentFollowUpAnswer}
-                    onChange={e => setCurrentFollowUpAnswer(e.target.value)}
-                    rows={4}
-                    placeholder="Take a moment to reflect on this question. Your response will help reinforce your learning..."
-                    required
-                  />
-                </div>
-                <div className="button-group">
-                  <button 
-                    type="submit" 
-                    className="submit-btn"
-                    disabled={!currentFollowUpAnswer.trim()}
-                  >
-                    {currentFollowUpIndex < followUpQuestions.length - 1 ? 'Next Question' : 'Complete Follow-up'}
-                  </button>
-                  <button 
-                    type="button" 
-                    className="skip-btn"
-                    onClick={skipFollowUps}
-                  >
-                    Skip Follow-up Questions
-                  </button>
-                </div>
-              </form>
+            {/* Answer Input */}
+            <div className="answer-input">
+              <label htmlFor="followup-answer">Your Reflection:</label>
+              <textarea
+                id="followup-answer"
+                value={currentFollowUpAnswer}
+                onChange={e => setCurrentFollowUpAnswer(e.target.value)}
+                placeholder="Take a moment to reflect on this question. Your response will help reinforce your learning..."
+              />
+            </div>
+
+            {/* Action Buttons */}
+            <div className="action-buttons">
+              <button 
+                onClick={submitFollowUpAnswer}
+                className="action-btn primary"
+                disabled={!currentFollowUpAnswer.trim()}
+              >
+                {currentFollowUpIndex < followUpQuestions.length - 1 ? 'Next Question' : 'Complete Follow-up'}
+              </button>
+              <button 
+                onClick={skipFollowUps}
+                className="action-btn secondary"
+              >
+                Skip Follow-up Questions
+              </button>
             </div>
 
             {/* Previous follow-up answers */}
             {Object.keys(followUpAnswers).length > 0 && (
-              <div className="previous-followups">
+              <div className="previous-followups" style={{ marginTop: '2rem' }}>
                 <h3>Your Previous Reflections</h3>
                 <div className="followup-answers-list">
                   {Object.entries(followUpAnswers).map(([index, answer]) => (
-                    <div key={index} className="previous-followup">
-                      <strong>{followUpQuestions[parseInt(index)].category}:</strong> {answer}
+                    <div key={index} className="previous-followup" style={{ 
+                      padding: '1rem', 
+                      background: 'rgba(45, 55, 72, 0.6)', 
+                      border: '1px solid #4a5568',
+                      borderRadius: '8px',
+                      marginBottom: '1rem'
+                    }}>
+                      <strong style={{ color: '#f7fafc' }}>{followUpQuestions[parseInt(index)].category}:</strong> 
+                      <p style={{ color: '#e2e8f0', marginTop: '0.5rem' }}>{answer}</p>
                     </div>
                   ))}
                 </div>
@@ -628,16 +622,7 @@ function DiagnosticWorkflow({ onBackToHome }: DiagnosticWorkflowProps) {
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', maxWidth: '1200px', margin: '0 auto', width: '100%' }}>
             <button 
               onClick={onBackToHome}
-              style={{
-                background: 'rgba(45, 55, 72, 0.6)',
-                border: '1px solid #4a5568',
-                color: '#e2e8f0',
-                padding: '0.5rem 1rem',
-                borderRadius: '6px',
-                cursor: 'pointer',
-                fontSize: '0.9rem',
-                transition: 'all 0.3s ease'
-              }}
+              className="action-btn secondary"
             >
               ← Back to Home
             </button>
@@ -684,7 +669,7 @@ function DiagnosticWorkflow({ onBackToHome }: DiagnosticWorkflowProps) {
           </section>
 
           {/* Final Results */}
-          <section className="grading-results">
+          <section className="results-section">
             <h2>Diagnostic Workflow Complete!</h2>
             
             {/* Show follow-up completion message if they were answered */}
@@ -727,7 +712,7 @@ function DiagnosticWorkflow({ onBackToHome }: DiagnosticWorkflowProps) {
             </div>
 
             {/* Strengths and Areas for Improvement */}
-            <div className="feedback-grid">
+            <div className="strengths-improvements">
               <div className="strengths">
                 <h4>Strengths</h4>
                 <ul>
@@ -749,7 +734,7 @@ function DiagnosticWorkflow({ onBackToHome }: DiagnosticWorkflowProps) {
             {/* Category Results */}
             <div className="category-results">
               <h3>Detailed Category Results</h3>
-              <div className="categories-grid">
+              <div className="category-list">
                 {gradingResult.category_results.map((cat: any, i: number) => (
                   <div key={i} className="category-card">
                     <div className="category-header">
@@ -801,38 +786,13 @@ function DiagnosticWorkflow({ onBackToHome }: DiagnosticWorkflowProps) {
                           {gradingResult.followup_evaluation.updated_assessment.original_score}%
                         </div>
                       </div>
-                      <div className="score-arrow">→</div>
                       <div className="score-after">
-                        <h4>Updated Score</h4>
-                        <div className="score-display improved">
+                        <h4>After Follow-up</h4>
+                        <div className="score-display">
                           {gradingResult.followup_evaluation.updated_assessment.updated_score}%
                         </div>
-                        {gradingResult.followup_evaluation.updated_assessment.improvement_bonus > 0 && (
-                          <div className="improvement-bonus">
-                            +{gradingResult.followup_evaluation.updated_assessment.improvement_bonus} bonus
-                          </div>
-                        )}
                       </div>
                     </div>
-                    
-                    <div className="learning-trajectory">
-                      <span className="trajectory-label">Learning Progress:</span>
-                      <span className={`trajectory-value ${gradingResult.followup_evaluation.updated_assessment.learning_trajectory}`}>
-                        {gradingResult.followup_evaluation.updated_assessment.learning_trajectory.replace('_', ' ').toUpperCase()}
-                      </span>
-                    </div>
-                    
-                    <div className="recommendation">
-                      <strong>Recommendation:</strong> {gradingResult.followup_evaluation.updated_assessment.recommendation}
-                    </div>
-                  </div>
-                )}
-
-                {/* Overall Follow-up Feedback */}
-                {gradingResult.followup_evaluation.overall_followup_feedback && (
-                  <div className="overall-followup-feedback">
-                    <h4>Overall Reflection Assessment</h4>
-                    <p>{gradingResult.followup_evaluation.overall_followup_feedback}</p>
                   </div>
                 )}
 
@@ -892,7 +852,7 @@ function DiagnosticWorkflow({ onBackToHome }: DiagnosticWorkflowProps) {
 
                 {/* Learning Improvement Metrics */}
                 {gradingResult.followup_evaluation.learning_improvement && (
-                  <div className="learning-improvement-metrics">
+                  <div className="learning-improvement">
                     <h4>Learning Metrics</h4>
                     <div className="metrics-grid">
                       <div className="metric-item">
@@ -937,7 +897,7 @@ function DiagnosticWorkflow({ onBackToHome }: DiagnosticWorkflowProps) {
                         <p className="follow-up-question-text">{fq.question}</p>
                         <p className="follow-up-purpose">{fq.purpose}</p>
                         {followUpAnswers[i] && (
-                          <div className="followup-user-answer">
+                          <div className="follow-up-answer">
                             <strong>Your reflection:</strong> {followUpAnswers[i]}
                           </div>
                         )}
@@ -950,7 +910,7 @@ function DiagnosticWorkflow({ onBackToHome }: DiagnosticWorkflowProps) {
 
             {/* Restart Button */}
             <div className="restart-section">
-              <button onClick={startDiagnosticSession} className="restart-btn">
+              <button onClick={startDiagnosticSession} className="action-btn primary">
                 Start New Diagnostic Session
               </button>
             </div>
@@ -967,16 +927,7 @@ function DiagnosticWorkflow({ onBackToHome }: DiagnosticWorkflowProps) {
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', maxWidth: '1200px', margin: '0 auto', width: '100%' }}>
             <button 
               onClick={onBackToHome}
-              style={{
-                background: 'rgba(45, 55, 72, 0.6)',
-                border: '1px solid #4a5568',
-                color: '#e2e8f0',
-                padding: '0.5rem 1rem',
-                borderRadius: '6px',
-                cursor: 'pointer',
-                fontSize: '0.9rem',
-                transition: 'all 0.3s ease'
-              }}
+              className="action-btn secondary"
             >
               ← Back to Home
             </button>
@@ -1023,37 +974,32 @@ function DiagnosticWorkflow({ onBackToHome }: DiagnosticWorkflowProps) {
           </section>
 
           {/* Medical Image Viewer - Full Width */}
-          <div className="viewer-section" style={{ marginBottom: '2rem' }}>
-            <div className="viewer-header">
+          <section className="medical-image-viewer">
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
               <h3>Medical Image Viewer</h3>
               <button 
                 onClick={() => setShowDicomViewer(!showDicomViewer)}
-                className="toggle-viewer-btn"
+                className="action-btn secondary"
               >
                 {showDicomViewer ? 'Hide Image Viewer' : 'Show Image Viewer'}
               </button>
             </div>
             {showDicomViewer && (
-              <Suspense fallback={
-                <div style={{ 
-                  padding: '2rem', 
-                  textAlign: 'center', 
-                  background: 'rgba(26, 32, 44, 0.8)', 
-                  border: '1px solid #2d3748', 
-                  borderRadius: '8px',
-                  color: '#a0aec0'
-                }}>
-                  <div className="loading-spinner"></div>
-                  <p>Loading medical image viewer...</p>
-                </div>
-              }>
-                <OhifIframeViewer 
-                  caseId="case001" 
-                  viewerUrl={viewerUrl || undefined}
-                />
-              </Suspense>
+              <div className="viewer-container">
+                <Suspense fallback={
+                  <div className="loading-container">
+                    <div className="loading-spinner"></div>
+                    <p>Loading medical image viewer...</p>
+                  </div>
+                }>
+                  <OhifIframeViewer 
+                    caseId="case001" 
+                    viewerUrl={viewerUrl || undefined}
+                  />
+                </Suspense>
+              </div>
             )}
-          </div>
+          </section>
 
           {/* Start Session Button */}
           <div className="start-session-section">
@@ -1076,16 +1022,7 @@ function DiagnosticWorkflow({ onBackToHome }: DiagnosticWorkflowProps) {
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', maxWidth: '1200px', margin: '0 auto', width: '100%' }}>
           <button 
             onClick={onBackToHome}
-            style={{
-              background: 'rgba(45, 55, 72, 0.6)',
-              border: '1px solid #4a5568',
-              color: '#e2e8f0',
-              padding: '0.5rem 1rem',
-              borderRadius: '6px',
-              cursor: 'pointer',
-              fontSize: '0.9rem',
-              transition: 'all 0.3s ease'
-            }}
+            className="action-btn secondary"
           >
             ← Back to Home
           </button>
@@ -1132,153 +1069,148 @@ function DiagnosticWorkflow({ onBackToHome }: DiagnosticWorkflowProps) {
         </section>
 
         {/* Medical Image Viewer - Full Width */}
-        <div className="viewer-section" style={{ marginBottom: '2rem' }}>
-          <div className="viewer-header">
+        <section className="medical-image-viewer">
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
             <h3>Medical Image Viewer</h3>
             <button 
               onClick={() => setShowDicomViewer(!showDicomViewer)}
-              className="toggle-viewer-btn"
+              className="action-btn secondary"
             >
               {showDicomViewer ? 'Hide Image Viewer' : 'Show Image Viewer'}
             </button>
           </div>
           {showDicomViewer && (
-            <Suspense fallback={
-              <div style={{ 
-                padding: '2rem', 
-                textAlign: 'center', 
-                background: 'rgba(26, 32, 44, 0.8)', 
-                border: '1px solid #2d3748', 
-                borderRadius: '8px',
-                color: '#a0aec0'
-              }}>
-                <div className="loading-spinner"></div>
-                <p>Loading medical image viewer...</p>
-              </div>
-            }>
-              <OhifIframeViewer 
-                caseId="case001" 
-                viewerUrl={viewerUrl || undefined}
-              />
-            </Suspense>
+            <div className="viewer-container">
+              <Suspense fallback={
+                <div className="loading-container">
+                  <div className="loading-spinner"></div>
+                  <p>Loading medical image viewer...</p>
+                </div>
+              }>
+                <OhifIframeViewer 
+                  caseId="case001" 
+                  viewerUrl={viewerUrl || undefined}
+                />
+              </Suspense>
+            </div>
           )}
-        </div>
+        </section>
 
         {/* Diagnostic Questions */}
-        <div className="diagnostic-section">
+        <section className="diagnostic-session">
+          <h2>Diagnostic Workflow</h2>
+          
+          {/* Progress Information */}
+          <div className="progress-info">
+            <span className="progress-text">
+              Question {session.current_step} of {session.total_steps}
+            </span>
+            <div className="progress-bar">
+              <div 
+                className="progress-fill" 
+                style={{ width: `${(session.current_step / session.total_steps) * 100}%` }}
+              />
+            </div>
+            <span className="progress-text">
+              {Math.round((session.current_step / session.total_steps) * 100)}% Complete
+            </span>
+          </div>
+
           {/* Current Question */}
-          <section className="question-section">
-            <div className="question-context">
+          <div className="question-section">
+            <div className="context-section">
               <h3>Context</h3>
               <p>{session.current_question.context}</p>
             </div>
             
             <div className="question-content">
               <h3>Question {session.current_question.step}</h3>
-              <p className="question-text">{session.current_question.question}</p>
+              <p>{session.current_question.question}</p>
               
-              <div className="question-hint">
-                <button
-                  type="button"
-                  className="hint-toggle-btn"
-                  onClick={() => setShowHint((v) => !v)}
-                  aria-expanded={showHint}
-                  style={{
-                    background: 'none',
-                    border: 'none',
-                    color: '#ecc94b',
-                    fontWeight: 600,
-                    cursor: 'pointer',
-                    fontSize: '1rem',
-                    padding: 0,
-                    marginBottom: showHint ? '0.5rem' : 0
-                  }}
-                >
-                  {showHint ? 'Hide Hint' : 'Show Hint'}
-                </button>
-                {showHint && (
-                  <div className="hint-text" style={{ marginTop: '0.5rem', color: '#ecc94b' }}>
-                    {session.current_question.hint}
-                  </div>
-                )}
-              </div>
+              <button
+                type="button"
+                className="show-hint"
+                onClick={() => setShowHint((v) => !v)}
+                aria-expanded={showHint}
+              >
+                {showHint ? 'Hide Hint' : 'Show Hint'}
+              </button>
+              {showHint && (
+                <div className="hint">
+                  {session.current_question.hint}
+                </div>
+              )}
             </div>
-          </section>
+          </div>
 
           {/* Answer Form */}
-          <section className="answer-section">
-            <form onSubmit={(e) => { e.preventDefault(); submitAnswer(); }}>
-              <div className="form-group">
-                <label htmlFor="answer">Your Answer:</label>
-                <textarea
-                  id="answer"
-                  value={currentAnswer}
-                  onChange={e => setCurrentAnswer(e.target.value)}
-                  rows={6}
-                  placeholder="Enter your detailed answer here..."
-                  required
-                  disabled={loading}
-                />
-              </div>
-              <div className="answer-buttons">
-                <button type="submit" className="submit-btn" disabled={loading || !currentAnswer.trim()}>
-                  {loading ? 'Submitting...' : 'Submit Answer & Continue'}
-                </button>
-                <button 
-                  type="button" 
-                  className="skip-btn" 
-                  onClick={() => {
-                    if (window.confirm('Are you sure you want to skip this question? Skipped questions will receive a score of 0.')) {
-                      skipQuestion();
-                    }
-                  }}
-                  disabled={loading}
-                >
-                  Skip Question
-                </button>
-              </div>
-            </form>
-          </section>
+          <div className="answer-input">
+            <label htmlFor="answer">Your Answer:</label>
+            <textarea
+              id="answer"
+              value={currentAnswer}
+              onChange={e => setCurrentAnswer(e.target.value)}
+              placeholder="Enter your detailed answer here..."
+              disabled={loading}
+            />
+          </div>
+
+          {/* Action Buttons */}
+          <div className="action-buttons">
+            <button 
+              onClick={submitAnswer}
+              className="action-btn primary" 
+              disabled={loading || !currentAnswer.trim()}
+            >
+              {loading ? 'Submitting...' : 'Submit Answer & Continue'}
+            </button>
+            <button 
+              onClick={() => {
+                if (window.confirm('Are you sure you want to skip this question? Skipped questions will receive a score of 0.')) {
+                  skipQuestion();
+                }
+              }}
+              className="action-btn secondary"
+              disabled={loading}
+            >
+              Skip Question
+            </button>
+          </div>
 
           {/* Previous Answers */}
           {Object.keys(session.answers).length > 0 && (
-            <section className="previous-answers">
+            <div className="previous-answers" style={{ marginTop: '2rem' }}>
               <h3>Your Previous Answers</h3>
               <div className="answers-list">
                 {Object.entries(session.answers).map(([step, answer], idx) => (
-                  <div className="previous-answer" key={idx}>
-                    <strong>Question {idx + 1}:</strong> 
+                  <div className="previous-answer" key={idx} style={{ 
+                    padding: '1rem', 
+                    background: 'rgba(45, 55, 72, 0.6)', 
+                    border: '1px solid #4a5568',
+                    borderRadius: '8px',
+                    marginBottom: '1rem'
+                  }}>
+                    <strong style={{ color: '#f7fafc' }}>Question {idx + 1}:</strong> 
                     {answer === "[SKIPPED]" ? (
-                      <div className="skipped-answer">
+                      <div style={{ color: '#fbb6ce', fontStyle: 'italic' }}>
                         <em>Question was skipped</em>
                       </div>
                     ) : (
-                      answer
+                      <p style={{ color: '#e2e8f0', marginTop: '0.5rem' }}>{answer}</p>
                     )}
                   </div>
                 ))}
               </div>
-            </section>
+            </div>
           )}
-        </div>
+        </section>
 
-        {/* Simple Question Counter at Bottom */}
-        <div style={{ 
-          textAlign: 'center', 
-          padding: '1rem', 
-          color: '#a0aec0', 
-          fontSize: '0.9rem',
-          borderTop: '1px solid #2d3748',
-          marginTop: '2rem'
-        }}>
-          <div className="progress-bar">
-            <div className="progress-fill" style={{ width: `${(session.current_step / session.total_steps) * 100}%` }}></div>
+        {/* Error Messages */}
+        {error && (
+          <div className="error-message">
+            {error}
           </div>
-          
-          <div className="progress-text">
-            Question {session.current_step} of {session.total_steps}
-          </div>
-        </div>
+        )}
       </main>
     </div>
   );
