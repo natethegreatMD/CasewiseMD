@@ -45,7 +45,8 @@ class ViewerTools:
                 }
             
             # Generate case-specific OHIF URL with DICOMweb server configuration
-            viewer_url = f"{self.ohif_base_url}?StudyInstanceUIDs={study_instance_uid}&url={self.dicomweb_endpoint}"
+            # Use the correct OHIF parameter names: datasource instead of url
+            viewer_url = f"{self.ohif_base_url}?StudyInstanceUIDs={study_instance_uid}&datasource={self.dicomweb_endpoint}"
             
             return {
                 "success": True,
