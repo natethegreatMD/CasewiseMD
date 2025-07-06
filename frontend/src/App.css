@@ -108,8 +108,6 @@ body {
 .app-main {
   flex: 1;
   padding: 2rem;
-  max-width: 1400px;
-  margin: 0 auto;
   width: 100%;
 }
 
@@ -1725,5 +1723,140 @@ body {
   .metrics-grid {
     grid-template-columns: 1fr;
   }
+}
+
+/* Quick Actions Section */
+.quick-actions {
+  margin-bottom: 4rem;
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.quick-actions h2 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 3rem;
+  color: #f7fafc;
+}
+
+.actions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+}
+
+.action-btn {
+  background: rgba(26, 32, 44, 0.8);
+  border: 1px solid #2d3748;
+  border-radius: 12px;
+  padding: 2rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  text-decoration: none;
+  color: #e2e8f0;
+}
+
+.action-btn:hover:not(.disabled) {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+  border-color: #4299e1;
+}
+
+.action-btn.primary {
+  background: rgba(66, 153, 225, 0.2);
+  border-color: #4299e1;
+}
+
+.action-btn.featured {
+  background: linear-gradient(135deg, rgba(66, 153, 225, 0.3), rgba(159, 122, 234, 0.3));
+  border-color: #4299e1;
+}
+
+.action-btn.disabled {
+  background: rgba(26, 32, 44, 0.4);
+  border-color: #2d3748;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.action-btn.disabled:hover {
+  transform: none;
+  box-shadow: none;
+  border-color: #2d3748;
+}
+
+.action-icon {
+  font-size: 3rem;
+  margin-bottom: 0.5rem;
+}
+
+.action-title {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #f7fafc;
+}
+
+.action-subtitle {
+  font-size: 1rem;
+  color: #a0aec0;
+}
+
+.coming-soon-text {
+  font-size: 0.9rem;
+  color: #f56565;
+  font-weight: 500;
+}
+
+/* Start Session Section */
+.start-session-section {
+  text-align: center;
+  padding: 3rem 2rem;
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.start-session-btn {
+  background: #4299e1;
+  color: white;
+  border: none;
+  padding: 1rem 3rem;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 200px;
+}
+
+.start-session-btn:hover:not(:disabled) {
+  background: #3182ce;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(66, 153, 225, 0.3);
+}
+
+.start-session-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Additional missing styles */
+.previous-answers h3 {
+  color: #f7fafc;
+  margin-bottom: 1rem;
+}
+
+.answers-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
