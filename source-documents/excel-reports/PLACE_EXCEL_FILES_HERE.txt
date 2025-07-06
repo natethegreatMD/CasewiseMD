@@ -6,12 +6,4 @@ Example files:
 - mri-brain-cases.xlsx
 - ct-abdomen-cases.xlsx
 
-Place your Excel files containing case reports here.
-
-Example files:
-- TCGA-case-reports.xlsx
-- chest-xray-cases.xlsx
-- mri-brain-cases.xlsx
-- ct-abdomen-cases.xlsx
-
 The AI can read these files to generate rubrics based on the case data and criteria contained within. 
