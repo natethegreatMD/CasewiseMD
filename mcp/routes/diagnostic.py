@@ -5,7 +5,7 @@ Diagnostic agent routes
 import json
 from pathlib import Path
 from fastapi import APIRouter, HTTPException, Query
-from typing import Dict, Any, Optional
+from typing import Dict, Any, Optional, List
 
 router = APIRouter()
 
@@ -38,45 +38,90 @@ def read_case_report(case_id: str) -> Optional[str]:
     
     return None
 
-def generate_case_questions(case_id: str, metadata: Dict[str, Any], report: Optional[str] = None) -> list:
-    """Generate diagnostic questions based on case metadata"""
-    modality = metadata.get("modality", "unknown").upper()
-    patient_id = metadata.get("patient_id", "unknown")
+def read_case_questions(case_id: str) -> List[Dict[str, Any]]:
+    """Read structured questions from questions.json for a specific case"""
+    questions_path = DEMO_CASES_PATH / case_id / "questions.json"
+    
+    if questions_path.exists():
+        try:
+            with open(questions_path, 'r') as f:
+                questions_data = json.load(f)
+                return questions_data.get("core_questions", [])
+        except json.JSONDecodeError:
+            # Fall back to generated questions if JSON is invalid
+            pass
+        except Exception:
+            # Fall back to generated questions if file can't be read
+            pass
+    
+    # Fallback to generated questions if no questions.json file
+    return generate_fallback_questions(case_id)
+
+def generate_fallback_questions(case_id: str) -> List[Dict[str, Any]]:
+    """Generate fallback questions when questions.json is not available"""
     
     questions = [
         {
             "step": 1,
-            "question": f"Based on the {modality} imaging provided, what are your key imaging findings?",
+            "rubric_category": "Image Interpretation",
+            "question": "Based on the imaging provided, what are your key imaging findings?",
             "type": "free_text",
-            "context": f"Patient ID: {patient_id}. Review the {modality} images and describe the significant findings.",
+            "context": "Review the images and describe the significant findings.",
+            "hint": "Look for abnormal densities, masses, fluid collections, or structural changes. Use systematic approach to image interpretation.",
             "options": None
         },
         {
             "step": 2,
+            "rubric_category": "Differential Diagnosis",
             "question": "What is your differential diagnosis based on the imaging findings?",
             "type": "free_text",
             "context": "Provide a ranked differential diagnosis with your most likely diagnosis first.",
+            "hint": "Consider the patient demographics, location of findings, imaging characteristics, and clinical context. List 3-5 differential diagnoses in order of likelihood.",
             "options": None
         },
         {
             "step": 3,
-            "question": "What is your most likely diagnosis?",
+            "rubric_category": "Clinical Correlation",
+            "question": "How do these findings correlate with the likely clinical presentation?",
             "type": "free_text",
-            "context": "Based on your imaging interpretation, what is the most likely diagnosis?",
+            "context": "Consider the clinical significance and correlation of your imaging findings.",
+            "hint": "Think about symptoms, clinical presentation, and the urgency of your findings.",
             "options": None
         },
         {
             "step": 4,
+            "rubric_category": "Management Recommendations",
             "question": "What additional workup or follow-up would you recommend?",
             "type": "free_text",
             "context": "Consider any additional imaging, laboratory tests, or clinical follow-up that would be appropriate.",
+            "hint": "Think about confirmatory tests, staging studies, laboratory values, or specialized imaging that would help confirm your diagnosis or guide treatment planning.",
             "options": None
         },
         {
             "step": 5,
-            "question": "What is the clinical significance of your findings?",
+            "rubric_category": "Communication & Organization",
+            "question": "Provide a structured summary of your findings for the referring physician.",
             "type": "free_text",
-            "context": "Discuss the clinical implications and urgency of your findings.",
+            "context": "Organize your findings clearly and professionally as you would in a radiology report.",
+            "hint": "Structure: Brief clinical context, key findings, impression, recommendations. Use clear, professional language.",
+            "options": None
+        },
+        {
+            "step": 6,
+            "rubric_category": "Professional Judgment",
+            "question": "Are there any critical findings that require urgent communication?",
+            "type": "free_text",
+            "context": "Consider the urgency and professional responsibilities related to your findings.",
+            "hint": "Think about what constitutes a critical finding and how you would handle urgent communication.",
+            "options": None
+        },
+        {
+            "step": 7,
+            "rubric_category": "Safety Considerations",
+            "question": "Comment on the imaging technique and any safety considerations.",
+            "type": "free_text",
+            "context": "Consider radiation safety, contrast use, and appropriateness of imaging approach.",
+            "hint": "Think about radiation dose, contrast considerations, alternative imaging modalities, and safety protocols.",
             "options": None
         }
     ]
@@ -87,7 +132,7 @@ def generate_case_questions(case_id: str, metadata: Dict[str, Any], report: Opti
 async def get_diagnostic_session(case_id: str = Query(default="case001", description="Case ID for diagnostic session")):
     """
     Start a new diagnostic session for a specific case
-    Reads from real case data in demo_cases directory
+    Reads from real case data and structured questions in demo_cases directory
     """
     try:
         # Read case metadata
@@ -96,15 +141,17 @@ async def get_diagnostic_session(case_id: str = Query(default="case001", descrip
         # Read case report if available
         report = read_case_report(case_id)
         
-        # Generate questions for this case
-        questions = generate_case_questions(case_id, metadata, report)
+        # Load structured questions for this case
+        questions = read_case_questions(case_id)
         
         # Get first question
         first_question = questions[0] if questions else {
             "step": 1,
+            "rubric_category": "Image Interpretation",
             "question": "What is your assessment of this case?",
             "type": "free_text",
             "context": "Please provide your clinical assessment.",
+            "hint": "Use a systematic approach to evaluate the imaging findings.",
             "options": None
         }
         
@@ -125,6 +172,7 @@ async def get_diagnostic_session(case_id: str = Query(default="case001", descrip
             },
             "current_question": first_question,
             "all_questions": questions,  # Include all questions for frontend reference
+            "rubric_aligned": True,  # Indicate this uses structured rubric-aligned questions
             "progress": {
                 "completed_steps": 0,
                 "current_step": 1,
@@ -132,8 +180,9 @@ async def get_diagnostic_session(case_id: str = Query(default="case001", descrip
                 "percentage": 0
             },
             "metadata": {
-                "agent_version": "1.0.0",
+                "agent_version": "2.0.0",
                 "case_source": "filesystem",
+                "questions_source": "structured" if len(questions) == 7 else "fallback",
                 "rubric_id": metadata.get("rubric_id", f"rubric-{case_id}")
             }
         }
@@ -158,7 +207,7 @@ async def submit_diagnostic_answer(answer_data: Dict[str, Any]):
         
         # Read case metadata to get question count
         metadata = read_case_metadata(case_id)
-        questions = generate_case_questions(case_id, metadata)
+        questions = read_case_questions(case_id)
         
         # Update answers with current response
         updated_answers = previous_answers.copy()
@@ -184,7 +233,8 @@ async def submit_diagnostic_answer(answer_data: Dict[str, Any]):
             "answers": updated_answers,  # Include all answers so far
             "feedback": {
                 "message": f"Answer for step {current_step} received and processed",
-                "acknowledgment": "Thank you for your response. Your answer has been recorded."
+                "acknowledgment": "Thank you for your response. Your answer has been recorded.",
+                "rubric_category": questions[current_step - 1].get("rubric_category", "Unknown") if current_step <= len(questions) else None
             }
         }
         

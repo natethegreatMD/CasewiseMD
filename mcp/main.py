@@ -3,10 +3,15 @@ MCP-style FastAPI backend for CaseWise
 Multi-Agent routing architecture
 """
 
+import os
+from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from .routes import diagnostic, grade, config
+
+# Load environment variables from .env file
+load_dotenv()
 
 # Create FastAPI app
 app = FastAPI(
@@ -39,7 +44,8 @@ async def root():
     return {
         "message": "CaseWise MCP Backend",
         "version": "1.0.0",
-        "status": "active"
+        "status": "active",
+        "ai_grading_enabled": os.getenv("AI_GRADING_ENABLED", "true").lower() == "true"
     }
 
 # Health check endpoint
@@ -48,5 +54,6 @@ async def health_check():
     return {
         "status": "healthy",
         "service": "mcp-backend",
-        "agents": ["diagnostic", "grade", "config"]
+        "agents": ["diagnostic", "grade", "config"],
+        "ai_grading_status": "enabled" if os.getenv("AI_GRADING_ENABLED", "true").lower() == "true" else "disabled"
     } 

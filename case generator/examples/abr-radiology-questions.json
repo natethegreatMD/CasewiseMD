@@ -1,0 +1,195 @@
+{
+  "case_id": "example_abr_case",
+  "version": "2.0",
+  "rubric_alignment": "abr_radiology_standard",
+  "description": "Standard ABR-style oral board examination questions",
+  "question_style": "abr_oral_board",
+  "core_questions": [
+    {
+      "step": 1,
+      "rubric_category": "Image Interpretation",
+      "question": "Based on the imaging provided, systematically describe the key imaging findings. Please use a structured approach and include all relevant anatomical regions.",
+      "type": "free_text",
+      "context": "Review all available images systematically. Describe what you see in anatomical terms.",
+      "hint": "Use a systematic approach: start with technique, then evaluate each anatomical region methodically. Look for masses, fluid collections, enhancement patterns, and any associated findings.",
+      "focus_areas": [
+        "systematic evaluation",
+        "anatomical accuracy",
+        "imaging terminology",
+        "completeness"
+      ],
+      "difficulty": "intermediate",
+      "expected_elements": [
+        "Systematic approach",
+        "Accurate anatomical description",
+        "Appropriate imaging terminology",
+        "Identification of key findings"
+      ]
+    },
+    {
+      "step": 2,
+      "rubric_category": "Differential Diagnosis",
+      "question": "What is your differential diagnosis for these imaging findings? List your top 3-4 considerations in order of likelihood and provide brief reasoning for each.",
+      "type": "free_text",
+      "context": "Consider patient demographics, imaging characteristics, and clinical context when formulating your differential.",
+      "hint": "Think about the most common causes first, then consider less common but important diagnoses. Consider patient age, location of findings, and imaging characteristics.",
+      "focus_areas": [
+        "logical prioritization",
+        "clinical reasoning",
+        "comprehensive differential",
+        "evidence-based thinking"
+      ],
+      "difficulty": "intermediate",
+      "expected_elements": [
+        "3-4 differential diagnoses",
+        "Logical prioritization",
+        "Brief reasoning for each",
+        "Consideration of clinical context"
+      ]
+    },
+    {
+      "step": 3,
+      "rubric_category": "Clinical Correlation",
+      "question": "How do these imaging findings correlate with the likely clinical presentation? What symptoms would you expect, and what is the clinical significance of your findings?",
+      "type": "free_text",
+      "context": "Consider how the pathology you've identified would typically present clinically and its implications for patient care.",
+      "hint": "Think about the natural history of the suspected condition, typical symptoms, and the urgency of the findings.",
+      "focus_areas": [
+        "symptom correlation",
+        "clinical significance",
+        "urgency assessment",
+        "prognosis implications"
+      ],
+      "difficulty": "intermediate",
+      "expected_elements": [
+        "Expected clinical presentation",
+        "Symptom correlation",
+        "Clinical significance",
+        "Urgency assessment"
+      ]
+    },
+    {
+      "step": 4,
+      "rubric_category": "Management Recommendations",
+      "question": "What are your recommendations for further workup and management? Include any additional imaging, laboratory tests, and specialist referrals you would recommend.",
+      "type": "free_text",
+      "context": "Consider the comprehensive workup needed based on your differential diagnosis and clinical correlation.",
+      "hint": "Think about confirmatory tests, staging studies, laboratory values, or specialized imaging that would help confirm your diagnosis or guide treatment planning.",
+      "focus_areas": [
+        "additional workup",
+        "specialist referrals",
+        "treatment planning",
+        "follow-up strategy"
+      ],
+      "difficulty": "intermediate",
+      "expected_elements": [
+        "Additional imaging recommendations",
+        "Laboratory tests",
+        "Specialist referrals",
+        "Treatment considerations"
+      ]
+    },
+    {
+      "step": 5,
+      "rubric_category": "Communication & Organization",
+      "question": "Provide a concise, structured radiology report summary that you would communicate to the referring physician. Organize your findings clearly and include your impression and recommendations.",
+      "type": "free_text",
+      "context": "Write as if communicating findings to a clinician who needs to make patient care decisions.",
+      "hint": "Structure: Brief clinical context, key findings, impression, recommendations. Use clear, professional language appropriate for medical communication.",
+      "focus_areas": [
+        "structured presentation",
+        "professional communication",
+        "clear organization",
+        "appropriate terminology"
+      ],
+      "difficulty": "intermediate",
+      "expected_elements": [
+        "Structured format",
+        "Professional language",
+        "Clear impression",
+        "Actionable recommendations"
+      ]
+    },
+    {
+      "step": 6,
+      "rubric_category": "Professional Judgment",
+      "question": "Are there any critical or urgent findings that require immediate communication? How would you handle the communication of these results, and what ethical considerations are relevant?",
+      "type": "free_text",
+      "context": "Consider the urgency of your findings and your professional responsibilities as a radiologist.",
+      "hint": "Think about what constitutes a critical finding, communication protocols, patient welfare, and the ethical obligation to ensure timely follow-up.",
+      "focus_areas": [
+        "critical finding recognition",
+        "communication urgency",
+        "ethical considerations",
+        "professional responsibility"
+      ],
+      "difficulty": "advanced",
+      "expected_elements": [
+        "Critical finding recognition",
+        "Communication protocol",
+        "Ethical awareness",
+        "Professional responsibility"
+      ]
+    }
+  ],
+  "total_questions": 6,
+  "estimated_time_minutes": 25,
+  "difficulty_level": "intermediate",
+  "question_types": {
+    "free_text": "Open-ended response",
+    "multiple_choice": "Select from options",
+    "ranking": "Rank options in order",
+    "short_answer": "Brief specific response",
+    "case_presentation": "Structured case presentation"
+  },
+  "educational_notes": {
+    "purpose": "Comprehensive evaluation aligned with ABR oral board examination structure",
+    "focus": "Systematic evaluation with emphasis on professional communication and clinical judgment",
+    "learning_objectives": [
+      "Systematic interpretation of imaging findings",
+      "Appropriate differential diagnosis formulation",
+      "Understanding of clinical correlation",
+      "Professional communication skills",
+      "Recognition of critical findings and ethical responsibilities"
+    ],
+    "prerequisite_knowledge": [
+      "Basic radiology interpretation skills",
+      "Understanding of relevant anatomy",
+      "Knowledge of common pathology"
+    ]
+  },
+  "case_specific_guidance": {
+    "key_imaging_features": [
+      "Primary pathological finding",
+      "Secondary findings",
+      "Technical factors"
+    ],
+    "differential_considerations": [
+      "Most common diagnosis",
+      "Important alternatives",
+      "Excluded diagnoses"
+    ],
+    "clinical_pearls": [
+      "Always correlate with clinical presentation",
+      "Consider patient demographics",
+      "Communicate critical findings promptly"
+    ]
+  },
+  "follow_up_question_seeds": {
+    "weak_image_interpretation": [
+      "Can you describe the specific imaging characteristics that led to your assessment?",
+      "What systematic approach did you use to evaluate the images?"
+    ],
+    "weak_differential": [
+      "What specific imaging features helped you prioritize your differential diagnosis?",
+      "Are there any other conditions you should consider given the patient's presentation?"
+    ],
+    "weak_clinical_correlation": [
+      "How would you expect this patient to present clinically?",
+      "What is the prognostic significance of the findings you described?"
+    ]
+  },
+  "created_by": "System Template",
+  "created_date": "2024-12-25",
+  "last_modified": "2024-12-25"
+} 

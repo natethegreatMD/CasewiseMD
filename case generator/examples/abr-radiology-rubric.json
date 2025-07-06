@@ -1,0 +1,156 @@
+{
+  "rubric_id": "abr_radiology_standard",
+  "version": "2.0",
+  "case_type": "radiology_oral_board",
+  "specialty": "diagnostic_radiology",
+  "difficulty": "intermediate",
+  "description": "Standard ABR-style oral board examination rubric for diagnostic radiology",
+  "total_weight": 100,
+  "passing_score": 70,
+  "categories": {
+    "Image Interpretation": {
+      "weight": 35,
+      "description": "Systematic evaluation of imaging findings",
+      "criteria": [
+        "Accurate identification of key imaging findings",
+        "Systematic approach to image interpretation",
+        "Appropriate use of imaging terminology",
+        "Recognition of normal vs abnormal findings"
+      ],
+      "key_findings": [
+        "Primary pathology",
+        "Secondary findings",
+        "Anatomical variants"
+      ],
+      "scoring_guide": {
+        "excellent": "Comprehensive, systematic interpretation with accurate identification of all key findings",
+        "good": "Mostly accurate interpretation with minor omissions",
+        "needs_improvement": "Incomplete or inaccurate interpretation with significant gaps"
+      }
+    },
+    "Differential Diagnosis": {
+      "weight": 25,
+      "description": "Appropriate differential diagnosis formulation",
+      "criteria": [
+        "Comprehensive differential diagnosis list",
+        "Logical prioritization of diagnoses",
+        "Consideration of clinical context",
+        "Appropriate reasoning for differential"
+      ],
+      "key_findings": [
+        "Primary diagnosis",
+        "Alternative diagnoses",
+        "Excluded diagnoses"
+      ],
+      "scoring_guide": {
+        "excellent": "Comprehensive differential with logical prioritization and sound reasoning",
+        "good": "Appropriate differential with minor gaps in reasoning",
+        "needs_improvement": "Limited differential or poor reasoning"
+      }
+    },
+    "Clinical Correlation": {
+      "weight": 15,
+      "description": "Integration of imaging with clinical presentation",
+      "criteria": [
+        "Understanding of clinical presentation",
+        "Correlation of imaging with symptoms",
+        "Appropriate urgency assessment",
+        "Clinical staging knowledge"
+      ],
+      "key_findings": [
+        "Symptom correlation",
+        "Disease staging",
+        "Prognosis implications"
+      ],
+      "scoring_guide": {
+        "excellent": "Excellent understanding of clinical correlation and implications",
+        "good": "Good clinical correlation with minor gaps",
+        "needs_improvement": "Poor understanding of clinical significance"
+      }
+    },
+    "Management Recommendations": {
+      "weight": 10,
+      "description": "Appropriate next steps and follow-up",
+      "criteria": [
+        "Appropriate additional workup",
+        "Relevant laboratory tests",
+        "Specialist referral recommendations",
+        "Treatment planning consideration"
+      ],
+      "key_findings": [
+        "Next imaging steps",
+        "Laboratory workup",
+        "Specialist involvement"
+      ],
+      "scoring_guide": {
+        "excellent": "Comprehensive and appropriate management plan",
+        "good": "Mostly appropriate with minor omissions",
+        "needs_improvement": "Inappropriate or incomplete management recommendations"
+      }
+    },
+    "Communication & Organization": {
+      "weight": 10,
+      "description": "Clear and professional presentation",
+      "criteria": [
+        "Organized presentation of findings",
+        "Professional communication style",
+        "Appropriate medical terminology",
+        "Clear and concise reporting"
+      ],
+      "key_findings": [
+        "Structured presentation",
+        "Professional language",
+        "Clear communication"
+      ],
+      "scoring_guide": {
+        "excellent": "Excellent organization and professional communication",
+        "good": "Good presentation with minor organizational issues",
+        "needs_improvement": "Poor organization or unprofessional communication"
+      }
+    },
+    "Professional Judgment": {
+      "weight": 5,
+      "description": "Critical finding recognition and ethics",
+      "criteria": [
+        "Recognition of critical findings",
+        "Understanding of communication urgency",
+        "Ethical considerations",
+        "Professional responsibility awareness"
+      ],
+      "key_findings": [
+        "Critical findings",
+        "Communication urgency",
+        "Ethical awareness"
+      ],
+      "scoring_guide": {
+        "excellent": "Excellent professional judgment and ethical awareness",
+        "good": "Good judgment with minor gaps",
+        "needs_improvement": "Poor judgment or ethical awareness"
+      }
+    }
+  },
+  "case_specific_notes": {
+    "teaching_points": [
+      "Systematic approach to image interpretation",
+      "Importance of clinical correlation",
+      "Professional communication standards"
+    ],
+    "common_mistakes": [
+      "Skipping systematic evaluation",
+      "Ignoring clinical context",
+      "Unprofessional communication"
+    ],
+    "expert_pearls": [
+      "Always correlate with clinical presentation",
+      "Consider patient age and demographics",
+      "Communicate critical findings promptly"
+    ]
+  },
+  "references": [
+    "ABR Oral Board Examination Guidelines",
+    "ACR Practice Parameters and Technical Standards"
+  ],
+  "created_by": "System Template",
+  "created_date": "2024-12-25",
+  "last_modified": "2024-12-25"
+} 

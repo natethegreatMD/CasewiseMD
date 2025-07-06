@@ -1,182 +1,347 @@
 """
-Grading agent routes
+Grading agent routes with AI-powered assessment and follow-up questions
 """
 
 import json
-import random
+import logging
 from pathlib import Path
+from typing import Dict, Any, List, Optional
 from fastapi import APIRouter, HTTPException
-from typing import Dict, Any, Optional
+from pydantic import BaseModel
+
+from mcp.services.ai_grading import ai_grading_service
+from mcp.services.rubric_loader import load_rubric
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
-# Base path for demo cases (flexible for Docker and local development)
+# Base path for demo cases
 DEMO_CASES_PATH = Path("/app/demo_cases") if Path("/app/demo_cases").exists() else Path("./demo_cases")
 
-def read_case_metadata(case_id: str) -> Dict[str, Any]:
-    """Read metadata.json for a specific case"""
-    metadata_path = DEMO_CASES_PATH / case_id / "metadata.json"
-    
-    if not metadata_path.exists():
-        raise HTTPException(status_code=404, detail=f"Metadata not found for case {case_id}")
-    
-    try:
-        with open(metadata_path, 'r') as f:
-            return json.load(f)
-    except json.JSONDecodeError:
-        raise HTTPException(status_code=500, detail=f"Invalid JSON in metadata for case {case_id}")
-
-def generate_realistic_feedback(case_id: str, metadata: Dict[str, Any]) -> Dict[str, Any]:
-    """Generate realistic feedback based on case metadata"""
-    modality = metadata.get("modality", "unknown").upper()
-    patient_id = metadata.get("patient_id", "unknown")
-    
-    # Generate realistic but dummy scores
-    base_scores = [82, 85, 88, 90, 78, 85, 92, 80]  # Realistic score distribution
-    scores = random.sample(base_scores, 4)
-    
-    category_scores = [
-        {
-            "category": "Image Interpretation",
-            "score": scores[0],
-            "max_score": 100,
-            "percentage": scores[0],
-            "feedback": f"Good interpretation of {modality} imaging findings. Clear identification of key features."
-        },
-        {
-            "category": "Differential Diagnosis",
-            "score": scores[1],
-            "max_score": 100,
-            "percentage": scores[1],
-            "feedback": "Solid differential diagnosis with appropriate considerations. Good clinical reasoning."
-        },
-        {
-            "category": "Clinical Correlation",
-            "score": scores[2],
-            "max_score": 100,
-            "percentage": scores[2],
-            "feedback": "Effective correlation of imaging findings with clinical presentation."
-        },
-        {
-            "category": "Recommendation",
-            "score": scores[3],
-            "max_score": 100,
-            "percentage": scores[3],
-            "feedback": "Appropriate recommendations for follow-up and management."
-        }
-    ]
-    
-    total_score = sum(scores) / len(scores)
-    
-    return {
-        "total_score": round(total_score, 1),
-        "category_scores": category_scores,
-        "passed": total_score >= 70.0
-    }
+class GradeRequest(BaseModel):
+    """Request model for grading submission"""
+    case_id: str
+    session_id: str
+    answers: Dict[str, str]
+    metadata: Optional[Dict[str, Any]] = None
 
 @router.post("/grade")
-async def grade_submission(submission_data: Dict[str, Any]):
+async def grade_case(request: GradeRequest):
     """
-    Grade a case submission
-    Returns realistic dummy grading data based on case information
+    Grade a completed diagnostic case using AI-powered assessment
+    Returns detailed feedback with follow-up questions for weak areas
     """
     try:
-        session_id = submission_data.get("session_id", "unknown")
-        case_id = submission_data.get("case_id", "case001")
-        answers = submission_data.get("answers", {})
+        case_id = request.case_id
+        answers = request.answers
         
-        # Read case metadata for realistic feedback
-        try:
-            metadata = read_case_metadata(case_id)
-        except HTTPException:
-            # If case not found, use generic metadata
-            metadata = {"modality": "CT", "patient_id": "unknown"}
+        logger.info(f"Grading case {case_id} with {len(answers)} answers")
         
-        # Generate realistic feedback
-        feedback_data = generate_realistic_feedback(case_id, metadata)
+        # Validate inputs
+        if not answers:
+            raise HTTPException(status_code=400, detail="No answers provided for grading")
         
-        grading_id = f"grade-{session_id}-{case_id}"
+        # Load rubric for this case
+        rubric = load_rubric(case_id)
+        if not rubric:
+            logger.warning(f"No rubric found for case {case_id}, using default")
+            rubric = _get_default_rubric()
         
-        # Create flattened response structure for frontend
-        return {
-            "grading_id": grading_id,
-            "session_id": session_id,
-            "case_id": case_id,
-            "agent": "grade",
-            "status": "completed",
-            # Flatten overall_score properties to root level
-            "total_score": feedback_data["total_score"],
-            "max_score": 100.0,
-            "percentage": feedback_data["total_score"],
-            "passed": feedback_data["passed"],
-            "confidence": 0.85,  # Add confidence indicator
-            "overall_feedback": f"Good diagnostic work on this {metadata.get('modality', 'imaging')} case. Your systematic approach and clinical reasoning demonstrate solid understanding.",
-            # Rename category_scores to category_results for frontend
-            "category_results": feedback_data["category_scores"],
-            # Flatten detailed_feedback arrays to root level
-            "strengths": [
-                "Systematic approach to image interpretation",
-                "Good clinical correlation with imaging findings",
-                "Appropriate use of medical terminology"
-            ],
-            "areas_for_improvement": [
-                "Consider expanding differential diagnosis",
-                "Include more specific imaging descriptors",
-                "Elaborate on clinical significance"
-            ],
-            "case_specific_feedback": {
-                "modality": metadata.get("modality", "unknown"),
-                "patient_id": metadata.get("patient_id", "unknown"),
-                "rubric_used": metadata.get("rubric_id", f"rubric-{case_id}"),
-                "case_difficulty": "intermediate"
-            },
-            "metadata": {
-                "graded_by": "grading-agent-filesystem-v1.0",
-                "graded_at": "2024-12-25T00:00:00Z",
-                "rubric_version": metadata.get("prompt_version", "v1"),
-                "processing_time_ms": random.randint(1500, 3500),
-                "ai_grading": "dummy_mode"
-            }
-        }
+        # Load case questions for context
+        questions = _load_case_questions(case_id)
         
+        # Grade using AI service
+        grading_results = await ai_grading_service.grade_answers(
+            answers=answers,
+            case_id=case_id,
+            rubric=rubric
+        )
+        
+        # Format response with case context
+        response = _format_grading_response(
+            grading_results, 
+            case_id, 
+            request.session_id, 
+            questions,
+            rubric
+        )
+        
+        logger.info(f"Successfully graded case {case_id} - Score: {response['total_score']}")
+        
+        return response
+        
+    except HTTPException:
+        raise
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error grading submission: {str(e)}")
+        logger.error(f"Error grading case {request.case_id}: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Grading failed: {str(e)}")
 
-@router.get("/grade/{grading_id}")
-async def get_grade_result(grading_id: str):
+def _load_case_questions(case_id: str) -> List[Dict[str, Any]]:
+    """Load questions for case context"""
+    try:
+        questions_path = DEMO_CASES_PATH / case_id / "questions.json"
+        if questions_path.exists():
+            with open(questions_path, 'r') as f:
+                questions_data = json.load(f)
+                return questions_data.get("core_questions", [])
+    except Exception as e:
+        logger.warning(f"Could not load questions for {case_id}: {str(e)}")
+    
+    return []
+
+def _get_default_rubric() -> Dict[str, Any]:
+    """Default rubric if none found"""
+    return {
+        "rubric_id": "default_abr_rubric",
+        "version": "2.0",
+        "case_type": "radiology_oral_board",
+        "description": "ABR-style oral board examination rubric",
+        "categories": {
+            "Image Interpretation": {
+                "weight": 35,
+                "description": "Systematic evaluation of imaging findings",
+                "criteria": [
+                    "Accurate identification of key imaging findings",
+                    "Systematic approach to image interpretation",
+                    "Appropriate use of imaging terminology",
+                    "Recognition of normal vs abnormal findings"
+                ]
+            },
+            "Differential Diagnosis": {
+                "weight": 25,
+                "description": "Appropriate differential diagnosis formulation",
+                "criteria": [
+                    "Comprehensive differential diagnosis list",
+                    "Logical prioritization of diagnoses",
+                    "Consideration of clinical context",
+                    "Appropriate reasoning for differential"
+                ]
+            },
+            "Clinical Correlation": {
+                "weight": 15,
+                "description": "Integration of imaging with clinical presentation",
+                "criteria": [
+                    "Understanding of clinical presentation",
+                    "Correlation of imaging with symptoms",
+                    "Appropriate urgency assessment",
+                    "Clinical staging knowledge"
+                ]
+            },
+            "Management Recommendations": {
+                "weight": 10,
+                "description": "Appropriate next steps and follow-up",
+                "criteria": [
+                    "Appropriate additional workup",
+                    "Relevant laboratory tests",
+                    "Specialist referral recommendations",
+                    "Treatment planning consideration"
+                ]
+            },
+            "Communication & Organization": {
+                "weight": 10,
+                "description": "Clear and professional presentation",
+                "criteria": [
+                    "Organized presentation of findings",
+                    "Professional communication style",
+                    "Appropriate medical terminology",
+                    "Clear and concise reporting"
+                ]
+            },
+            "Professional Judgment": {
+                "weight": 5,
+                "description": "Critical finding recognition and ethics",
+                "criteria": [
+                    "Recognition of critical findings",
+                    "Understanding of communication urgency",
+                    "Ethical considerations",
+                    "Professional responsibility awareness"
+                ]
+            },
+            "Safety Considerations": {
+                "weight": 5,
+                "description": "Radiation safety and imaging appropriateness",
+                "criteria": [
+                    "Radiation dose awareness",
+                    "Contrast considerations",
+                    "Alternative imaging modalities",
+                    "ALARA principles"
+                ]
+            }
+        }
+    }
+
+def _format_grading_response(
+    grading_results: Dict[str, Any], 
+    case_id: str, 
+    session_id: str,
+    questions: List[Dict[str, Any]],
+    rubric: Dict[str, Any]
+) -> Dict[str, Any]:
+    """Format grading response with all required information"""
+    
+    # Extract core data
+    category_scores = grading_results.get("category_scores", {})
+    total_score = grading_results.get("total_score", 0)
+    overall_percentage = grading_results.get("overall_percentage", 0)
+    follow_up_questions = grading_results.get("follow_up_questions", [])
+    
+    # Build category results for detailed breakdown
+    category_results = []
+    
+    # Handle different rubric formats
+    rubric_categories = rubric.get("categories", [])
+    if isinstance(rubric_categories, list):
+        # New format: categories is an array
+        category_weights = {cat.get("name"): cat.get("weight", 0) * 100 for cat in rubric_categories}
+    else:
+        # Old format: categories is an object 
+        category_weights = {name: data.get("weight", 0) for name, data in rubric_categories.items()}
+    
+    for category, score_data in category_scores.items():
+        weight = category_weights.get(category, 10)
+        category_results.append({
+            "category_name": category,
+            "name": category,  # Frontend expects both fields
+            "score": score_data.get("score", 0),
+            "max_score": 100,
+            "percentage": score_data.get("percentage", 0),
+            "feedback": score_data.get("feedback", ""),
+            "weight": weight,
+            "criteria_results": [
+                {
+                    "criterion_name": "Overall Assessment",
+                    "score": score_data.get("score", 0),
+                    "max_score": 100,
+                    "feedback": score_data.get("feedback", "")
+                }
+            ]
+        })
+    
+    # Determine if student passed (70% threshold)
+    passed = overall_percentage >= 70
+    
+    # Build comprehensive response
+    response = {
+        "grading_id": f"grade-{case_id}-{session_id}",
+        "case_id": case_id,
+        "session_id": session_id,
+        "agent": "grade",
+        "status": "completed",
+        "total_score": total_score,
+        "total_possible": 100,
+        "max_score": 100,
+        "overall_percentage": overall_percentage,
+        "percentage": overall_percentage,  # Frontend expects this field
+        "passed": passed,
+        "confidence": 0.9 if grading_results.get("grading_method") == "ai_gpt4o" else 0.6,
+        
+        # Detailed category breakdown
+        "category_results": category_results,
+        
+        # Feedback and guidance
+        "overall_feedback": grading_results.get("overall_feedback", "Grading completed successfully"),
+        "strengths": grading_results.get("strengths", []),
+        "areas_for_improvement": grading_results.get("areas_for_improvement", []),
+        "abr_readiness": grading_results.get("abr_readiness", "Assessment completed"),
+        
+        # Follow-up questions for learning
+        "follow_up_questions": follow_up_questions,
+        
+        # Case-specific context
+        "case_specific_feedback": {
+            "ai_grading": grading_results.get("grading_method") == "ai_gpt4o",
+            "rubric_version": rubric.get("version", "1.0"),
+            "case_difficulty": "intermediate",
+            "total_questions": len(questions),
+            "rubric_categories": len(category_scores),
+            "follow_up_count": len(follow_up_questions)
+        },
+        
+        # Questions for context
+        "questions_asked": [
+            {
+                "step": q.get("step", i+1),
+                "category": q.get("rubric_category", "Unknown"),
+                "question": q.get("question", ""),
+                "type": q.get("type", "free_text")
+            }
+            for i, q in enumerate(questions)
+        ],
+        
+        # Metadata
+        "metadata": {
+            "graded_by": "ai-grading-gpt4o" if grading_results.get("grading_method") == "ai_gpt4o" else "content-analysis-fallback",
+            "graded_at": "2024-12-25T00:00:00Z",
+            "ai_grading": grading_results.get("grading_method") == "ai_gpt4o",
+            "fallback_used": grading_results.get("grading_method") == "fallback_content_analysis",
+            "grading_method": grading_results.get("grading_method", "unknown"),
+            "rubric_id": rubric.get("rubric_id", f"rubric-{case_id}"),
+            "processing_time_ms": 0,
+            "agent_version": "2.0.0"
+        }
+    }
+    
+    return response
+
+@router.get("/grade-status/{case_id}")
+async def get_grade_status(case_id: str):
     """
-    Retrieve grading results by ID
-    Returns dummy grade summary data
+    Get grading status and capability for a case
     """
     try:
-        # Extract case_id from grading_id if possible
-        case_id = "case001"  # Default
-        if "-" in grading_id:
-            parts = grading_id.split("-")
-            if len(parts) >= 3:
-                case_id = parts[2]
+        # Check if rubric exists
+        rubric = load_rubric(case_id)
+        has_rubric = rubric is not None
         
-        # Generate consistent dummy score based on grading_id
-        random.seed(hash(grading_id) % 1000)  # Consistent random seed
-        score = random.randint(75, 95)
+        # Check if AI grading is available
+        api_key = ai_grading_service.client.api_key if hasattr(ai_grading_service, 'client') else None
+        ai_available = bool(api_key)
         
         return {
-            "grading_id": grading_id,
-            "agent": "grade",
-            "status": "completed",
-            "retrieved_at": "2024-12-25T00:00:00Z",
             "case_id": case_id,
-            "summary": {
-                "total_score": score,
-                "grade": "A" if score >= 90 else "B+" if score >= 85 else "B" if score >= 80 else "C+",
-                "passed": score >= 70,
-                "completion_time": f"{random.randint(10, 25)} minutes"
-            },
-            "metadata": {
-                "ai_grading": "dummy_mode",
-                "case_source": "filesystem"
+            "grading_available": True,
+            "ai_grading_available": ai_available,
+            "rubric_available": has_rubric,
+            "follow_up_questions_available": True,
+            "grading_method": "ai_with_fallback" if ai_available else "content_analysis",
+            "rubric_version": rubric.get("version", "1.0") if rubric else "default",
+            "categories": list(rubric.get("categories", {}).keys()) if rubric else [],
+            "estimated_time_seconds": 10 if ai_available else 2,
+            "features": {
+                "category_scoring": True,
+                "detailed_feedback": True,
+                "follow_up_questions": True,
+                "abr_alignment": True,
+                "adaptive_learning": True
             }
         }
         
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error retrieving grade result: {str(e)}") 
+        logger.error(f"Error getting grade status for {case_id}: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Failed to get grade status: {str(e)}")
+
+@router.get("/rubric/{case_id}")
+async def get_case_rubric(case_id: str):
+    """
+    Get the grading rubric for a specific case
+    """
+    try:
+        rubric = load_rubric(case_id)
+        if not rubric:
+            rubric = _get_default_rubric()
+        
+        return {
+            "case_id": case_id,
+            "rubric": rubric,
+            "total_categories": len(rubric.get("categories", {})),
+            "total_weight": sum(cat.get("weight", 0) for cat in rubric.get("categories", {}).values()),
+            "description": rubric.get("description", ""),
+            "version": rubric.get("version", "1.0")
+        }
+        
+    except Exception as e:
+        logger.error(f"Error getting rubric for {case_id}: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Failed to get rubric: {str(e)}") 

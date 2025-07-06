@@ -1,0 +1,97 @@
+{
+  "case_id": "{{CASE_ID}}",
+  "version": "2.0",
+  "rubric_alignment": "{{RUBRIC_ID}}",
+  "description": "{{DESCRIPTION}}",
+  "question_style": "{{QUESTION_STYLE}}",
+  "core_questions": [
+    {
+      "step": 1,
+      "rubric_category": "{{CATEGORY_1}}",
+      "question": "{{QUESTION_1}}",
+      "type": "{{QUESTION_TYPE}}",
+      "context": "{{CONTEXT_1}}",
+      "hint": "{{HINT_1}}",
+      "focus_areas": [
+        "{{FOCUS_1}}",
+        "{{FOCUS_2}}"
+      ],
+      "difficulty": "{{DIFFICULTY_1}}",
+      "expected_elements": [
+        "{{EXPECTED_1}}",
+        "{{EXPECTED_2}}"
+      ]
+    },
+    {
+      "step": 2,
+      "rubric_category": "{{CATEGORY_2}}",
+      "question": "{{QUESTION_2}}",
+      "type": "{{QUESTION_TYPE}}",
+      "context": "{{CONTEXT_2}}",
+      "hint": "{{HINT_2}}",
+      "focus_areas": [
+        "{{FOCUS_1}}",
+        "{{FOCUS_2}}"
+      ],
+      "difficulty": "{{DIFFICULTY_2}}",
+      "expected_elements": [
+        "{{EXPECTED_1}}",
+        "{{EXPECTED_2}}"
+      ]
+    }
+  ],
+  "total_questions": "{{TOTAL_QUESTIONS}}",
+  "estimated_time_minutes": "{{ESTIMATED_TIME}}",
+  "difficulty_level": "{{OVERALL_DIFFICULTY}}",
+  "question_types": {
+    "free_text": "Open-ended response",
+    "multiple_choice": "Select from options",
+    "ranking": "Rank options in order",
+    "short_answer": "Brief specific response",
+    "case_presentation": "Structured case presentation"
+  },
+  "educational_notes": {
+    "purpose": "{{PURPOSE}}",
+    "focus": "{{FOCUS}}",
+    "learning_objectives": [
+      "{{OBJECTIVE_1}}",
+      "{{OBJECTIVE_2}}",
+      "{{OBJECTIVE_3}}"
+    ],
+    "prerequisite_knowledge": [
+      "{{PREREQUISITE_1}}",
+      "{{PREREQUISITE_2}}"
+    ]
+  },
+  "case_specific_guidance": {
+    "key_imaging_features": [
+      "{{KEY_FEATURE_1}}",
+      "{{KEY_FEATURE_2}}"
+    ],
+    "differential_considerations": [
+      "{{DIFFERENTIAL_1}}",
+      "{{DIFFERENTIAL_2}}"
+    ],
+    "clinical_pearls": [
+      "{{PEARL_1}}",
+      "{{PEARL_2}}"
+    ]
+  },
+  "follow_up_question_seeds": {
+    "weak_image_interpretation": [
+      "{{FOLLOWUP_IMAGING_1}}",
+      "{{FOLLOWUP_IMAGING_2}}"
+    ],
+    "weak_differential": [
+      "{{FOLLOWUP_DIFFERENTIAL_1}}",
+      "{{FOLLOWUP_DIFFERENTIAL_2}}"
+    ],
+    "weak_clinical_correlation": [
+      "{{FOLLOWUP_CLINICAL_1}}",
+      "{{FOLLOWUP_CLINICAL_2}}"
+    ]
+  },
+  "created_by": "{{AUTHOR}}",
+  "created_date": "{{CREATION_DATE}}",
+  "last_modified": "{{LAST_MODIFIED}}"
+} 

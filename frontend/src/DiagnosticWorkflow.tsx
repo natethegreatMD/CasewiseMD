@@ -361,6 +361,33 @@ function DiagnosticWorkflow({ onBackToHome }: DiagnosticWorkflowProps) {
               </div>
             </div>
 
+            {/* Follow-up Questions for Learning */}
+            {gradingResult.follow_up_questions && gradingResult.follow_up_questions.length > 0 && (
+              <div className="follow-up-questions">
+                <h3>Follow-up Questions for Learning</h3>
+                <p className="follow-up-intro">
+                  Based on your responses, here are some questions to help deepen your understanding:
+                </p>
+                <div className="follow-up-list">
+                  {gradingResult.follow_up_questions.map((fq: any, i: number) => (
+                    <div key={i} className="follow-up-question">
+                      <div className="follow-up-header">
+                        <span className="follow-up-category">{fq.category}</span>
+                        <span className="follow-up-score">Score: {fq.score}%</span>
+                      </div>
+                      <div className="follow-up-content">
+                        <p className="follow-up-question-text">{fq.question}</p>
+                        <p className="follow-up-purpose">{fq.purpose}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <div className="follow-up-note">
+                  <p><strong>Note:</strong> These follow-up questions are for learning purposes only and do not affect your score.</p>
+                </div>
+              </div>
+            )}
+
             {/* Restart Button */}
             <div className="restart-section">
               <button onClick={startDiagnosticSession} className="restart-btn">
