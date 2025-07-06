@@ -54,3 +54,6 @@ Viewer deploy/
 viewer-deploy/
 **/viewer-deploy/
 **/Viewer deploy/
+
+nginx/
+nginx/casewise.conf
