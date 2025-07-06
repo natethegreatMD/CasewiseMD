@@ -8,9 +8,11 @@ from pathlib import Path
 from typing import Dict, Any, List, Optional
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
+from datetime import datetime
 
 from mcp.services.ai_grading import ai_grading_service
 from mcp.services.rubric_loader import load_rubric
+from mcp.routes.diagnostic import read_case_questions, read_case_metadata
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -29,55 +31,104 @@ class GradeRequest(BaseModel):
     metadata: Optional[Dict[str, Any]] = None
 
 @router.post("/grade")
-async def grade_case(request: GradeRequest):
+async def grade_diagnostic_session(grade_data: Dict[str, Any]):
     """
-    Grade a completed diagnostic case using AI-powered assessment
-    Returns detailed feedback with follow-up questions for weak areas
+    Grade a completed diagnostic session
+    Returns scores, feedback, and follow-up questions for weak areas
     """
     try:
-        case_id = request.case_id
-        answers = request.answers
+        case_id = grade_data.get("case_id", "case001")
+        session_id = grade_data.get("session_id", "unknown")
+        answers = grade_data.get("answers", {})
         
-        logger.info(f"Grading case {case_id} with {len(answers)} answers")
-        
-        # Validate inputs
         if not answers:
             raise HTTPException(status_code=400, detail="No answers provided for grading")
         
         # Load rubric for this case
         rubric = load_rubric(case_id)
         if not rubric:
-            logger.warning(f"No rubric found for case {case_id}, using default")
-            rubric = _get_default_rubric()
+            raise HTTPException(status_code=404, detail=f"Rubric not found for case {case_id}")
         
-        # Load case questions for context
-        questions = _load_case_questions(case_id)
+        # Load questions for context
+        questions = read_case_questions(case_id)
         
-        # Grade using AI service
-        grading_results = await ai_grading_service.grade_answers(
-            answers=answers,
-            case_id=case_id,
-            rubric=rubric
+        # Grade the answers using AI service
+        grading_results = await ai_grading_service.grade_answers(answers, case_id, rubric)
+        
+        # Format response for frontend
+        formatted_response = _format_grading_response(
+            grading_results, case_id, session_id, questions, rubric
         )
         
-        # Format response with case context
-        response = _format_grading_response(
-            grading_results, 
+        return formatted_response
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error grading diagnostic session: {str(e)}")
+
+@router.post("/evaluate-followup")
+async def evaluate_followup_answers(evaluation_data: Dict[str, Any]):
+    """
+    Evaluate student's follow-up answers and provide personalized feedback
+    """
+    try:
+        case_id = evaluation_data.get("case_id", "case001")
+        session_id = evaluation_data.get("session_id", "unknown")
+        followup_answers = evaluation_data.get("followup_answers", {})
+        original_followup_questions = evaluation_data.get("original_followup_questions", [])
+        original_grading = evaluation_data.get("original_grading", {})
+        
+        if not followup_answers:
+            raise HTTPException(status_code=400, detail="No follow-up answers provided for evaluation")
+        
+        if not original_followup_questions:
+            raise HTTPException(status_code=400, detail="Original follow-up questions required for evaluation")
+        
+        # Evaluate follow-up answers using AI service
+        evaluation_results = await ai_grading_service.evaluate_followup_answers(
+            followup_answers, 
+            original_followup_questions, 
             case_id, 
-            request.session_id, 
-            questions,
-            rubric
+            original_grading
         )
         
-        logger.info(f"Successfully graded case {case_id} - Score: {response['total_score']}")
+        # Format response with comprehensive feedback
+        response = {
+            "evaluation_id": f"followup-eval-{case_id}-{session_id}",
+            "case_id": case_id,
+            "session_id": session_id,
+            "status": "completed",
+            "evaluation_method": evaluation_results.get("evaluation_method", "ai_gpt4o"),
+            
+            # Individual follow-up evaluations
+            "followup_evaluations": evaluation_results.get("followup_evaluations", []),
+            
+            # Learning improvement analysis
+            "learning_improvement": evaluation_results.get("learning_improvement", {}),
+            
+            # Overall feedback on follow-up performance
+            "overall_followup_feedback": evaluation_results.get("overall_followup_feedback", ""),
+            
+            # Updated assessment incorporating follow-up
+            "updated_assessment": evaluation_results.get("updated_assessment", {}),
+            
+            # Metadata
+            "metadata": {
+                "followup_questions_answered": len(followup_answers),
+                "total_followup_questions": len(original_followup_questions),
+                "completion_rate": len(followup_answers) / max(1, len(original_followup_questions)) * 100,
+                "evaluation_timestamp": datetime.now().isoformat(),
+                "case_type": "ovarian_cancer"
+            }
+        }
         
         return response
         
     except HTTPException:
         raise
     except Exception as e:
-        logger.error(f"Error grading case {request.case_id}: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"Grading failed: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error evaluating follow-up answers: {str(e)}")
 
 def _load_case_questions(case_id: str) -> List[Dict[str, Any]]:
     """Load questions for case context"""

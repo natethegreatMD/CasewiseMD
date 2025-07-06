@@ -7,3 +7,4 @@ alwaysApply: false
 - we are hosting the project on the vps
 - do not use placeholders. everything built needs to be production ready. if you need a placeholder because you lack info, just ask me.
 - give commands as one line when you want me to run things on the vps
+- you can only test the backend locally. do not use docker.

@@ -71,6 +71,14 @@ interface DiagnosticWorkflowProps {
   onBackToHome: () => void;
 }
 
+// Add interface for follow-up questions
+interface FollowUpQuestion {
+  category: string;
+  question: string;
+  purpose: string;
+  score: number;
+}
+
 const CASE_METADATA = {
   id: 'TCGA-09-0364',
   title: 'Ovarian Cancer Case',
@@ -88,6 +96,13 @@ function DiagnosticWorkflow({ onBackToHome }: DiagnosticWorkflowProps) {
   const [gradingResult, setGradingResult] = useState<any>(null);
   const [showHint, setShowHint] = useState(false);
   const [showDicomViewer, setShowDicomViewer] = useState(true);
+  
+  // New state for follow-up questions
+  const [followUpQuestions, setFollowUpQuestions] = useState<FollowUpQuestion[]>([]);
+  const [currentFollowUpIndex, setCurrentFollowUpIndex] = useState(0);
+  const [followUpAnswers, setFollowUpAnswers] = useState<Record<number, string>>({});
+  const [showingFollowUps, setShowingFollowUps] = useState(false);
+  const [currentFollowUpAnswer, setCurrentFollowUpAnswer] = useState('');
 
   // API Base URL from environment variables
   const API_URL = `${import.meta.env.VITE_API_URL || 'https://api.casewisemd.org'}/api/v1`;
@@ -96,6 +111,13 @@ function DiagnosticWorkflow({ onBackToHome }: DiagnosticWorkflowProps) {
   const startDiagnosticSession = async () => {
     setLoading(true);
     setError(null);
+    setGradingResult(null);
+    setFollowUpQuestions([]);
+    setShowingFollowUps(false);
+    setCurrentFollowUpIndex(0);
+    setFollowUpAnswers({});
+    setCurrentFollowUpAnswer('');
+    
     try {
       const res = await fetch(`${API_URL}/diagnostic-session?case_id=case001`);
       if (!res.ok) throw new Error('Failed to start diagnostic session');
@@ -151,8 +173,18 @@ function DiagnosticWorkflow({ onBackToHome }: DiagnosticWorkflowProps) {
           if (!gradingRes.ok) throw new Error('Failed to grade submission');
           const gradingData = await gradingRes.json();
           
+          // Check if there are follow-up questions
+          if (gradingData.follow_up_questions && gradingData.follow_up_questions.length > 0) {
+            setFollowUpQuestions(gradingData.follow_up_questions);
+            setShowingFollowUps(true);
+            setCurrentFollowUpIndex(0);
+            setGradingResult(gradingData); // Store for later
+          } else {
+            // No follow-up questions, show results immediately
+            setGradingResult(gradingData);
+          }
+          
           setSession(null);
-          setGradingResult(gradingData);
         } catch (gradingErr: any) {
           console.error('Grading error:', gradingErr);
           setError(`Completed session but failed to get grading: ${gradingErr.message}`);
@@ -172,6 +204,161 @@ function DiagnosticWorkflow({ onBackToHome }: DiagnosticWorkflowProps) {
     } finally {
       setLoading(false);
     }
+  };
+
+  // Skip current question
+  const skipQuestion = async () => {
+    if (!session) return;
+    
+    setLoading(true);
+    setError(null);
+    
+    try {
+      // Submit empty answer for skipped question
+      const res = await fetch(`${API_URL}/diagnostic-answer`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          session_id: session.session_id,
+          case_id: 'case001',
+          current_step: session.current_step,
+          answer: '[SKIPPED]', // Mark as skipped
+          answers: session.answers
+        }),
+      });
+      
+      if (!res.ok) throw new Error('Failed to skip question');
+      const data: DiagnosticResponse = await res.json();
+      
+      if (data.completed) {
+        // Session completed - now call grading endpoint
+        try {
+          const gradingRes = await fetch(`${API_URL}/grade`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              session_id: session.session_id,
+              case_id: 'case001',
+              answers: data.answers || session.answers
+            }),
+          });
+          
+          if (!gradingRes.ok) throw new Error('Failed to grade submission');
+          const gradingData = await gradingRes.json();
+          
+          // Check if there are follow-up questions
+          if (gradingData.follow_up_questions && gradingData.follow_up_questions.length > 0) {
+            setFollowUpQuestions(gradingData.follow_up_questions);
+            setShowingFollowUps(true);
+            setCurrentFollowUpIndex(0);
+            setGradingResult(gradingData); // Store for later
+          } else {
+            // No follow-up questions, show results immediately
+            setGradingResult(gradingData);
+          }
+          
+          setSession(null);
+        } catch (gradingErr: any) {
+          console.error('Grading error:', gradingErr);
+          setError(`Completed session but failed to get grading: ${gradingErr.message}`);
+        }
+      } else {
+        setSession({
+          ...session,
+          current_step: data.progress.current_step,
+          answers: data.answers,
+          current_question: data.current_question!,
+          progress: data.progress
+        });
+        setCurrentAnswer('');
+      }
+    } catch (err: any) {
+      setError(err.message || 'Failed to skip question');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Submit follow-up answer
+  const submitFollowUpAnswer = () => {
+    if (!currentFollowUpAnswer.trim()) return;
+    
+    setFollowUpAnswers(prev => ({
+      ...prev,
+      [currentFollowUpIndex]: currentFollowUpAnswer
+    }));
+    
+    setCurrentFollowUpAnswer('');
+    
+    if (currentFollowUpIndex < followUpQuestions.length - 1) {
+      setCurrentFollowUpIndex(prev => prev + 1);
+    } else {
+      // Completed all follow-up questions, evaluate them
+      evaluateFollowUpAnswers();
+    }
+  };
+
+  // Evaluate follow-up answers with AI
+  const evaluateFollowUpAnswers = async () => {
+    if (!gradingResult || Object.keys(followUpAnswers).length === 0) {
+      setShowingFollowUps(false);
+      return;
+    }
+
+    setLoading(true);
+    
+    try {
+      // Include the current answer if it exists
+      const allFollowUpAnswers = {
+        ...followUpAnswers,
+        [currentFollowUpIndex]: currentFollowUpAnswer.trim() || ''
+      };
+
+      const evaluationData = {
+        case_id: 'case001',
+        session_id: gradingResult.session_id || 'unknown',
+        followup_answers: allFollowUpAnswers,
+        original_followup_questions: followUpQuestions,
+        original_grading: gradingResult
+      };
+
+      const response = await fetch(`${API_URL}/evaluate-followup`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(evaluationData),
+      });
+
+      if (!response.ok) throw new Error('Failed to evaluate follow-up answers');
+      
+      const evaluationResults = await response.json();
+      
+      // Update grading result with follow-up evaluation
+      setGradingResult(prev => ({
+        ...prev,
+        followup_evaluation: evaluationResults,
+        has_followup_feedback: true
+      }));
+
+      setShowingFollowUps(false);
+      
+    } catch (error) {
+      console.error('Error evaluating follow-up answers:', error);
+      // Still show results even if evaluation fails
+      setShowingFollowUps(false);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Skip follow-up questions
+  const skipFollowUps = () => {
+    setShowingFollowUps(false);
   };
 
   // Start session on component mount
@@ -200,6 +387,124 @@ function DiagnosticWorkflow({ onBackToHome }: DiagnosticWorkflowProps) {
             Retry
           </button>
         </div>
+      </div>
+    );
+  }
+
+  // Show follow-up questions if they exist
+  if (showingFollowUps && followUpQuestions.length > 0) {
+    const currentFollowUp = followUpQuestions[currentFollowUpIndex];
+    
+    return (
+      <div className="App">
+        <header className="app-header">
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', maxWidth: '1200px', margin: '0 auto', width: '100%' }}>
+            <button 
+              onClick={onBackToHome}
+              style={{
+                background: 'rgba(45, 55, 72, 0.6)',
+                border: '1px solid #4a5568',
+                color: '#e2e8f0',
+                padding: '0.5rem 1rem',
+                borderRadius: '6px',
+                cursor: 'pointer',
+                fontSize: '0.9rem',
+                transition: 'all 0.3s ease'
+              }}
+            >
+              ← Back to Home
+            </button>
+            <div style={{ textAlign: 'center', flex: 1 }}>
+              <h1>CasewiseMD</h1>
+              <p className="app-subtitle">Follow-up Questions for Learning</p>
+            </div>
+            <div style={{ width: '100px' }}></div>
+          </div>
+        </header>
+
+        <main className="app-main">
+          <section className="follow-up-section">
+            <div className="follow-up-header">
+              <h2>Follow-up Questions</h2>
+              <p className="follow-up-explanation">
+                Based on your responses, we've identified some areas where additional discussion could enhance your learning.
+                These questions are designed to help you think more deeply about the case.
+              </p>
+              <div className="follow-up-progress">
+                <span>Question {currentFollowUpIndex + 1} of {followUpQuestions.length}</span>
+                <div className="progress-bar">
+                  <div 
+                    className="progress-fill" 
+                    style={{ width: `${((currentFollowUpIndex + 1) / followUpQuestions.length) * 100}%` }}
+                  ></div>
+                </div>
+              </div>
+            </div>
+
+            <div className="follow-up-question-card">
+              <div className="category-badge">
+                <span className="category-name">{currentFollowUp.category}</span>
+                <span className="category-score">Score: {currentFollowUp.score}%</span>
+              </div>
+              
+              <div className="question-content">
+                <h3>Follow-up Question</h3>
+                <p className="question-text">{currentFollowUp.question}</p>
+                
+                <div className="question-purpose">
+                  <h4>Purpose</h4>
+                  <p>{currentFollowUp.purpose}</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="follow-up-answer-section">
+              <form onSubmit={(e) => { e.preventDefault(); submitFollowUpAnswer(); }}>
+                <div className="form-group">
+                  <label htmlFor="followup-answer">Your Reflection:</label>
+                  <textarea
+                    id="followup-answer"
+                    value={currentFollowUpAnswer}
+                    onChange={e => setCurrentFollowUpAnswer(e.target.value)}
+                    rows={4}
+                    placeholder="Take a moment to reflect on this question. Your response will help reinforce your learning..."
+                    required
+                  />
+                </div>
+                <div className="button-group">
+                  <button 
+                    type="submit" 
+                    className="submit-btn"
+                    disabled={!currentFollowUpAnswer.trim()}
+                  >
+                    {currentFollowUpIndex < followUpQuestions.length - 1 ? 'Next Question' : 'Complete Follow-up'}
+                  </button>
+                  <button 
+                    type="button" 
+                    className="skip-btn"
+                    onClick={skipFollowUps}
+                  >
+                    Skip Follow-up Questions
+                  </button>
+                </div>
+              </form>
+            </div>
+
+            {/* Previous follow-up answers */}
+            {Object.keys(followUpAnswers).length > 0 && (
+              <div className="previous-followups">
+                <h3>Your Previous Reflections</h3>
+                <div className="followup-answers-list">
+                  {Object.entries(followUpAnswers).map(([index, answer]) => (
+                    <div key={index} className="previous-followup">
+                      <strong>{followUpQuestions[parseInt(index)].category}:</strong> {answer}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </section>
+        </main>
       </div>
     );
   }
@@ -269,6 +574,14 @@ function DiagnosticWorkflow({ onBackToHome }: DiagnosticWorkflowProps) {
           {/* Final Results */}
           <section className="grading-results">
             <h2>Diagnostic Workflow Complete!</h2>
+            
+            {/* Show follow-up completion message if they were answered */}
+            {Object.keys(followUpAnswers).length > 0 && (
+              <div className="followup-completion">
+                <h3>✅ Follow-up Questions Completed</h3>
+                <p>You completed {Object.keys(followUpAnswers).length} follow-up questions to enhance your learning.</p>
+              </div>
+            )}
             
             {/* Score Summary */}
             <div className="score-summary">
@@ -361,15 +674,148 @@ function DiagnosticWorkflow({ onBackToHome }: DiagnosticWorkflowProps) {
               </div>
             </div>
 
-            {/* Follow-up Questions for Learning */}
-            {gradingResult.follow_up_questions && gradingResult.follow_up_questions.length > 0 && (
+            {/* Follow-up Evaluation Results */}
+            {gradingResult.has_followup_feedback && gradingResult.followup_evaluation && (
+              <div className="followup-evaluation-results">
+                <h3>Follow-up Learning Assessment</h3>
+                
+                {/* Updated Assessment Summary */}
+                {gradingResult.followup_evaluation.updated_assessment && (
+                  <div className="updated-assessment-summary">
+                    <div className="assessment-comparison">
+                      <div className="score-before">
+                        <h4>Original Score</h4>
+                        <div className="score-display">
+                          {gradingResult.followup_evaluation.updated_assessment.original_score}%
+                        </div>
+                      </div>
+                      <div className="score-arrow">→</div>
+                      <div className="score-after">
+                        <h4>Updated Score</h4>
+                        <div className="score-display improved">
+                          {gradingResult.followup_evaluation.updated_assessment.updated_score}%
+                        </div>
+                        {gradingResult.followup_evaluation.updated_assessment.improvement_bonus > 0 && (
+                          <div className="improvement-bonus">
+                            +{gradingResult.followup_evaluation.updated_assessment.improvement_bonus} bonus
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    
+                    <div className="learning-trajectory">
+                      <span className="trajectory-label">Learning Progress:</span>
+                      <span className={`trajectory-value ${gradingResult.followup_evaluation.updated_assessment.learning_trajectory}`}>
+                        {gradingResult.followup_evaluation.updated_assessment.learning_trajectory.replace('_', ' ').toUpperCase()}
+                      </span>
+                    </div>
+                    
+                    <div className="recommendation">
+                      <strong>Recommendation:</strong> {gradingResult.followup_evaluation.updated_assessment.recommendation}
+                    </div>
+                  </div>
+                )}
+
+                {/* Overall Follow-up Feedback */}
+                {gradingResult.followup_evaluation.overall_followup_feedback && (
+                  <div className="overall-followup-feedback">
+                    <h4>Overall Reflection Assessment</h4>
+                    <p>{gradingResult.followup_evaluation.overall_followup_feedback}</p>
+                  </div>
+                )}
+
+                {/* Individual Follow-up Evaluations */}
+                {gradingResult.followup_evaluation.followup_evaluations && gradingResult.followup_evaluation.followup_evaluations.length > 0 && (
+                  <div className="individual-followup-evaluations">
+                    <h4>Detailed Reflection Feedback</h4>
+                    <div className="evaluations-list">
+                      {gradingResult.followup_evaluation.followup_evaluations.map((eval: any, i: number) => (
+                        <div key={i} className="followup-evaluation-card">
+                          <div className="evaluation-header">
+                            <span className="evaluation-category">{eval.category}</span>
+                            <span className="evaluation-score">{eval.improvement_score}/100</span>
+                          </div>
+                          
+                          <div className="evaluation-content">
+                            {eval.knowledge_demonstration && (
+                              <div className="evaluation-section">
+                                <strong>Knowledge Demonstrated:</strong>
+                                <p>{eval.knowledge_demonstration}</p>
+                              </div>
+                            )}
+                            
+                            {eval.clinical_reasoning && (
+                              <div className="evaluation-section">
+                                <strong>Clinical Reasoning:</strong>
+                                <p>{eval.clinical_reasoning}</p>
+                              </div>
+                            )}
+                            
+                            {eval.learning_progress && (
+                              <div className="evaluation-section">
+                                <strong>Learning Progress:</strong>
+                                <p>{eval.learning_progress}</p>
+                              </div>
+                            )}
+                            
+                            {eval.areas_for_continued_focus && (
+                              <div className="evaluation-section">
+                                <strong>Focus Areas:</strong>
+                                <p>{eval.areas_for_continued_focus}</p>
+                              </div>
+                            )}
+                            
+                            {eval.feedback_summary && (
+                              <div className="evaluation-summary">
+                                <strong>Summary:</strong>
+                                <p>{eval.feedback_summary}</p>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Learning Improvement Metrics */}
+                {gradingResult.followup_evaluation.learning_improvement && (
+                  <div className="learning-improvement-metrics">
+                    <h4>Learning Metrics</h4>
+                    <div className="metrics-grid">
+                      <div className="metric-item">
+                        <label>Engagement Level:</label>
+                        <span className={`metric-value ${gradingResult.followup_evaluation.updated_assessment?.engagement_level || 'moderate'}`}>
+                          {gradingResult.followup_evaluation.updated_assessment?.engagement_level || 'Moderate'}
+                        </span>
+                      </div>
+                      <div className="metric-item">
+                        <label>Completion Rate:</label>
+                        <span className="metric-value">
+                          {gradingResult.followup_evaluation.learning_improvement.followup_completion_rate}%
+                        </span>
+                      </div>
+                      <div className="metric-item">
+                        <label>Average Reflection Score:</label>
+                        <span className="metric-value">
+                          {gradingResult.followup_evaluation.learning_improvement.average_reflection_score}/100
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Follow-up Questions for Learning - now shows original questions that were asked */}
+            {followUpQuestions.length > 0 && (
               <div className="follow-up-questions">
-                <h3>Follow-up Questions for Learning</h3>
+                <h3>Follow-up Questions You Addressed</h3>
                 <p className="follow-up-intro">
-                  Based on your responses, here are some questions to help deepen your understanding:
+                  Here are the follow-up questions you worked on to deepen your understanding:
                 </p>
                 <div className="follow-up-list">
-                  {gradingResult.follow_up_questions.map((fq: any, i: number) => (
+                  {followUpQuestions.map((fq: any, i: number) => (
                     <div key={i} className="follow-up-question">
                       <div className="follow-up-header">
                         <span className="follow-up-category">{fq.category}</span>
@@ -378,12 +824,14 @@ function DiagnosticWorkflow({ onBackToHome }: DiagnosticWorkflowProps) {
                       <div className="follow-up-content">
                         <p className="follow-up-question-text">{fq.question}</p>
                         <p className="follow-up-purpose">{fq.purpose}</p>
+                        {followUpAnswers[i] && (
+                          <div className="followup-user-answer">
+                            <strong>Your reflection:</strong> {followUpAnswers[i]}
+                          </div>
+                        )}
                       </div>
                     </div>
                   ))}
-                </div>
-                <div className="follow-up-note">
-                  <p><strong>Note:</strong> These follow-up questions are for learning purposes only and do not affect your score.</p>
                 </div>
               </div>
             )}
@@ -557,9 +1005,23 @@ function DiagnosticWorkflow({ onBackToHome }: DiagnosticWorkflowProps) {
                   disabled={loading}
                 />
               </div>
-              <button type="submit" className="submit-btn" disabled={loading || !currentAnswer.trim()}>
-                {loading ? 'Submitting...' : 'Submit Answer & Continue'}
-              </button>
+              <div className="answer-buttons">
+                <button type="submit" className="submit-btn" disabled={loading || !currentAnswer.trim()}>
+                  {loading ? 'Submitting...' : 'Submit Answer & Continue'}
+                </button>
+                <button 
+                  type="button" 
+                  className="skip-btn" 
+                  onClick={() => {
+                    if (window.confirm('Are you sure you want to skip this question? Skipped questions will receive a score of 0.')) {
+                      skipQuestion();
+                    }
+                  }}
+                  disabled={loading}
+                >
+                  Skip Question
+                </button>
+              </div>
             </form>
           </section>
 
@@ -570,7 +1032,14 @@ function DiagnosticWorkflow({ onBackToHome }: DiagnosticWorkflowProps) {
               <div className="answers-list">
                 {Object.entries(session.answers).map(([step, answer], idx) => (
                   <div className="previous-answer" key={idx}>
-                    <strong>Question {idx + 1}:</strong> {answer}
+                    <strong>Question {idx + 1}:</strong> 
+                    {answer === "[SKIPPED]" ? (
+                      <div className="skipped-answer">
+                        <em>Question was skipped</em>
+                      </div>
+                    ) : (
+                      answer
+                    )}
                   </div>
                 ))}
               </div>
@@ -587,7 +1056,13 @@ function DiagnosticWorkflow({ onBackToHome }: DiagnosticWorkflowProps) {
           borderTop: '1px solid #2d3748',
           marginTop: '2rem'
         }}>
-          Question {session.current_step} of {session.total_steps}
+          <div className="progress-bar">
+            <div className="progress-fill" style={{ width: `${(session.current_step / session.total_steps) * 100}%` }}></div>
+          </div>
+          
+          <div className="progress-text">
+            Question {session.current_step} of {session.total_steps}
+          </div>
         </div>
       </main>
     </div>

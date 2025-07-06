@@ -122,19 +122,25 @@ class AIGradingService:
                 step = int(question_num)
                 category = default_categories[step - 1] if step <= len(default_categories) else f"Question {step}"
                 
+                # Check if question was skipped
+                is_skipped = answer.strip() == "[SKIPPED]"
+                
                 formatted_answers.append({
                     "question_number": step,
                     "rubric_category": category,
                     "answer": answer.strip(),
-                    "word_count": len(answer.split())
+                    "word_count": len(answer.split()) if not is_skipped else 0,
+                    "is_skipped": is_skipped
                 })
             except (ValueError, IndexError):
                 # Handle invalid question numbers
+                is_skipped = answer.strip() == "[SKIPPED]"
                 formatted_answers.append({
                     "question_number": question_num,
                     "rubric_category": "Unknown",
                     "answer": answer.strip(),
-                    "word_count": len(answer.split())
+                    "word_count": len(answer.split()) if not is_skipped else 0,
+                    "is_skipped": is_skipped
                 })
         
         return formatted_answers
@@ -185,8 +191,12 @@ class AIGradingService:
         answers_text = ""
         for answer in answers:
             answers_text += f"\n**{answer['rubric_category']} (Question {answer['question_number']})**:\n"
-            answers_text += f"Student Answer: {answer['answer']}\n"
-            answers_text += f"Word Count: {answer['word_count']}\n"
+            if answer.get('is_skipped', False):
+                answers_text += f"Student Answer: [QUESTION SKIPPED BY STUDENT]\n"
+                answers_text += f"Word Count: 0\n"
+            else:
+                answers_text += f"Student Answer: {answer['answer']}\n"
+                answers_text += f"Word Count: {answer['word_count']}\n"
         
         prompt = f"""You are an expert medical educator evaluating radiology resident performance on an ABR-style oral board examination.
 
@@ -200,21 +210,22 @@ This is a complex gynecological oncology case requiring systematic evaluation of
 {answers_text}
 
 **GRADING INSTRUCTIONS**:
-1. **Do not award high scores for vague, generic, or padded answers**
-2. **Score ranges**: 
+1. **SKIPPED QUESTIONS**: Any question marked as "[QUESTION SKIPPED BY STUDENT]" must receive a score of 0 for that category. Provide feedback explaining that the question was skipped.
+2. **Do not award high scores for vague, generic, or padded answers**
+3. **Score ranges**: 
    - 85-95%: Excellent ABR oral board level performance
    - 70-84%: Good medical knowledge with minor gaps
    - 50-69%: Basic understanding but significant deficiencies
    - Below 50%: Poor performance with major knowledge gaps
 
-3. **Look for specific medical knowledge**:
+4. **Look for specific medical knowledge**:
    - Accurate imaging interpretation
    - Appropriate differential diagnoses
    - Clinical correlation and staging knowledge
    - Professional communication skills
    - Safety awareness
 
-4. **Penalize**:
+5. **Penalize**:
    - Generic or vague responses
    - Lack of specific medical terminology
    - Missing key findings or diagnoses
@@ -418,72 +429,101 @@ Return only the question, no additional text or explanation."""
             return None
     
     async def _fallback_grading(self, answers: Dict[str, str], case_id: str, rubric: Dict[str, Any]) -> Dict[str, Any]:
-        """Enhanced fallback grading when AI is unavailable"""
+        """Fallback grading when AI is not available"""
+        logger.warning("Using fallback grading system")
         
-        try:
-            category_scores = {}
-            total_weighted_score = 0
-            
-            # Default rubric categories with weights
-            default_categories = {
-                "Image Interpretation": 35,
-                "Differential Diagnosis": 25,
-                "Clinical Correlation": 15,
-                "Management Recommendations": 10,
-                "Communication & Organization": 10,
-                "Professional Judgment": 5,
-                "Safety Considerations": 5
-            }
-            
-            for i, (question_num, answer) in enumerate(answers.items(), 1):
-                category = list(default_categories.keys())[i-1] if i <= len(default_categories) else f"Question {i}"
-                weight = default_categories.get(category, 10)
+        # Default categories
+        default_categories = [
+            "Image Interpretation",
+            "Differential Diagnosis", 
+            "Clinical Correlation",
+            "Management Recommendations",
+            "Communication & Organization",
+            "Professional Judgment",
+            "Safety Considerations"
+        ]
+        
+        category_scores = {}
+        total_score = 0
+        strengths = []
+        areas_for_improvement = []
+        
+        for question_num, answer in answers.items():
+            try:
+                step = int(question_num)
+                category = default_categories[step - 1] if step <= len(default_categories) else f"Question {step}"
                 
-                # Content-based scoring
-                score = self._calculate_content_score(answer)
-                weighted_score = (score * weight) / 100
-                total_weighted_score += weighted_score
-                
-                # Generate basic feedback
-                feedback = self._generate_fallback_feedback(answer, category, score)
+                # Check if question was skipped
+                if answer.strip() == "[SKIPPED]":
+                    # Score skipped questions as 0
+                    score = 0
+                    percentage = 0
+                    feedback = "Question was skipped by student. No assessment possible."
+                    areas_for_improvement.append(f"Complete all questions for {category}")
+                else:
+                    # Calculate score based on content
+                    score = self._calculate_content_score(answer)
+                    percentage = score
+                    feedback = self._generate_fallback_feedback(answer, category, score)
+                    
+                    if score >= 70:
+                        strengths.append(f"Good performance in {category}")
+                    else:
+                        areas_for_improvement.append(f"Improvement needed in {category}")
                 
                 category_scores[category] = {
                     "score": score,
-                    "percentage": score,
-                    "feedback": feedback,
-                    "weight": weight
+                    "percentage": percentage,
+                    "feedback": feedback
                 }
-            
-            # Generate fallback follow-up questions for weak areas
-            follow_up_questions = []
-            for category, score_data in category_scores.items():
-                if score_data["percentage"] < 70:
-                    follow_up_questions.append({
-                        "category": category,
-                        "score": score_data["percentage"],
-                        "question": self._generate_fallback_follow_up(category, case_id),
-                        "purpose": "Encourage deeper thinking and address knowledge gaps",
-                        "type": "learning_only"
-                    })
-            
-            # Limit to 2 follow-up questions
-            follow_up_questions = follow_up_questions[:2]
-            
-            return {
-                "category_scores": category_scores,
-                "total_score": round(total_weighted_score),
-                "overall_percentage": round(total_weighted_score),
-                "overall_feedback": self._generate_overall_fallback_feedback(total_weighted_score),
-                "strengths": ["Completed all questions", "Provided detailed responses"],
-                "areas_for_improvement": ["Consider more specific medical terminology", "Focus on key diagnostic findings"],
-                "abr_readiness": "Additional study recommended" if total_weighted_score < 70 else "Good foundation for ABR preparation",
-                "follow_up_questions": follow_up_questions,
-                "grading_method": "fallback_content_analysis"
-            }
-            
-        except Exception as e:
-            logger.error(f"Error in fallback grading: {str(e)}")
-            return self._emergency_fallback()
+                total_score += score
+                
+            except (ValueError, IndexError):
+                # Handle invalid question numbers
+                if answer.strip() == "[SKIPPED]":
+                    score = 0
+                    feedback = "Question was skipped by student. No assessment possible."
+                else:
+                    score = self._calculate_content_score(answer)
+                    feedback = self._generate_fallback_feedback(answer, f"Question {question_num}", score)
+                
+                category_scores[f"Question {question_num}"] = {
+                    "score": score,
+                    "percentage": score,
+                    "feedback": feedback
+                }
+                total_score += score
+        
+        # Calculate average
+        num_questions = len(answers)
+        overall_percentage = total_score / num_questions if num_questions > 0 else 0
+        
+        # Generate overall feedback
+        overall_feedback = self._generate_overall_fallback_feedback(overall_percentage)
+        
+        # Generate fallback follow-up questions
+        follow_up_questions = []
+        for category, result in category_scores.items():
+            if result["percentage"] < 70:
+                follow_up_q = self._generate_fallback_follow_up(category, case_id)
+                follow_up_questions.append({
+                    "category": category,
+                    "question": follow_up_q,
+                    "purpose": f"Strengthen understanding in {category}",
+                    "score": result["percentage"]
+                })
+        
+        return {
+            "category_scores": category_scores,
+            "total_score": total_score,
+            "overall_percentage": overall_percentage,
+            "overall_feedback": overall_feedback,
+            "strengths": strengths,
+            "areas_for_improvement": areas_for_improvement,
+            "abr_readiness": "Limited assessment available due to system constraints",
+            "follow_up_questions": follow_up_questions,
+            "grading_method": "fallback_content_analysis"
+        }
     
     def _calculate_content_score(self, answer: str) -> int:
         """Calculate score based on content analysis"""
@@ -549,19 +589,21 @@ Return only the question, no additional text or explanation."""
             return f"Strong response for {category}. Good use of medical terminology and systematic approach."
     
     def _generate_fallback_follow_up(self, category: str, case_id: str) -> str:
-        """Generate fallback follow-up questions for weak categories"""
+        """Generate fallback follow-up questions"""
         
+        # Map categories to relevant follow-up questions
         category_questions = {
-            "Image Interpretation": "Can you describe the specific imaging characteristics that led to your assessment? What systematic approach did you use to evaluate the images?",
-            "Differential Diagnosis": "What specific imaging features helped you prioritize your differential diagnosis? Are there any other conditions you should consider?",
-            "Clinical Correlation": "How would you expect this patient to present clinically? What is the staging significance of the findings you described?",
-            "Management Recommendations": "What specific tumor markers would you recommend? Which specialists should be involved in this patient's care?",
-            "Communication & Organization": "How would you structure your radiology report for this case? What are the key points you would emphasize to the referring clinician?",
-            "Professional Judgment": "What findings in this case would require urgent communication? How would you handle the timing of result communication?",
-            "Safety Considerations": "What are the radiation safety considerations for this imaging approach? Are there alternative imaging modalities you would consider?"
+            "Image Interpretation": "What specific imaging findings would you look for in this type of case?",
+            "Differential Diagnosis": "What are the most common differential diagnoses for these imaging findings?",
+            "Clinical Correlation": "How would you correlate these imaging findings with clinical presentation?",
+            "Management Recommendations": "What would be your recommended next steps for patient management?",
+            "Communication & Organization": "How would you present these findings to the referring physician?",
+            "Professional Judgment": "What factors would influence your clinical decision-making in this case?",
+            "Safety Considerations": "What safety considerations should be addressed in this case?"
         }
         
-        return category_questions.get(category, f"Can you elaborate on your approach to {category.lower()} in this case?")
+        # Return category-specific question or generic question
+        return category_questions.get(category, f"Please provide additional thoughts on {category} for this case.")
     
     def _generate_overall_fallback_feedback(self, score: float) -> str:
         """Generate overall feedback for fallback grading"""
@@ -572,29 +614,309 @@ Return only the question, no additional text or explanation."""
             return "Good foundation but needs development. Work on incorporating more specific medical terminology and comprehensive analysis."
         else:
             return "Strong performance overall. Continue refining systematic approach and consider advanced radiology concepts."
-    
-    def _emergency_fallback(self) -> Dict[str, Any]:
-        """Emergency fallback when all other methods fail"""
+
+    async def evaluate_followup_answers(
+        self, 
+        followup_answers: Dict[str, str],
+        original_followup_questions: List[Dict[str, Any]],
+        case_id: str,
+        original_grading: Dict[str, Any]
+    ) -> Dict[str, Any]:
+        """
+        Evaluate student's follow-up answers and provide personalized feedback
+        
+        Args:
+            followup_answers: Dict mapping question index to student answer
+            original_followup_questions: The original follow-up questions that were asked
+            case_id: Case identifier
+            original_grading: Original grading results before follow-up
+            
+        Returns:
+            Dictionary containing follow-up evaluation and updated assessment
+        """
+        try:
+            if not await self._check_ai_availability():
+                return self._fallback_followup_evaluation(followup_answers, original_followup_questions)
+            
+            # Build evaluation prompt
+            evaluation_prompt = self._create_followup_evaluation_prompt(
+                followup_answers, original_followup_questions, case_id, original_grading
+            )
+            
+            # Get AI evaluation
+            response = await client.chat.completions.create(
+                model=self.model,
+                messages=[
+                    {
+                        "role": "system",
+                        "content": "You are an expert medical educator providing personalized feedback on student reflections during an ABR oral board examination follow-up session."
+                    },
+                    {
+                        "role": "user", 
+                        "content": evaluation_prompt
+                    }
+                ],
+                max_tokens=1000,
+                temperature=0.3,
+                timeout=30
+            )
+            
+            # Parse the evaluation response
+            evaluation_results = self._parse_followup_evaluation(response.choices[0].message.content)
+            
+            # Calculate learning improvement score
+            improvement_score = self._calculate_learning_improvement(
+                evaluation_results, original_grading, len(followup_answers)
+            )
+            
+            return {
+                "followup_evaluations": evaluation_results,
+                "learning_improvement": improvement_score,
+                "overall_followup_feedback": self._generate_overall_followup_feedback(evaluation_results),
+                "updated_assessment": self._update_assessment_with_followup(original_grading, improvement_score),
+                "evaluation_method": "ai_gpt4o"
+            }
+            
+        except Exception as e:
+            logger.error(f"Error evaluating follow-up answers: {str(e)}")
+            return self._fallback_followup_evaluation(followup_answers, original_followup_questions)
+
+    def _create_followup_evaluation_prompt(
+        self, 
+        followup_answers: Dict[str, str],
+        original_questions: List[Dict[str, Any]], 
+        case_id: str,
+        original_grading: Dict[str, Any]
+    ) -> str:
+        """Create prompt for evaluating follow-up answers"""
+        
+        # Build the evaluation context
+        answers_text = ""
+        for i, (idx, answer) in enumerate(followup_answers.items()):
+            question_idx = int(idx)
+            if question_idx < len(original_questions):
+                question_info = original_questions[question_idx]
+                answers_text += f"""
+**Follow-up Question {i+1}**: {question_info.get('question', 'Unknown question')}
+**Category**: {question_info.get('category', 'Unknown')}
+**Original Score**: {question_info.get('score', 'N/A')}%
+**Student's Reflection**: {answer}
+
+---
+"""
+        
+        original_score = original_grading.get('overall_percentage', 0)
+        
+        prompt = f"""You are evaluating a student's follow-up reflections during an ABR oral board examination for **{case_id.upper()}**.
+
+**ORIGINAL PERFORMANCE**: {original_score}% overall
+**WEAK AREAS**: Follow-up questions were generated for categories scoring <70%
+
+**STUDENT'S FOLLOW-UP REFLECTIONS**:
+{answers_text}
+
+**EVALUATION TASK**: 
+For each follow-up answer, provide specific feedback on:
+1. **Knowledge Demonstration**: Did they show improved understanding?
+2. **Clinical Reasoning**: How well did they address the knowledge gap?
+3. **Learning Progress**: Evidence of reflection and growth
+4. **Areas Still Needing Work**: What should they focus on next?
+
+**RESPONSE FORMAT** (JSON):
+```json
+{{
+  "evaluations": [
+    {{
+      "question_index": 0,
+      "category": "category_name",
+      "knowledge_demonstration": "assessment of knowledge shown",
+      "clinical_reasoning": "evaluation of their reasoning process", 
+      "learning_progress": "evidence of improvement/reflection",
+      "areas_for_continued_focus": "specific guidance for further study",
+      "improvement_score": 0-100,
+      "feedback_summary": "encouraging but honest overall assessment"
+    }}
+  ]
+}}
+```
+
+**GRADING PHILOSOPHY**:
+- Reward genuine reflection and effort (even if incomplete)
+- Recognize improved understanding from original weak performance
+- Provide constructive guidance for continued learning
+- Be encouraging but honest about remaining gaps
+- Score 60-80 for good reflection, 80-95 for excellent improvement"""
+
+        return prompt
+
+    def _parse_followup_evaluation(self, ai_response: str) -> List[Dict[str, Any]]:
+        """Parse AI evaluation response into structured format"""
+        try:
+            # Try to extract JSON from response
+            import json
+            import re
+            
+            # Look for JSON block
+            json_match = re.search(r'```json\s*(\{.*?\})\s*```', ai_response, re.DOTALL)
+            if json_match:
+                json_str = json_match.group(1)
+                parsed = json.loads(json_str)
+                return parsed.get("evaluations", [])
+            
+            # Fallback: try to parse the whole response as JSON
+            try:
+                parsed = json.loads(ai_response)
+                return parsed.get("evaluations", [])
+            except:
+                pass
+            
+            # If JSON parsing fails, return empty list
+            logger.warning("Could not parse follow-up evaluation response as JSON")
+            return []
+            
+        except Exception as e:
+            logger.error(f"Error parsing follow-up evaluation: {str(e)}")
+            return []
+
+    def _calculate_learning_improvement(
+        self, 
+        evaluations: List[Dict[str, Any]], 
+        original_grading: Dict[str, Any],
+        num_followup_answers: int
+    ) -> Dict[str, Any]:
+        """Calculate learning improvement score based on follow-up performance"""
+        
+        if not evaluations:
+            return {
+                "improvement_points": 0,
+                "engagement_score": 0,
+                "learning_trajectory": "needs_more_engagement"
+            }
+        
+        # Calculate average improvement score from evaluations
+        improvement_scores = [eval.get("improvement_score", 0) for eval in evaluations]
+        avg_improvement = sum(improvement_scores) / len(improvement_scores) if improvement_scores else 0
+        
+        # Engagement score based on completion
+        engagement_score = min(100, (len(evaluations) / num_followup_answers) * 100)
+        
+        # Determine learning trajectory
+        if avg_improvement >= 80:
+            trajectory = "excellent_improvement"
+        elif avg_improvement >= 65:
+            trajectory = "good_progress"
+        elif avg_improvement >= 50:
+            trajectory = "showing_effort"
+        else:
+            trajectory = "needs_more_focus"
+        
+        # Calculate bonus points for original score
+        original_score = original_grading.get('overall_percentage', 0)
+        improvement_points = min(10, (avg_improvement / 100) * 10)  # Up to 10 bonus points
         
         return {
-            "category_scores": {
-                "Image Interpretation": {"score": 50, "percentage": 50, "feedback": "Unable to grade - system error"},
-                "Differential Diagnosis": {"score": 50, "percentage": 50, "feedback": "Unable to grade - system error"},
-                "Clinical Correlation": {"score": 50, "percentage": 50, "feedback": "Unable to grade - system error"},
-                "Management Recommendations": {"score": 50, "percentage": 50, "feedback": "Unable to grade - system error"},
-                "Communication & Organization": {"score": 50, "percentage": 50, "feedback": "Unable to grade - system error"},
-                "Professional Judgment": {"score": 50, "percentage": 50, "feedback": "Unable to grade - system error"},
-                "Safety Considerations": {"score": 50, "percentage": 50, "feedback": "Unable to grade - system error"}
+            "improvement_points": improvement_points,
+            "engagement_score": engagement_score,
+            "learning_trajectory": trajectory,
+            "average_reflection_score": avg_improvement,
+            "followup_completion_rate": engagement_score
+        }
+
+    def _generate_overall_followup_feedback(self, evaluations: List[Dict[str, Any]]) -> str:
+        """Generate overall feedback on follow-up performance"""
+        
+        if not evaluations:
+            return "No follow-up evaluations completed. Consider engaging with follow-up questions to enhance learning."
+        
+        avg_score = sum(eval.get("improvement_score", 0) for eval in evaluations) / len(evaluations)
+        
+        if avg_score >= 80:
+            return "Excellent reflection and learning demonstrated in follow-up responses. You've shown significant improvement in understanding the weak areas identified. Continue this level of analytical thinking."
+        elif avg_score >= 65:
+            return "Good progress shown in follow-up reflections. You're addressing the knowledge gaps effectively and demonstrating improved clinical reasoning. Focus on the areas highlighted for continued growth."
+        elif avg_score >= 50:
+            return "Your follow-up responses show effort and some improvement in understanding. Continue to work on the specific areas identified and seek additional resources to strengthen your knowledge base."
+        else:
+            return "Follow-up responses indicate continued challenges in the weak areas. Consider additional study, mentorship, or review materials to strengthen your understanding before attempting similar cases."
+
+    def _update_assessment_with_followup(
+        self, 
+        original_grading: Dict[str, Any], 
+        improvement_score: Dict[str, Any]
+    ) -> Dict[str, Any]:
+        """Update the overall assessment incorporating follow-up performance"""
+        
+        original_percentage = original_grading.get('overall_percentage', 0)
+        improvement_points = improvement_score.get('improvement_points', 0)
+        engagement_score = improvement_score.get('engagement_score', 0)
+        
+        # Calculate updated score (small bonus for good follow-up work)
+        updated_percentage = min(100, original_percentage + improvement_points)
+        
+        # Update pass/fail status if applicable
+        original_passed = original_grading.get('passed', False)
+        updated_passed = updated_percentage >= 70
+        
+        learning_trajectory = improvement_score.get('learning_trajectory', 'needs_more_focus')
+        
+        return {
+            "original_score": original_percentage,
+            "improvement_bonus": improvement_points,
+            "updated_score": updated_percentage,
+            "originally_passed": original_passed,
+            "updated_passed": updated_passed,
+            "engagement_level": "high" if engagement_score >= 80 else "moderate" if engagement_score >= 50 else "low",
+            "learning_trajectory": learning_trajectory,
+            "recommendation": self._get_followup_recommendation(learning_trajectory, updated_percentage)
+        }
+
+    def _get_followup_recommendation(self, trajectory: str, updated_score: float) -> str:
+        """Get recommendation based on follow-up performance"""
+        
+        if trajectory == "excellent_improvement" and updated_score >= 75:
+            return "Outstanding learning progression. Ready for more challenging cases."
+        elif trajectory == "good_progress" and updated_score >= 70:
+            return "Solid improvement demonstrated. Continue practicing similar cases."
+        elif trajectory == "showing_effort":
+            return "Effort noted. Focus on the specific areas highlighted for improvement."
+        else:
+            return "Additional study and practice recommended before attempting ABR-level cases."
+
+    def _fallback_followup_evaluation(
+        self, 
+        followup_answers: Dict[str, str],
+        original_questions: List[Dict[str, Any]]
+    ) -> Dict[str, Any]:
+        """Fallback evaluation when AI is unavailable"""
+        
+        evaluations = []
+        for idx, answer in followup_answers.items():
+            question_idx = int(idx)
+            if question_idx < len(original_questions):
+                question = original_questions[question_idx]
+                
+                # Simple content analysis
+                answer_length = len(answer.split())
+                effort_score = min(80, max(40, answer_length * 2))  # 40-80 based on length
+                
+                evaluations.append({
+                    "question_index": question_idx,
+                    "category": question.get("category", "Unknown"),
+                    "improvement_score": effort_score,
+                    "feedback_summary": f"Response shows effort. Consider expanding on {question.get('category', 'this topic')} for deeper understanding."
+                })
+        
+        avg_score = sum(eval["improvement_score"] for eval in evaluations) / len(evaluations) if evaluations else 0
+        
+        return {
+            "followup_evaluations": evaluations,
+            "learning_improvement": {
+                "improvement_points": min(5, avg_score / 20),
+                "engagement_score": len(evaluations) * 50,  # Basic engagement
+                "learning_trajectory": "basic_effort"
             },
-            "total_score": 50,
-            "overall_percentage": 50,
-            "overall_feedback": "Grading system temporarily unavailable. Please try again later.",
-            "strengths": ["Completed diagnostic session"],
-            "areas_for_improvement": ["System unable to provide detailed feedback"],
-            "abr_readiness": "Unable to assess",
-            "follow_up_questions": [],
-            "grading_method": "emergency_fallback",
-            "error": "Grading system temporarily unavailable"
+            "overall_followup_feedback": "Follow-up responses received. AI evaluation unavailable - manual review recommended.",
+            "evaluation_method": "fallback_analysis"
         }
 
 # Create singleton instance
