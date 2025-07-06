@@ -79,14 +79,30 @@ interface FollowUpQuestion {
   score: number;
 }
 
-const CASE_METADATA = {
-  id: 'TCGA-09-0364',
-  title: 'Ovarian Cancer Case',
-  description: 'A 55-year-old woman with abdominal pain and a pelvic mass.',
-  modality: 'CT',
-  body_region: 'Pelvis',
-  difficulty_level: 'Intermediate',
-};
+// Add interface for case metadata from API
+interface CaseMetadata {
+  id: string;
+  title: string;
+  description?: string;
+  modality: string;
+  body_region: string;
+  difficulty_level?: string;
+  study_instance_uid?: string;
+  series_count?: number;
+  series_descriptions?: string[];
+  study_date?: string;
+  patient_age?: string;
+  contrast?: string;
+}
+
+// Add interface for case viewer URL response
+interface CaseViewerResponse {
+  success: boolean;
+  viewer_url: string;
+  case_id: string;
+  study_instance_uid?: string;
+  error?: string;
+}
 
 function DiagnosticWorkflow({ onBackToHome }: DiagnosticWorkflowProps) {
   const [session, setSession] = useState<DiagnosticSession | null>(null);
@@ -104,8 +120,109 @@ function DiagnosticWorkflow({ onBackToHome }: DiagnosticWorkflowProps) {
   const [showingFollowUps, setShowingFollowUps] = useState(false);
   const [currentFollowUpAnswer, setCurrentFollowUpAnswer] = useState('');
 
+  // New state for case metadata and viewer URL
+  const [caseMetadata, setCaseMetadata] = useState<CaseMetadata | null>(null);
+  const [viewerUrl, setViewerUrl] = useState<string | null>(null);
+  const [caseLoading, setCaseLoading] = useState(false);
+
   // API Base URL from environment variables
   const API_URL = `${import.meta.env.VITE_API_URL || 'https://api.casewisemd.org'}/api/v1`;
+
+  // Load case metadata and viewer URL when component mounts
+  useEffect(() => {
+    loadCaseData();
+  }, []);
+
+  // Load case metadata and viewer URL from MCP API
+  const loadCaseData = async () => {
+    setCaseLoading(true);
+    setError(null);
+    
+    try {
+      // Get case metadata
+      const metadataRes = await fetch(`${API_URL}/cases/case001/metadata`);
+      if (!metadataRes.ok) throw new Error('Failed to load case metadata');
+      const metadataData = await metadataRes.json();
+      
+      if (metadataData.success) {
+        // Transform API metadata to component format
+        const metadata: CaseMetadata = {
+          id: metadataData.case_id,
+          title: metadataData.metadata.title,
+          description: 'A complex medical case for diagnostic evaluation.',
+          modality: metadataData.metadata.modality,
+          body_region: metadataData.metadata.body_region,
+          difficulty_level: 'Advanced',
+          study_instance_uid: metadataData.metadata.study_instance_uid,
+          series_count: metadataData.metadata.series_count,
+          series_descriptions: metadataData.metadata.series_descriptions,
+          study_date: metadataData.metadata.study_date,
+          patient_age: metadataData.metadata.patient_age,
+          contrast: metadataData.metadata.contrast
+        };
+        setCaseMetadata(metadata);
+      }
+
+      // Get case viewer URL
+      const viewerRes = await fetch(`${API_URL}/viewer-url`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          case_id: 'case001'
+        }),
+      });
+      
+      if (!viewerRes.ok) throw new Error('Failed to load viewer URL');
+      const viewerData: CaseViewerResponse = await viewerRes.json();
+      
+      if (viewerData.success) {
+        setViewerUrl(viewerData.viewer_url);
+      } else {
+        console.warn('Failed to get viewer URL:', viewerData.error);
+        // Set fallback URL
+        setViewerUrl('https://viewer.casewisemd.org/viewer');
+      }
+      
+    } catch (err: any) {
+      console.error('Error loading case data:', err);
+      setError(`Failed to load case data: ${err.message}`);
+      
+      // Set fallback data
+      setCaseMetadata({
+        id: 'case001',
+        title: 'Ovarian Cancer Case - TCGA-09-0364',
+        description: 'A complex medical case for diagnostic evaluation.',
+        modality: 'CT',
+        body_region: 'Pelvis',
+        difficulty_level: 'Advanced'
+      });
+      setViewerUrl('https://viewer.casewisemd.org/viewer');
+    } finally {
+      setCaseLoading(false);
+    }
+  };
+
+  // Start session on component mount
+  useEffect(() => {
+    // Only start session after case data is loaded
+    if (caseMetadata && !caseLoading) {
+      startDiagnosticSession();
+    }
+  }, [caseMetadata, caseLoading]);
+
+  // Show loading state while case data is loading
+  if (caseLoading) {
+    return (
+      <div className="App">
+        <div className="loading-container">
+          <h2>Loading Case Data...</h2>
+          <div className="loading-spinner"></div>
+        </div>
+      </div>
+    );
+  }
 
   // Start diagnostic session
   const startDiagnosticSession = async () => {
@@ -361,11 +478,6 @@ function DiagnosticWorkflow({ onBackToHome }: DiagnosticWorkflowProps) {
     setShowingFollowUps(false);
   };
 
-  // Start session on component mount
-  useEffect(() => {
-    startDiagnosticSession();
-  }, []);
-
   if (loading && !session) {
     return (
       <div className="App">
@@ -544,28 +656,28 @@ function DiagnosticWorkflow({ onBackToHome }: DiagnosticWorkflowProps) {
             <div className="metadata-grid">
               <div className="metadata-item">
                 <label>Case ID:</label>
-                <span>{CASE_METADATA.id}</span>
+                <span>{caseMetadata?.id}</span>
               </div>
               <div className="metadata-item">
                 <label>Title:</label>
-                <span>{CASE_METADATA.title}</span>
+                <span>{caseMetadata?.title}</span>
               </div>
               <div className="metadata-item">
                 <label>Description:</label>
-                <span>{CASE_METADATA.description}</span>
+                <span>{caseMetadata?.description}</span>
               </div>
               <div className="metadata-item">
                 <label>Modality:</label>
-                <span className="badge">{CASE_METADATA.modality}</span>
+                <span className="badge">{caseMetadata?.modality}</span>
               </div>
               <div className="metadata-item">
                 <label>Body Region:</label>
-                <span className="badge">{CASE_METADATA.body_region}</span>
+                <span className="badge">{caseMetadata?.body_region}</span>
               </div>
               <div className="metadata-item">
                 <label>Difficulty:</label>
-                <span className={`badge difficulty-${CASE_METADATA.difficulty_level.toLowerCase()}`}>
-                  {CASE_METADATA.difficulty_level}
+                <span className={`badge difficulty-${caseMetadata?.difficulty_level?.toLowerCase()}`}>
+                  {caseMetadata?.difficulty_level}
                 </span>
               </div>
             </div>
@@ -851,9 +963,109 @@ function DiagnosticWorkflow({ onBackToHome }: DiagnosticWorkflowProps) {
   if (!session) {
     return (
       <div className="App">
-        <div className="loading-container">
-          <h2>Loading...</h2>
-        </div>
+        <header className="app-header">
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', maxWidth: '1200px', margin: '0 auto', width: '100%' }}>
+            <button 
+              onClick={onBackToHome}
+              style={{
+                background: 'rgba(45, 55, 72, 0.6)',
+                border: '1px solid #4a5568',
+                color: '#e2e8f0',
+                padding: '0.5rem 1rem',
+                borderRadius: '6px',
+                cursor: 'pointer',
+                fontSize: '0.9rem',
+                transition: 'all 0.3s ease'
+              }}
+            >
+              ← Back to Home
+            </button>
+            <div style={{ textAlign: 'center', flex: 1 }}>
+              <h1>CasewiseMD</h1>
+              <p className="app-subtitle">AI-Powered Radiology Education Platform</p>
+            </div>
+            <div style={{ width: '100px' }}></div>
+          </div>
+        </header>
+
+        <main className="app-main">
+          {/* Case Metadata Section */}
+          <section className="case-metadata">
+            <h2>Case Information</h2>
+            <div className="metadata-grid">
+              <div className="metadata-item">
+                <label>Case ID:</label>
+                <span>{caseMetadata?.id}</span>
+              </div>
+              <div className="metadata-item">
+                <label>Title:</label>
+                <span>{caseMetadata?.title}</span>
+              </div>
+              <div className="metadata-item">
+                <label>Description:</label>
+                <span>{caseMetadata?.description}</span>
+              </div>
+              <div className="metadata-item">
+                <label>Modality:</label>
+                <span className="badge">{caseMetadata?.modality}</span>
+              </div>
+              <div className="metadata-item">
+                <label>Body Region:</label>
+                <span className="badge">{caseMetadata?.body_region}</span>
+              </div>
+              <div className="metadata-item">
+                <label>Difficulty:</label>
+                <span className={`badge difficulty-${caseMetadata?.difficulty_level?.toLowerCase()}`}>
+                  {caseMetadata?.difficulty_level}
+                </span>
+              </div>
+            </div>
+          </section>
+
+          {/* Medical Image Viewer - Full Width */}
+          <div className="viewer-section" style={{ marginBottom: '2rem' }}>
+            <div className="viewer-header">
+              <h3>Medical Image Viewer</h3>
+              <button 
+                onClick={() => setShowDicomViewer(!showDicomViewer)}
+                className="toggle-viewer-btn"
+              >
+                {showDicomViewer ? 'Hide Image Viewer' : 'Show Image Viewer'}
+              </button>
+            </div>
+            {showDicomViewer && (
+              <Suspense fallback={
+                <div style={{ 
+                  padding: '2rem', 
+                  textAlign: 'center', 
+                  background: 'rgba(26, 32, 44, 0.8)', 
+                  border: '1px solid #2d3748', 
+                  borderRadius: '8px',
+                  color: '#a0aec0'
+                }}>
+                  <div className="loading-spinner"></div>
+                  <p>Loading medical image viewer...</p>
+                </div>
+              }>
+                <OhifIframeViewer 
+                  caseId="case001" 
+                  viewerUrl={viewerUrl || undefined}
+                />
+              </Suspense>
+            )}
+          </div>
+
+          {/* Start Session Button */}
+          <div className="start-session-section">
+            <button 
+              onClick={startDiagnosticSession} 
+              className="start-session-btn"
+              disabled={loading}
+            >
+              {loading ? 'Loading...' : 'Start Diagnostic Session'}
+            </button>
+          </div>
+        </main>
       </div>
     );
   }
@@ -892,28 +1104,28 @@ function DiagnosticWorkflow({ onBackToHome }: DiagnosticWorkflowProps) {
           <div className="metadata-grid">
             <div className="metadata-item">
               <label>Case ID:</label>
-              <span>{CASE_METADATA.id}</span>
+              <span>{caseMetadata?.id}</span>
             </div>
             <div className="metadata-item">
               <label>Title:</label>
-              <span>{CASE_METADATA.title}</span>
+              <span>{caseMetadata?.title}</span>
             </div>
             <div className="metadata-item">
               <label>Description:</label>
-              <span>{CASE_METADATA.description}</span>
+              <span>{caseMetadata?.description}</span>
             </div>
             <div className="metadata-item">
               <label>Modality:</label>
-              <span className="badge">{CASE_METADATA.modality}</span>
+              <span className="badge">{caseMetadata?.modality}</span>
             </div>
             <div className="metadata-item">
               <label>Body Region:</label>
-              <span className="badge">{CASE_METADATA.body_region}</span>
+              <span className="badge">{caseMetadata?.body_region}</span>
             </div>
             <div className="metadata-item">
               <label>Difficulty:</label>
-              <span className={`badge difficulty-${CASE_METADATA.difficulty_level.toLowerCase()}`}>
-                {CASE_METADATA.difficulty_level}
+              <span className={`badge difficulty-${caseMetadata?.difficulty_level?.toLowerCase()}`}>
+                {caseMetadata?.difficulty_level}
               </span>
             </div>
           </div>
@@ -944,7 +1156,10 @@ function DiagnosticWorkflow({ onBackToHome }: DiagnosticWorkflowProps) {
                 <p>Loading medical image viewer...</p>
               </div>
             }>
-              <OhifIframeViewer caseId="case001" />
+              <OhifIframeViewer 
+                caseId="case001" 
+                viewerUrl={viewerUrl || undefined}
+              />
             </Suspense>
           )}
         </div>

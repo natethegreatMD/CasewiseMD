@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from .routes import diagnostic, grade, config
+from .routes import diagnostic, grade, config, case_viewer
 
 # Load environment variables from .env file
 load_dotenv()
@@ -37,6 +37,7 @@ app.add_middleware(
 app.include_router(diagnostic.router, prefix="/api/v1", tags=["diagnostic"])
 app.include_router(grade.router, prefix="/api/v1", tags=["grade"])
 app.include_router(config.router, prefix="/api/v1", tags=["config"])
+app.include_router(case_viewer.router, prefix="/api/v1", tags=["case-viewer"])
 
 # Root endpoint
 @app.get("/")
@@ -54,6 +55,6 @@ async def health_check():
     return {
         "status": "healthy",
         "service": "mcp-backend",
-        "agents": ["diagnostic", "grade", "config"],
+        "agents": ["diagnostic", "grade", "config", "case-viewer"],
         "ai_grading_status": "enabled" if os.getenv("AI_GRADING_ENABLED", "true").lower() == "true" else "disabled"
     } 
