@@ -640,67 +640,71 @@ function DiagnosticWorkflow({ onBackToHome }: DiagnosticWorkflowProps) {
             <h2>📋 Clinical Case Overview</h2>
             <p className="case-subtitle">Advanced Diagnostic Challenge in Radiology Education</p>
             
-            {/* Primary Case Information */}
-            <div className="case-summary" style={{
-              background: 'linear-gradient(135deg, rgba(66, 153, 225, 0.1), rgba(159, 122, 234, 0.1))',
-              border: '1px solid rgba(66, 153, 225, 0.3)',
+            {/* Clinical History - Most Important - Gets Its Own Panel */}
+            <div className="clinical-history-panel" style={{
+              background: 'linear-gradient(135deg, rgba(66, 153, 225, 0.15), rgba(159, 122, 234, 0.15))',
+              border: '2px solid rgba(66, 153, 225, 0.4)',
               borderRadius: '16px',
               padding: '2rem',
               marginBottom: '2rem',
-              textAlign: 'center'
+              boxShadow: '0 8px 24px rgba(66, 153, 225, 0.2)'
             }}>
               <h3 style={{
                 color: '#f7fafc',
-                fontSize: '1.5rem',
+                fontSize: '1.4rem',
                 fontWeight: '700',
                 marginBottom: '1rem',
-                background: 'linear-gradient(135deg, #4299e1, #9f7aea)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text'
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.75rem'
               }}>
-                🏥 Complex Pelvic Imaging Case - Suspected Ovarian Pathology
+                <span style={{ fontSize: '1.6rem' }}>📋</span>
+                Clinical History & Presentation
               </h3>
-              <p style={{
-                color: '#e2e8f0',
-                fontSize: '1.1rem',
-                lineHeight: '1.6',
-                maxWidth: '800px',
-                margin: '0 auto'
+              <div style={{
+                background: 'rgba(26, 32, 44, 0.6)',
+                border: '1px solid rgba(66, 153, 225, 0.3)',
+                borderRadius: '12px',
+                padding: '1.5rem',
+                lineHeight: '1.6'
               }}>
-                This case presents a challenging diagnostic scenario involving a female patient with pelvic symptoms. 
-                The imaging study reveals complex findings that require careful analysis and systematic evaluation 
-                to arrive at an accurate diagnosis.
-              </p>
+                <div style={{ marginBottom: '1rem' }}>
+                  <strong style={{ color: '#4299e1' }}>Chief Complaint:</strong>
+                  <span style={{ color: '#e2e8f0', marginLeft: '0.5rem' }}>
+                    Pelvic pain and abdominal distension
+                  </span>
+                </div>
+                <div style={{ marginBottom: '1rem' }}>
+                  <strong style={{ color: '#4299e1' }}>History of Present Illness:</strong>
+                  <span style={{ color: '#e2e8f0', marginLeft: '0.5rem' }}>
+                    6-month history of progressive pelvic discomfort, early satiety, and increasing abdominal girth. 
+                    Patient reports gradual onset with worsening symptoms over recent months.
+                  </span>
+                </div>
+                <div>
+                  <strong style={{ color: '#4299e1' }}>Clinical Concern:</strong>
+                  <span style={{ color: '#e2e8f0', marginLeft: '0.5rem' }}>
+                    Suspected ovarian mass requiring further imaging evaluation
+                  </span>
+                </div>
+              </div>
             </div>
             
-            <div className="metadata-grid">
+            {/* Essential Case Details - Simplified */}
+            <div className="metadata-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))' }}>
               <div className="metadata-item">
                 <div className="metadata-item-header">
                   <span className="metadata-icon">🏥</span>
-                  <label>Medical Record Number</label>
+                  <label>Case Information</label>
                 </div>
                 <div className="metadata-value">
-                  Case #{caseMetadata?.id?.toUpperCase() || 'CASE001'}
+                  <strong>Medical Record:</strong> Case #{caseMetadata?.id?.toUpperCase() || 'CASE001'}
+                  <br />
+                  <strong>Study Type:</strong> Educational Case
                   <br />
                   <small style={{ color: '#a0aec0', fontSize: '0.9rem' }}>
-                    Educational Case - TCGA Database
+                    TCGA Database - Anonymized for Education
                   </small>
-                </div>
-              </div>
-              
-              <div className="metadata-item">
-                <div className="metadata-item-header">
-                  <span className="metadata-icon">📋</span>
-                  <label>Chief Complaint & History</label>
-                </div>
-                <div className="metadata-value">
-                  <strong>Chief Complaint:</strong> Pelvic pain and abdominal distension
-                  <br />
-                  <strong>History:</strong> 6-month history of progressive pelvic discomfort, 
-                  early satiety, and increasing abdominal girth
-                  <br />
-                  <strong>Clinical Concern:</strong> Suspected ovarian mass
                 </div>
               </div>
               
@@ -710,13 +714,11 @@ function DiagnosticWorkflow({ onBackToHome }: DiagnosticWorkflowProps) {
                   <label>Imaging Protocol</label>
                 </div>
                 <div className="metadata-value">
-                  <strong>Study Type:</strong> CT Abdomen & Pelvis with IV Contrast
+                  <strong>Study:</strong> CT Abdomen & Pelvis with IV Contrast
                   <br />
-                  <strong>Technique:</strong> Multiphasic contrast-enhanced CT
+                  <strong>Technique:</strong> Multiphasic contrast-enhanced
                   <br />
-                  <strong>Slice Thickness:</strong> 2.5mm axial reconstructions
-                  <br />
-                  <strong>Contrast:</strong> Iodinated contrast material IV
+                  <strong>Focus:</strong> Pelvic cavity evaluation
                 </div>
                 <span className={`badge modality-${caseMetadata?.modality?.toLowerCase() || 'ct'}`}>
                   {caseMetadata?.modality || 'CT'} Imaging
@@ -725,52 +727,17 @@ function DiagnosticWorkflow({ onBackToHome }: DiagnosticWorkflowProps) {
               
               <div className="metadata-item">
                 <div className="metadata-item-header">
-                  <span className="metadata-icon">🎯</span>
-                  <label>Anatomical Coverage</label>
-                </div>
-                <div className="metadata-value">
-                  <strong>Primary Focus:</strong> Pelvis and lower abdomen
-                  <br />
-                  <strong>Organs of Interest:</strong> Ovaries, uterus, bladder, bowel
-                  <br />
-                  <strong>Additional Coverage:</strong> Peritoneal cavity, lymph nodes
-                </div>
-                <span className="badge body-region">
-                  {caseMetadata?.body_region || 'Pelvis'}
-                </span>
-              </div>
-              
-              <div className="metadata-item">
-                <div className="metadata-item-header">
-                  <span className="metadata-icon">👩‍⚕️</span>
-                  <label>Patient Information</label>
-                </div>
-                <div className="metadata-value">
-                  <strong>Demographics:</strong> Adult female patient
-                  <br />
-                  <strong>Age Range:</strong> {caseMetadata?.patient_age || 'Middle-aged adult'}
-                  <br />
-                  <strong>Clinical Status:</strong> Stable, outpatient study
-                  <br />
-                  <small style={{ color: '#a0aec0', fontSize: '0.9rem', fontStyle: 'italic' }}>
-                    All patient identifiers anonymized for educational use
-                  </small>
-                </div>
-              </div>
-              
-              <div className="metadata-item">
-                <div className="metadata-item-header">
                   <span className="metadata-icon">⚡</span>
-                  <label>Case Complexity</label>
+                  <label>Learning Objectives</label>
                 </div>
                 <div className="metadata-value">
-                  <strong>Difficulty Level:</strong> Advanced
+                  <strong>Difficulty:</strong> Advanced Level
                   <br />
-                  <strong>Learning Objectives:</strong> 
+                  <strong>Key Skills:</strong>
                   <ul style={{ margin: '0.5rem 0 0 0', paddingLeft: '1rem' }}>
-                    <li>Complex mass characterization</li>
-                    <li>Differential diagnosis formation</li>
-                    <li>Staging assessment</li>
+                    <li>Mass characterization</li>
+                    <li>Differential diagnosis</li>
+                    <li>Clinical correlation</li>
                   </ul>
                 </div>
                 <span className={`badge difficulty-${caseMetadata?.difficulty_level?.toLowerCase() || 'advanced'}`}>
@@ -780,33 +747,18 @@ function DiagnosticWorkflow({ onBackToHome }: DiagnosticWorkflowProps) {
               
               <div className="metadata-item">
                 <div className="metadata-item-header">
-                  <span className="metadata-icon">🔍</span>
-                  <label>Key Clinical Questions</label>
+                  <span className="metadata-icon">👩‍⚕️</span>
+                  <label>Patient Demographics</label>
                 </div>
                 <div className="metadata-value">
-                  <strong>Primary Questions:</strong>
-                  <ul style={{ margin: '0.5rem 0 0 0', paddingLeft: '1rem' }}>
-                    <li>What is the nature of the pelvic mass?</li>
-                    <li>Are there signs of malignancy?</li>
-                    <li>What is the extent of disease?</li>
-                    <li>Are there associated complications?</li>
-                  </ul>
-                </div>
-              </div>
-              
-              <div className="metadata-item">
-                <div className="metadata-item-header">
-                  <span className="metadata-icon">📊</span>
-                  <label>Study Details</label>
-                </div>
-                <div className="metadata-value">
-                  <strong>Study Date:</strong> {caseMetadata?.study_date || 'Educational case'}
+                  <strong>Patient:</strong> Adult female
                   <br />
-                  <strong>Series Count:</strong> {caseMetadata?.series_count || 'Multiple series'}
+                  <strong>Age Group:</strong> {caseMetadata?.patient_age || 'Middle-aged adult'}
                   <br />
-                  <strong>Study UID:</strong> 
-                  <small style={{ color: '#a0aec0', fontSize: '0.8rem', wordBreak: 'break-all' }}>
-                    {caseMetadata?.study_instance_uid || 'Educational case identifier'}
+                  <strong>Setting:</strong> Outpatient imaging
+                  <br />
+                  <small style={{ color: '#a0aec0', fontSize: '0.9rem', fontStyle: 'italic' }}>
+                    All identifiers anonymized
                   </small>
                 </div>
               </div>
@@ -1090,67 +1042,71 @@ function DiagnosticWorkflow({ onBackToHome }: DiagnosticWorkflowProps) {
             <h2>📋 Clinical Case Overview</h2>
             <p className="case-subtitle">Advanced Diagnostic Challenge in Radiology Education</p>
             
-            {/* Primary Case Information */}
-            <div className="case-summary" style={{
-              background: 'linear-gradient(135deg, rgba(66, 153, 225, 0.1), rgba(159, 122, 234, 0.1))',
-              border: '1px solid rgba(66, 153, 225, 0.3)',
+            {/* Clinical History - Most Important - Gets Its Own Panel */}
+            <div className="clinical-history-panel" style={{
+              background: 'linear-gradient(135deg, rgba(66, 153, 225, 0.15), rgba(159, 122, 234, 0.15))',
+              border: '2px solid rgba(66, 153, 225, 0.4)',
               borderRadius: '16px',
               padding: '2rem',
               marginBottom: '2rem',
-              textAlign: 'center'
+              boxShadow: '0 8px 24px rgba(66, 153, 225, 0.2)'
             }}>
               <h3 style={{
                 color: '#f7fafc',
-                fontSize: '1.5rem',
+                fontSize: '1.4rem',
                 fontWeight: '700',
                 marginBottom: '1rem',
-                background: 'linear-gradient(135deg, #4299e1, #9f7aea)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text'
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.75rem'
               }}>
-                🏥 Complex Pelvic Imaging Case - Suspected Ovarian Pathology
+                <span style={{ fontSize: '1.6rem' }}>📋</span>
+                Clinical History & Presentation
               </h3>
-              <p style={{
-                color: '#e2e8f0',
-                fontSize: '1.1rem',
-                lineHeight: '1.6',
-                maxWidth: '800px',
-                margin: '0 auto'
+              <div style={{
+                background: 'rgba(26, 32, 44, 0.6)',
+                border: '1px solid rgba(66, 153, 225, 0.3)',
+                borderRadius: '12px',
+                padding: '1.5rem',
+                lineHeight: '1.6'
               }}>
-                This case presents a challenging diagnostic scenario involving a female patient with pelvic symptoms. 
-                The imaging study reveals complex findings that require careful analysis and systematic evaluation 
-                to arrive at an accurate diagnosis.
-              </p>
+                <div style={{ marginBottom: '1rem' }}>
+                  <strong style={{ color: '#4299e1' }}>Chief Complaint:</strong>
+                  <span style={{ color: '#e2e8f0', marginLeft: '0.5rem' }}>
+                    Pelvic pain and abdominal distension
+                  </span>
+                </div>
+                <div style={{ marginBottom: '1rem' }}>
+                  <strong style={{ color: '#4299e1' }}>History of Present Illness:</strong>
+                  <span style={{ color: '#e2e8f0', marginLeft: '0.5rem' }}>
+                    6-month history of progressive pelvic discomfort, early satiety, and increasing abdominal girth. 
+                    Patient reports gradual onset with worsening symptoms over recent months.
+                  </span>
+                </div>
+                <div>
+                  <strong style={{ color: '#4299e1' }}>Clinical Concern:</strong>
+                  <span style={{ color: '#e2e8f0', marginLeft: '0.5rem' }}>
+                    Suspected ovarian mass requiring further imaging evaluation
+                  </span>
+                </div>
+              </div>
             </div>
             
-            <div className="metadata-grid">
+            {/* Essential Case Details - Simplified */}
+            <div className="metadata-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))' }}>
               <div className="metadata-item">
                 <div className="metadata-item-header">
                   <span className="metadata-icon">🏥</span>
-                  <label>Medical Record Number</label>
+                  <label>Case Information</label>
                 </div>
                 <div className="metadata-value">
-                  Case #{caseMetadata?.id?.toUpperCase() || 'CASE001'}
+                  <strong>Medical Record:</strong> Case #{caseMetadata?.id?.toUpperCase() || 'CASE001'}
+                  <br />
+                  <strong>Study Type:</strong> Educational Case
                   <br />
                   <small style={{ color: '#a0aec0', fontSize: '0.9rem' }}>
-                    Educational Case - TCGA Database
+                    TCGA Database - Anonymized for Education
                   </small>
-                </div>
-              </div>
-              
-              <div className="metadata-item">
-                <div className="metadata-item-header">
-                  <span className="metadata-icon">📋</span>
-                  <label>Chief Complaint & History</label>
-                </div>
-                <div className="metadata-value">
-                  <strong>Chief Complaint:</strong> Pelvic pain and abdominal distension
-                  <br />
-                  <strong>History:</strong> 6-month history of progressive pelvic discomfort, 
-                  early satiety, and increasing abdominal girth
-                  <br />
-                  <strong>Clinical Concern:</strong> Suspected ovarian mass
                 </div>
               </div>
               
@@ -1160,13 +1116,11 @@ function DiagnosticWorkflow({ onBackToHome }: DiagnosticWorkflowProps) {
                   <label>Imaging Protocol</label>
                 </div>
                 <div className="metadata-value">
-                  <strong>Study Type:</strong> CT Abdomen & Pelvis with IV Contrast
+                  <strong>Study:</strong> CT Abdomen & Pelvis with IV Contrast
                   <br />
-                  <strong>Technique:</strong> Multiphasic contrast-enhanced CT
+                  <strong>Technique:</strong> Multiphasic contrast-enhanced
                   <br />
-                  <strong>Slice Thickness:</strong> 2.5mm axial reconstructions
-                  <br />
-                  <strong>Contrast:</strong> Iodinated contrast material IV
+                  <strong>Focus:</strong> Pelvic cavity evaluation
                 </div>
                 <span className={`badge modality-${caseMetadata?.modality?.toLowerCase() || 'ct'}`}>
                   {caseMetadata?.modality || 'CT'} Imaging
@@ -1175,52 +1129,17 @@ function DiagnosticWorkflow({ onBackToHome }: DiagnosticWorkflowProps) {
               
               <div className="metadata-item">
                 <div className="metadata-item-header">
-                  <span className="metadata-icon">🎯</span>
-                  <label>Anatomical Coverage</label>
-                </div>
-                <div className="metadata-value">
-                  <strong>Primary Focus:</strong> Pelvis and lower abdomen
-                  <br />
-                  <strong>Organs of Interest:</strong> Ovaries, uterus, bladder, bowel
-                  <br />
-                  <strong>Additional Coverage:</strong> Peritoneal cavity, lymph nodes
-                </div>
-                <span className="badge body-region">
-                  {caseMetadata?.body_region || 'Pelvis'}
-                </span>
-              </div>
-              
-              <div className="metadata-item">
-                <div className="metadata-item-header">
-                  <span className="metadata-icon">👩‍⚕️</span>
-                  <label>Patient Information</label>
-                </div>
-                <div className="metadata-value">
-                  <strong>Demographics:</strong> Adult female patient
-                  <br />
-                  <strong>Age Range:</strong> {caseMetadata?.patient_age || 'Middle-aged adult'}
-                  <br />
-                  <strong>Clinical Status:</strong> Stable, outpatient study
-                  <br />
-                  <small style={{ color: '#a0aec0', fontSize: '0.9rem', fontStyle: 'italic' }}>
-                    All patient identifiers anonymized for educational use
-                  </small>
-                </div>
-              </div>
-              
-              <div className="metadata-item">
-                <div className="metadata-item-header">
                   <span className="metadata-icon">⚡</span>
-                  <label>Case Complexity</label>
+                  <label>Learning Objectives</label>
                 </div>
                 <div className="metadata-value">
-                  <strong>Difficulty Level:</strong> Advanced
+                  <strong>Difficulty:</strong> Advanced Level
                   <br />
-                  <strong>Learning Objectives:</strong> 
+                  <strong>Key Skills:</strong>
                   <ul style={{ margin: '0.5rem 0 0 0', paddingLeft: '1rem' }}>
-                    <li>Complex mass characterization</li>
-                    <li>Differential diagnosis formation</li>
-                    <li>Staging assessment</li>
+                    <li>Mass characterization</li>
+                    <li>Differential diagnosis</li>
+                    <li>Clinical correlation</li>
                   </ul>
                 </div>
                 <span className={`badge difficulty-${caseMetadata?.difficulty_level?.toLowerCase() || 'advanced'}`}>
@@ -1230,33 +1149,18 @@ function DiagnosticWorkflow({ onBackToHome }: DiagnosticWorkflowProps) {
               
               <div className="metadata-item">
                 <div className="metadata-item-header">
-                  <span className="metadata-icon">🔍</span>
-                  <label>Key Clinical Questions</label>
+                  <span className="metadata-icon">👩‍⚕️</span>
+                  <label>Patient Demographics</label>
                 </div>
                 <div className="metadata-value">
-                  <strong>Primary Questions:</strong>
-                  <ul style={{ margin: '0.5rem 0 0 0', paddingLeft: '1rem' }}>
-                    <li>What is the nature of the pelvic mass?</li>
-                    <li>Are there signs of malignancy?</li>
-                    <li>What is the extent of disease?</li>
-                    <li>Are there associated complications?</li>
-                  </ul>
-                </div>
-              </div>
-              
-              <div className="metadata-item">
-                <div className="metadata-item-header">
-                  <span className="metadata-icon">📊</span>
-                  <label>Study Details</label>
-                </div>
-                <div className="metadata-value">
-                  <strong>Study Date:</strong> {caseMetadata?.study_date || 'Educational case'}
+                  <strong>Patient:</strong> Adult female
                   <br />
-                  <strong>Series Count:</strong> {caseMetadata?.series_count || 'Multiple series'}
+                  <strong>Age Group:</strong> {caseMetadata?.patient_age || 'Middle-aged adult'}
                   <br />
-                  <strong>Study UID:</strong> 
-                  <small style={{ color: '#a0aec0', fontSize: '0.8rem', wordBreak: 'break-all' }}>
-                    {caseMetadata?.study_instance_uid || 'Educational case identifier'}
+                  <strong>Setting:</strong> Outpatient imaging
+                  <br />
+                  <small style={{ color: '#a0aec0', fontSize: '0.9rem', fontStyle: 'italic' }}>
+                    All identifiers anonymized
                   </small>
                 </div>
               </div>
@@ -1330,67 +1234,71 @@ function DiagnosticWorkflow({ onBackToHome }: DiagnosticWorkflowProps) {
           <h2>📋 Clinical Case Overview</h2>
           <p className="case-subtitle">Advanced Diagnostic Challenge in Radiology Education</p>
           
-          {/* Primary Case Information */}
-          <div className="case-summary" style={{
-            background: 'linear-gradient(135deg, rgba(66, 153, 225, 0.1), rgba(159, 122, 234, 0.1))',
-            border: '1px solid rgba(66, 153, 225, 0.3)',
+          {/* Clinical History - Most Important - Gets Its Own Panel */}
+          <div className="clinical-history-panel" style={{
+            background: 'linear-gradient(135deg, rgba(66, 153, 225, 0.15), rgba(159, 122, 234, 0.15))',
+            border: '2px solid rgba(66, 153, 225, 0.4)',
             borderRadius: '16px',
             padding: '2rem',
             marginBottom: '2rem',
-            textAlign: 'center'
+            boxShadow: '0 8px 24px rgba(66, 153, 225, 0.2)'
           }}>
             <h3 style={{
               color: '#f7fafc',
-              fontSize: '1.5rem',
+              fontSize: '1.4rem',
               fontWeight: '700',
               marginBottom: '1rem',
-              background: 'linear-gradient(135deg, #4299e1, #9f7aea)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text'
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.75rem'
             }}>
-              🏥 Complex Pelvic Imaging Case - Suspected Ovarian Pathology
+              <span style={{ fontSize: '1.6rem' }}>📋</span>
+              Clinical History & Presentation
             </h3>
-            <p style={{
-              color: '#e2e8f0',
-              fontSize: '1.1rem',
-              lineHeight: '1.6',
-              maxWidth: '800px',
-              margin: '0 auto'
+            <div style={{
+              background: 'rgba(26, 32, 44, 0.6)',
+              border: '1px solid rgba(66, 153, 225, 0.3)',
+              borderRadius: '12px',
+              padding: '1.5rem',
+              lineHeight: '1.6'
             }}>
-              This case presents a challenging diagnostic scenario involving a female patient with pelvic symptoms. 
-              The imaging study reveals complex findings that require careful analysis and systematic evaluation 
-              to arrive at an accurate diagnosis.
-            </p>
+              <div style={{ marginBottom: '1rem' }}>
+                <strong style={{ color: '#4299e1' }}>Chief Complaint:</strong>
+                <span style={{ color: '#e2e8f0', marginLeft: '0.5rem' }}>
+                  Pelvic pain and abdominal distension
+                </span>
+              </div>
+              <div style={{ marginBottom: '1rem' }}>
+                <strong style={{ color: '#4299e1' }}>History of Present Illness:</strong>
+                <span style={{ color: '#e2e8f0', marginLeft: '0.5rem' }}>
+                  6-month history of progressive pelvic discomfort, early satiety, and increasing abdominal girth. 
+                  Patient reports gradual onset with worsening symptoms over recent months.
+                </span>
+              </div>
+              <div>
+                <strong style={{ color: '#4299e1' }}>Clinical Concern:</strong>
+                <span style={{ color: '#e2e8f0', marginLeft: '0.5rem' }}>
+                  Suspected ovarian mass requiring further imaging evaluation
+                </span>
+              </div>
+            </div>
           </div>
           
-          <div className="metadata-grid">
+          {/* Essential Case Details - Simplified */}
+          <div className="metadata-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))' }}>
             <div className="metadata-item">
               <div className="metadata-item-header">
                 <span className="metadata-icon">🏥</span>
-                <label>Medical Record Number</label>
+                <label>Case Information</label>
               </div>
               <div className="metadata-value">
-                Case #{caseMetadata?.id?.toUpperCase() || 'CASE001'}
+                <strong>Medical Record:</strong> Case #{caseMetadata?.id?.toUpperCase() || 'CASE001'}
+                <br />
+                <strong>Study Type:</strong> Educational Case
                 <br />
                 <small style={{ color: '#a0aec0', fontSize: '0.9rem' }}>
-                  Educational Case - TCGA Database
+                  TCGA Database - Anonymized for Education
                 </small>
-              </div>
-            </div>
-            
-            <div className="metadata-item">
-              <div className="metadata-item-header">
-                <span className="metadata-icon">📋</span>
-                <label>Chief Complaint & History</label>
-              </div>
-              <div className="metadata-value">
-                <strong>Chief Complaint:</strong> Pelvic pain and abdominal distension
-                <br />
-                <strong>History:</strong> 6-month history of progressive pelvic discomfort, 
-                early satiety, and increasing abdominal girth
-                <br />
-                <strong>Clinical Concern:</strong> Suspected ovarian mass
               </div>
             </div>
             
@@ -1400,13 +1308,11 @@ function DiagnosticWorkflow({ onBackToHome }: DiagnosticWorkflowProps) {
                 <label>Imaging Protocol</label>
               </div>
               <div className="metadata-value">
-                <strong>Study Type:</strong> CT Abdomen & Pelvis with IV Contrast
+                <strong>Study:</strong> CT Abdomen & Pelvis with IV Contrast
                 <br />
-                <strong>Technique:</strong> Multiphasic contrast-enhanced CT
+                <strong>Technique:</strong> Multiphasic contrast-enhanced
                 <br />
-                <strong>Slice Thickness:</strong> 2.5mm axial reconstructions
-                <br />
-                <strong>Contrast:</strong> Iodinated contrast material IV
+                <strong>Focus:</strong> Pelvic cavity evaluation
               </div>
               <span className={`badge modality-${caseMetadata?.modality?.toLowerCase() || 'ct'}`}>
                 {caseMetadata?.modality || 'CT'} Imaging
@@ -1415,52 +1321,17 @@ function DiagnosticWorkflow({ onBackToHome }: DiagnosticWorkflowProps) {
             
             <div className="metadata-item">
               <div className="metadata-item-header">
-                <span className="metadata-icon">🎯</span>
-                <label>Anatomical Coverage</label>
-              </div>
-              <div className="metadata-value">
-                <strong>Primary Focus:</strong> Pelvis and lower abdomen
-                <br />
-                <strong>Organs of Interest:</strong> Ovaries, uterus, bladder, bowel
-                <br />
-                <strong>Additional Coverage:</strong> Peritoneal cavity, lymph nodes
-              </div>
-              <span className="badge body-region">
-                {caseMetadata?.body_region || 'Pelvis'}
-              </span>
-            </div>
-            
-            <div className="metadata-item">
-              <div className="metadata-item-header">
-                <span className="metadata-icon">👩‍⚕️</span>
-                <label>Patient Information</label>
-              </div>
-              <div className="metadata-value">
-                <strong>Demographics:</strong> Adult female patient
-                <br />
-                <strong>Age Range:</strong> {caseMetadata?.patient_age || 'Middle-aged adult'}
-                <br />
-                <strong>Clinical Status:</strong> Stable, outpatient study
-                <br />
-                <small style={{ color: '#a0aec0', fontSize: '0.9rem', fontStyle: 'italic' }}>
-                  All patient identifiers anonymized for educational use
-                </small>
-              </div>
-            </div>
-            
-            <div className="metadata-item">
-              <div className="metadata-item-header">
                 <span className="metadata-icon">⚡</span>
-                <label>Case Complexity</label>
+                <label>Learning Objectives</label>
               </div>
               <div className="metadata-value">
-                <strong>Difficulty Level:</strong> Advanced
+                <strong>Difficulty:</strong> Advanced Level
                 <br />
-                <strong>Learning Objectives:</strong> 
+                <strong>Key Skills:</strong>
                 <ul style={{ margin: '0.5rem 0 0 0', paddingLeft: '1rem' }}>
-                  <li>Complex mass characterization</li>
-                  <li>Differential diagnosis formation</li>
-                  <li>Staging assessment</li>
+                  <li>Mass characterization</li>
+                  <li>Differential diagnosis</li>
+                  <li>Clinical correlation</li>
                 </ul>
               </div>
               <span className={`badge difficulty-${caseMetadata?.difficulty_level?.toLowerCase() || 'advanced'}`}>
@@ -1470,33 +1341,18 @@ function DiagnosticWorkflow({ onBackToHome }: DiagnosticWorkflowProps) {
             
             <div className="metadata-item">
               <div className="metadata-item-header">
-                <span className="metadata-icon">🔍</span>
-                <label>Key Clinical Questions</label>
+                <span className="metadata-icon">👩‍⚕️</span>
+                <label>Patient Demographics</label>
               </div>
               <div className="metadata-value">
-                <strong>Primary Questions:</strong>
-                <ul style={{ margin: '0.5rem 0 0 0', paddingLeft: '1rem' }}>
-                  <li>What is the nature of the pelvic mass?</li>
-                  <li>Are there signs of malignancy?</li>
-                  <li>What is the extent of disease?</li>
-                  <li>Are there associated complications?</li>
-                </ul>
-              </div>
-            </div>
-            
-            <div className="metadata-item">
-              <div className="metadata-item-header">
-                <span className="metadata-icon">📊</span>
-                <label>Study Details</label>
-              </div>
-              <div className="metadata-value">
-                <strong>Study Date:</strong> {caseMetadata?.study_date || 'Educational case'}
+                <strong>Patient:</strong> Adult female
                 <br />
-                <strong>Series Count:</strong> {caseMetadata?.series_count || 'Multiple series'}
+                <strong>Age Group:</strong> {caseMetadata?.patient_age || 'Middle-aged adult'}
                 <br />
-                <strong>Study UID:</strong> 
-                <small style={{ color: '#a0aec0', fontSize: '0.8rem', wordBreak: 'break-all' }}>
-                  {caseMetadata?.study_instance_uid || 'Educational case identifier'}
+                <strong>Setting:</strong> Outpatient imaging
+                <br />
+                <small style={{ color: '#a0aec0', fontSize: '0.9rem', fontStyle: 'italic' }}>
+                  All identifiers anonymized
                 </small>
               </div>
             </div>
