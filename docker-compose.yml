@@ -18,3 +18,26 @@ services:
       retries: 3
     volumes:
       - ./demo_cases:/app/demo_cases 
+
+  orthanc:
+    image: orthancteam/orthanc:latest
+    container_name: casewise_orthanc
+    ports:
+      - "8042:8042"
+    restart: unless-stopped
+    volumes:
+      - orthanc_data:/var/lib/orthanc/db
+      - ./demo_cases:/data:ro
+    environment:
+      - ORTHANC__DICOM_WEB__ENABLE=true
+      - ORTHANC__DICOM_WEB__ROOT=/dicom-web/
+      - ORTHANC__HTTP_PORT=8042
+      - ORTHANC__AUTHENTICATION_ENABLED=false
+    healthcheck:
+      test: ["CMD-SHELL", "curl --fail http://localhost:8042/system || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+volumes:
+  orthanc_data: 
