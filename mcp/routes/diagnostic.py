@@ -116,6 +116,7 @@ async def get_diagnostic_session(case_id: str = Query(default="case001", descrip
             "current_step": 1,
             "total_steps": len(questions),
             "completed": False,
+            "answers": {},  # Empty answers object for new session
             "case_info": {
                 "patient_id": metadata.get("patient_id", "unknown"),
                 "modality": metadata.get("modality", "unknown"),
