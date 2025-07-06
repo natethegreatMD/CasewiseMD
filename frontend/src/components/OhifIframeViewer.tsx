@@ -53,7 +53,7 @@ const OhifIframeViewer: React.FC<OhifIframeViewerProps> = ({
   }
 
   return (
-    <div className={`ohif-iframe-viewer ${className}`}>
+    <div className={`ohif-iframe-viewer ${className}`} style={{ width: '100%', height: '100%' }}>
       {loading && (
         <div className="loading-overlay">
           <div className="loading-spinner"></div>
@@ -73,7 +73,7 @@ const OhifIframeViewer: React.FC<OhifIframeViewerProps> = ({
         className="ohif-iframe"
         style={{
           width: '100%',
-          height: '600px',
+          height: '100%',
           border: 'none',
           borderRadius: '8px',
           boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'

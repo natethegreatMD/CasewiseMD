@@ -132,7 +132,7 @@ body {
 .app-main {
   flex: 1;
   width: 100% !important;
-  max-width: 90% !important;
+  max-width: 1200px !important;
   margin: 0 auto !important;
   padding: 2rem;
 }
@@ -145,30 +145,30 @@ body {
 /* Responsive container adjustments */
 @media (max-width: 1200px) {
   .app-main {
-    max-width: 95% !important;
+    max-width: 1000px !important;
     margin: 0 auto !important;
     padding: 2rem 1rem;
   }
   
   .header-content {
-    max-width: 95%;
+    max-width: 1000px;
   }
   
   .footer-content {
-    max-width: 95%;
+    max-width: 1000px;
   }
   
   .footer-bottom {
-    max-width: 95%;
+    max-width: 1000px;
   }
   
   .viewer-container {
-    min-height: 75vh;
-    height: 75vh;
+    min-height: 85vh;
+    height: 85vh;
   }
   
   .viewer-container iframe {
-    height: calc(75vh - 3rem);
+    height: calc(85vh - 3rem);
   }
 }
 
@@ -179,7 +179,7 @@ body {
   
   .header-content {
     padding: 0 1rem;
-    max-width: 95%;
+    max-width: 768px;
   }
   
   .app-header h1 {
@@ -189,7 +189,7 @@ body {
   .app-main {
     padding: 1rem !important;
     margin: 0 auto !important;
-    max-width: 98% !important;
+    max-width: 768px !important;
   }
   
   .main-navigation {
@@ -201,23 +201,23 @@ body {
     grid-template-columns: 1fr;
     gap: 2rem;
     padding: 0 1rem;
-    max-width: 98%;
+    max-width: 768px;
   }
   
   .footer-bottom {
     padding-left: 1rem;
     padding-right: 1rem;
-    max-width: 98%;
+    max-width: 768px;
   }
   
   .viewer-container {
     padding: 1rem;
-    min-height: 70vh;
-    height: 70vh;
+    min-height: 80vh;
+    height: 80vh;
   }
   
   .viewer-container iframe {
-    height: calc(70vh - 2rem);
+    height: calc(80vh - 2rem);
   }
   
   .metadata-grid {
@@ -234,23 +234,23 @@ body {
   .app-main {
     padding: 0.75rem !important;
     margin: 0 auto !important;
-    max-width: 100% !important;
+    max-width: 480px !important;
   }
   
   .header-content {
     padding: 0 0.75rem;
-    max-width: 100%;
+    max-width: 480px;
   }
   
   .footer-content {
     padding: 0 0.75rem;
-    max-width: 100%;
+    max-width: 480px;
   }
   
   .footer-bottom {
     padding-left: 0.75rem;
     padding-right: 0.75rem;
-    max-width: 100%;
+    max-width: 480px;
   }
 }
 
@@ -1159,19 +1159,50 @@ body {
   border: 1px solid rgba(66, 153, 225, 0.3);
   border-radius: 16px;
   padding: 1.5rem;
-  min-height: 80vh;
-  height: 80vh;
+  min-height: 90vh;
+  height: 90vh;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   backdrop-filter: blur(10px);
 }
 
 .viewer-container iframe {
   width: 100%;
-  height: calc(80vh - 3rem);
+  height: calc(90vh - 3rem);
   border: none;
   border-radius: 12px;
   background: #1a202c;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+/* OHIF Viewer Component Styles */
+.ohif-iframe-viewer {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.ohif-iframe-viewer .ohif-iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  border-radius: 12px;
+  background: #1a202c;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+.ohif-iframe-viewer .loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(26, 32, 44, 0.9);
+  border-radius: 12px;
+  z-index: 10;
 }
 
 /* Diagnostic Session Controls - Enhanced */
