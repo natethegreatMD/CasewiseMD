@@ -729,46 +729,46 @@ function DiagnosticWorkflow({ onBackToHome }: DiagnosticWorkflowProps) {
                   <div className="individual-followup-evaluations">
                     <h4>Detailed Reflection Feedback</h4>
                     <div className="evaluations-list">
-                      {gradingResult.followup_evaluation.followup_evaluations.map((eval: any, i: number) => (
+                      {gradingResult.followup_evaluation.followup_evaluations.map((evaluation: any, i: number) => (
                         <div key={i} className="followup-evaluation-card">
                           <div className="evaluation-header">
-                            <span className="evaluation-category">{eval.category}</span>
-                            <span className="evaluation-score">{eval.improvement_score}/100</span>
+                            <span className="evaluation-category">{evaluation.category}</span>
+                            <span className="evaluation-score">{evaluation.improvement_score}/100</span>
                           </div>
                           
                           <div className="evaluation-content">
-                            {eval.knowledge_demonstration && (
+                            {evaluation.knowledge_demonstration && (
                               <div className="evaluation-section">
                                 <strong>Knowledge Demonstrated:</strong>
-                                <p>{eval.knowledge_demonstration}</p>
+                                <p>{evaluation.knowledge_demonstration}</p>
                               </div>
                             )}
                             
-                            {eval.clinical_reasoning && (
+                            {evaluation.clinical_reasoning && (
                               <div className="evaluation-section">
                                 <strong>Clinical Reasoning:</strong>
-                                <p>{eval.clinical_reasoning}</p>
+                                <p>{evaluation.clinical_reasoning}</p>
                               </div>
                             )}
                             
-                            {eval.learning_progress && (
+                            {evaluation.learning_progress && (
                               <div className="evaluation-section">
                                 <strong>Learning Progress:</strong>
-                                <p>{eval.learning_progress}</p>
+                                <p>{evaluation.learning_progress}</p>
                               </div>
                             )}
                             
-                            {eval.areas_for_continued_focus && (
+                            {evaluation.areas_for_continued_focus && (
                               <div className="evaluation-section">
                                 <strong>Focus Areas:</strong>
-                                <p>{eval.areas_for_continued_focus}</p>
+                                <p>{evaluation.areas_for_continued_focus}</p>
                               </div>
                             )}
                             
-                            {eval.feedback_summary && (
+                            {evaluation.feedback_summary && (
                               <div className="evaluation-summary">
                                 <strong>Summary:</strong>
-                                <p>{eval.feedback_summary}</p>
+                                <p>{evaluation.feedback_summary}</p>
                               </div>
                             )}
                           </div>
