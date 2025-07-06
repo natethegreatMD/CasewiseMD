@@ -19,6 +19,9 @@ class ViewerTools:
         
         # OHIF viewer base URL
         self.ohif_base_url = "https://viewer.casewisemd.org/viewer"
+        
+        # DICOMweb server endpoint (through nginx proxy)
+        self.dicomweb_endpoint = "https://api.casewisemd.org/orthanc/dicom-web"
     
     async def get_case_viewer_url(self, case_id: str) -> Dict[str, Any]:
         """
@@ -41,8 +44,8 @@ class ViewerTools:
                     "viewer_url": self.ohif_base_url  # Fallback to default viewer
                 }
             
-            # Generate case-specific OHIF URL
-            viewer_url = f"{self.ohif_base_url}?StudyInstanceUIDs={study_instance_uid}"
+            # Generate case-specific OHIF URL with DICOMweb server configuration
+            viewer_url = f"{self.ohif_base_url}?StudyInstanceUIDs={study_instance_uid}&url={self.dicomweb_endpoint}"
             
             return {
                 "success": True,
