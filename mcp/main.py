@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from .routes import diagnostic, grade, config, case_viewer
+from .routes import diagnostic, grade, config, case_viewer, case_management
 
 # Load environment variables from .env file
 load_dotenv()
@@ -38,6 +38,7 @@ app.include_router(diagnostic.router, prefix="/api/v1", tags=["diagnostic"])
 app.include_router(grade.router, prefix="/api/v1", tags=["grade"])
 app.include_router(config.router, prefix="/api/v1", tags=["config"])
 app.include_router(case_viewer.router, prefix="/api/v1", tags=["case-viewer"])
+app.include_router(case_management.router, prefix="/api/v1", tags=["case-management"])
 
 # Root endpoint
 @app.get("/")
@@ -46,7 +47,8 @@ async def root():
         "message": "CaseWise MCP Backend",
         "version": "1.0.0",
         "status": "active",
-        "ai_grading_enabled": os.getenv("AI_GRADING_ENABLED", "true").lower() == "true"
+        "ai_grading_enabled": os.getenv("AI_GRADING_ENABLED", "true").lower() == "true",
+        "case_management_enabled": True
     }
 
 # Health check endpoint
@@ -55,6 +57,6 @@ async def health_check():
     return {
         "status": "healthy",
         "service": "mcp-backend",
-        "agents": ["diagnostic", "grade", "config", "case-viewer"],
+        "agents": ["diagnostic", "grade", "config", "case-viewer", "case-management"],
         "ai_grading_status": "enabled" if os.getenv("AI_GRADING_ENABLED", "true").lower() == "true" else "disabled"
     } 

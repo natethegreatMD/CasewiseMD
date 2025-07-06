@@ -1,0 +1,143 @@
+# Case Management System Configuration
+# This file defines data sources, database connections, and processing settings
+
+# Data Sources Configuration
+data_sources:
+  # TCIA (The Cancer Imaging Archive)
+  tcia:
+    path: "C:/Users/Mike/Documents/TCIA Direct DL Data/TCGA-OV/manifest-uUyFk5Zb8576952400198219227/TCGA-OV"
+    metadata_path: "source-documents/excel-reports/TCGA-case-reports.csv"
+    format: "patient/study/series/dicom"
+    enabled: true
+    priority: 1
+    
+  # Future: Local PACS exports
+  local_pacs:
+    path: "/data/pacs-exports/"
+    format: "custom"
+    enabled: false
+    priority: 2
+    
+  # Future: Custom DICOM directories
+  custom_dicom:
+    path: "/data/custom-cases/"
+    format: "dicom"
+    enabled: false
+    priority: 3
+
+# Orthanc DICOMweb Server Configuration
+orthanc:
+  url: "https://api.casewisemd.org/orthanc/"
+  dicom_web_url: "https://api.casewisemd.org/orthanc/dicom-web"
+  username: "admin"
+  password_env: ""  # No password required - Orthanc runs without authentication
+  timeout: 30
+  max_retries: 3
+  
+# Database Configuration
+database:
+  # Development: SQLite
+  development:
+    type: "sqlite"
+    path: "./database/cases.db"
+    
+  # Production: PostgreSQL
+  production:
+    type: "postgresql"
+    host: "localhost"
+    port: 5432
+    database: "casewise_cases"
+    username: "casewise"
+    password_env: "DB_PASSWORD"
+    pool_size: 10
+    
+# Current environment
+environment: "development"
+
+# Processing Configuration
+processing:
+  # DICOM processing settings
+  dicom:
+    validation_enabled: true
+    max_file_size_mb: 500
+    supported_modalities: ["CT", "MR", "PET", "US", "XR", "MG", "NM"]
+    
+  # Parallel processing
+  workers:
+    max_workers: 4
+    chunk_size: 10
+    
+  # Quality control
+  quality_control:
+    enabled: true
+    min_images_per_series: 1
+    max_images_per_series: 10000
+    required_tags: ["PatientID", "StudyInstanceUID", "SeriesInstanceUID"]
+    
+# Case Classification Settings
+classification:
+  # Specialty mapping
+  specialty_mapping:
+    "TCGA-OV": "Oncology"
+    "TCGA-BR": "Oncology"
+    "TCGA-LU": "Oncology"
+    
+  # Difficulty assessment
+  difficulty_thresholds:
+    beginner: 0.3
+    intermediate: 0.6
+    advanced: 0.8
+    
+  # Modality preferences
+  modality_mapping:
+    "CT": "Computed Tomography"
+    "MR": "Magnetic Resonance"
+    "PET": "Positron Emission Tomography"
+    
+# API Integration
+api:
+  # MCP Backend
+  mcp_backend:
+    url: "http://localhost:8000"
+    timeout: 30
+    
+  # Case endpoints
+  endpoints:
+    cases: "/api/cases"
+    metadata: "/api/cases/{case_id}/metadata"
+    search: "/api/cases/search"
+    
+# Logging Configuration
+logging:
+  level: "INFO"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: "./logs/case-management.log"
+  max_size_mb: 10
+  backup_count: 5
+  
+# Monitoring
+monitoring:
+  enabled: true
+  metrics_port: 9090
+  health_check_interval: 60
+  
+# Error Handling
+error_handling:
+  max_retries: 3
+  retry_delay: 5
+  email_notifications: false
+  
+# Features
+features:
+  # Experimental features
+  experimental:
+    auto_case_generation: true
+    ai_difficulty_assessment: false
+    multi_reviewer_aggregation: true
+    
+  # Educational features
+  educational:
+    pre_case_questions: true
+    post_case_evaluations: true
+    learning_objectives: true
+    reference_annotations: true 

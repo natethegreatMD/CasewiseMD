@@ -68,6 +68,7 @@ interface DiagnosticResponse {
 }
 
 interface DiagnosticWorkflowProps {
+  caseId: string;
   onBackToHome: () => void;
 }
 
@@ -104,7 +105,7 @@ interface CaseViewerResponse {
   error?: string;
 }
 
-function DiagnosticWorkflow({ onBackToHome }: DiagnosticWorkflowProps) {
+function DiagnosticWorkflow({ caseId, onBackToHome }: DiagnosticWorkflowProps) {
   const [session, setSession] = useState<DiagnosticSession | null>(null);
   const [currentAnswer, setCurrentAnswer] = useState('');
   const [loading, setLoading] = useState(false);
@@ -140,7 +141,7 @@ function DiagnosticWorkflow({ onBackToHome }: DiagnosticWorkflowProps) {
     
     try {
       // Get case metadata
-      const metadataRes = await fetch(`${API_URL}/cases/case001/metadata`);
+      const metadataRes = await fetch(`${API_URL}/cases/${caseId}/metadata`);
       if (!metadataRes.ok) throw new Error('Failed to load case metadata');
       const metadataData = await metadataRes.json();
       
@@ -170,7 +171,7 @@ function DiagnosticWorkflow({ onBackToHome }: DiagnosticWorkflowProps) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          case_id: 'case001'
+          case_id: caseId
         }),
       });
       
@@ -191,11 +192,11 @@ function DiagnosticWorkflow({ onBackToHome }: DiagnosticWorkflowProps) {
       
       // Set fallback data
       setCaseMetadata({
-        id: 'case001',
-        title: 'Ovarian Cancer Case - TCGA-09-0364',
+        id: caseId,
+        title: `Medical Case - ${caseId}`,
         description: 'A complex medical case for diagnostic evaluation.',
         modality: 'CT',
-        body_region: 'Pelvis',
+        body_region: 'Unknown',
         difficulty_level: 'Advanced'
       });
       setViewerUrl('https://viewer.casewisemd.org/viewer');
@@ -236,7 +237,7 @@ function DiagnosticWorkflow({ onBackToHome }: DiagnosticWorkflowProps) {
     setCurrentFollowUpAnswer('');
     
     try {
-      const res = await fetch(`${API_URL}/diagnostic-session?case_id=case001`);
+      const res = await fetch(`${API_URL}/diagnostic-session?case_id=${caseId}`);
       if (!res.ok) throw new Error('Failed to start diagnostic session');
       const data = await res.json();
       setSession(data);
@@ -262,7 +263,7 @@ function DiagnosticWorkflow({ onBackToHome }: DiagnosticWorkflowProps) {
         },
         body: JSON.stringify({
           session_id: session.session_id,
-          case_id: 'case001',
+          case_id: caseId,
           current_step: session.current_step,
           answer: currentAnswer,
           answers: session.answers
@@ -282,7 +283,7 @@ function DiagnosticWorkflow({ onBackToHome }: DiagnosticWorkflowProps) {
             },
             body: JSON.stringify({
               session_id: session.session_id,
-              case_id: 'case001',
+              case_id: caseId,
               answers: data.answers || session.answers
             }),
           });
@@ -339,7 +340,7 @@ function DiagnosticWorkflow({ onBackToHome }: DiagnosticWorkflowProps) {
         },
         body: JSON.stringify({
           session_id: session.session_id,
-          case_id: 'case001',
+          case_id: caseId,
           current_step: session.current_step,
           answer: '[SKIPPED]', // Mark as skipped
           answers: session.answers
@@ -359,7 +360,7 @@ function DiagnosticWorkflow({ onBackToHome }: DiagnosticWorkflowProps) {
             },
             body: JSON.stringify({
               session_id: session.session_id,
-              case_id: 'case001',
+              case_id: caseId,
               answers: data.answers || session.answers
             }),
           });
@@ -436,7 +437,7 @@ function DiagnosticWorkflow({ onBackToHome }: DiagnosticWorkflowProps) {
       };
 
       const evaluationData = {
-        case_id: 'case001',
+        case_id: caseId,
         session_id: gradingResult.session_id || 'unknown',
         followup_answers: allFollowUpAnswers,
         original_followup_questions: followUpQuestions,
@@ -1048,7 +1049,7 @@ function DiagnosticWorkflow({ onBackToHome }: DiagnosticWorkflowProps) {
                 </div>
               }>
                 <OhifIframeViewer 
-                  caseId="case001" 
+                  caseId={caseId} 
                   viewerUrl={viewerUrl || undefined}
                 />
               </Suspense>
@@ -1157,7 +1158,7 @@ function DiagnosticWorkflow({ onBackToHome }: DiagnosticWorkflowProps) {
               </div>
             }>
               <OhifIframeViewer 
-                caseId="case001" 
+                caseId={caseId} 
                 viewerUrl={viewerUrl || undefined}
               />
             </Suspense>
