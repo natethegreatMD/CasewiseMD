@@ -513,7 +513,7 @@ function DiagnosticWorkflow({ onBackToHome }: DiagnosticWorkflowProps) {
           <div className="header-content" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <button 
               onClick={onBackToHome}
-              className="action-btn secondary"
+              className="back-to-home-btn"
             >
               ← Back to Home
             </button>
@@ -622,7 +622,7 @@ function DiagnosticWorkflow({ onBackToHome }: DiagnosticWorkflowProps) {
           <div className="header-content" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <button 
               onClick={onBackToHome}
-              className="action-btn secondary"
+              className="back-to-home-btn"
             >
               ← Back to Home
             </button>
@@ -637,32 +637,66 @@ function DiagnosticWorkflow({ onBackToHome }: DiagnosticWorkflowProps) {
         <main className="app-main">
           {/* Case Metadata Section */}
           <section className="case-metadata">
-            <h2>Case Information</h2>
+            <h2>Clinical Case Overview</h2>
+            <p className="case-subtitle">Advanced Diagnostic Challenge in Radiology</p>
             <div className="metadata-grid">
               <div className="metadata-item">
-                <label>Case ID:</label>
-                <span>{caseMetadata?.id}</span>
+                <div className="metadata-item-header">
+                  <span className="metadata-icon">🏥</span>
+                  <label>Medical Record</label>
+                </div>
+                <div className="metadata-value">Case #{caseMetadata?.id?.toUpperCase()}</div>
               </div>
               <div className="metadata-item">
-                <label>Title:</label>
-                <span>{caseMetadata?.title}</span>
+                <div className="metadata-item-header">
+                  <span className="metadata-icon">📋</span>
+                  <label>Clinical Presentation</label>
+                </div>
+                <div className="metadata-value">
+                  Pelvic Mass Investigation - Suspected Ovarian Pathology
+                </div>
               </div>
               <div className="metadata-item">
-                <label>Description:</label>
-                <span>{caseMetadata?.description}</span>
+                <div className="metadata-item-header">
+                  <span className="metadata-icon">🔬</span>
+                  <label>Imaging Study</label>
+                </div>
+                <div className="metadata-value">Contrast-Enhanced CT Abdomen & Pelvis</div>
+                <span className={`badge modality-${caseMetadata?.modality?.toLowerCase()}`}>
+                  {caseMetadata?.modality} Imaging
+                </span>
               </div>
               <div className="metadata-item">
-                <label>Modality:</label>
-                <span className="badge">{caseMetadata?.modality}</span>
+                <div className="metadata-item-header">
+                  <span className="metadata-icon">🎯</span>
+                  <label>Anatomical Focus</label>
+                </div>
+                <div className="metadata-value">Pelvic Cavity & Adnexa</div>
+                <span className="badge body-region">
+                  {caseMetadata?.body_region}
+                </span>
               </div>
               <div className="metadata-item">
-                <label>Body Region:</label>
-                <span className="badge">{caseMetadata?.body_region}</span>
+                <div className="metadata-item-header">
+                  <span className="metadata-icon">👩‍⚕️</span>
+                  <label>Patient Demographics</label>
+                </div>
+                <div className="metadata-value">
+                  Adult Female Patient
+                  <br />
+                  <small style={{ color: '#a0aec0', fontSize: '0.9rem' }}>
+                    Age & identifiers anonymized for educational use
+                  </small>
+                </div>
               </div>
               <div className="metadata-item">
-                <label>Difficulty:</label>
+                <div className="metadata-item-header">
+                  <span className="metadata-icon">⚡</span>
+                  <label>Complexity Level</label>
+                </div>
+                <div className="metadata-value">Advanced Clinical Case</div>
                 <span className={`badge difficulty-${caseMetadata?.difficulty_level?.toLowerCase()}`}>
-                  {caseMetadata?.difficulty_level}
+                  {caseMetadata?.difficulty_level} Level
                 </span>
               </div>
             </div>
@@ -927,7 +961,7 @@ function DiagnosticWorkflow({ onBackToHome }: DiagnosticWorkflowProps) {
           <div className="header-content" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <button 
               onClick={onBackToHome}
-              className="action-btn secondary"
+              className="back-to-home-btn"
             >
               ← Back to Home
             </button>
@@ -942,32 +976,66 @@ function DiagnosticWorkflow({ onBackToHome }: DiagnosticWorkflowProps) {
         <main className="app-main">
           {/* Case Metadata Section */}
           <section className="case-metadata">
-            <h2>Case Information</h2>
+            <h2>Clinical Case Overview</h2>
+            <p className="case-subtitle">Advanced Diagnostic Challenge in Radiology</p>
             <div className="metadata-grid">
               <div className="metadata-item">
-                <label>Case ID:</label>
-                <span>{caseMetadata?.id}</span>
+                <div className="metadata-item-header">
+                  <span className="metadata-icon">🏥</span>
+                  <label>Medical Record</label>
+                </div>
+                <div className="metadata-value">Case #{caseMetadata?.id?.toUpperCase()}</div>
               </div>
               <div className="metadata-item">
-                <label>Title:</label>
-                <span>{caseMetadata?.title}</span>
+                <div className="metadata-item-header">
+                  <span className="metadata-icon">📋</span>
+                  <label>Clinical Presentation</label>
+                </div>
+                <div className="metadata-value">
+                  Pelvic Mass Investigation - Suspected Ovarian Pathology
+                </div>
               </div>
               <div className="metadata-item">
-                <label>Description:</label>
-                <span>{caseMetadata?.description}</span>
+                <div className="metadata-item-header">
+                  <span className="metadata-icon">🔬</span>
+                  <label>Imaging Study</label>
+                </div>
+                <div className="metadata-value">Contrast-Enhanced CT Abdomen & Pelvis</div>
+                <span className={`badge modality-${caseMetadata?.modality?.toLowerCase()}`}>
+                  {caseMetadata?.modality} Imaging
+                </span>
               </div>
               <div className="metadata-item">
-                <label>Modality:</label>
-                <span className="badge">{caseMetadata?.modality}</span>
+                <div className="metadata-item-header">
+                  <span className="metadata-icon">🎯</span>
+                  <label>Anatomical Focus</label>
+                </div>
+                <div className="metadata-value">Pelvic Cavity & Adnexa</div>
+                <span className="badge body-region">
+                  {caseMetadata?.body_region}
+                </span>
               </div>
               <div className="metadata-item">
-                <label>Body Region:</label>
-                <span className="badge">{caseMetadata?.body_region}</span>
+                <div className="metadata-item-header">
+                  <span className="metadata-icon">👩‍⚕️</span>
+                  <label>Patient Demographics</label>
+                </div>
+                <div className="metadata-value">
+                  Adult Female Patient
+                  <br />
+                  <small style={{ color: '#a0aec0', fontSize: '0.9rem' }}>
+                    Age & identifiers anonymized for educational use
+                  </small>
+                </div>
               </div>
               <div className="metadata-item">
-                <label>Difficulty:</label>
+                <div className="metadata-item-header">
+                  <span className="metadata-icon">⚡</span>
+                  <label>Complexity Level</label>
+                </div>
+                <div className="metadata-value">Advanced Clinical Case</div>
                 <span className={`badge difficulty-${caseMetadata?.difficulty_level?.toLowerCase()}`}>
-                  {caseMetadata?.difficulty_level}
+                  {caseMetadata?.difficulty_level} Level
                 </span>
               </div>
             </div>
@@ -1022,7 +1090,7 @@ function DiagnosticWorkflow({ onBackToHome }: DiagnosticWorkflowProps) {
         <div className="header-content" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <button 
             onClick={onBackToHome}
-            className="action-btn secondary"
+            className="back-to-home-btn"
           >
             ← Back to Home
           </button>
@@ -1037,32 +1105,66 @@ function DiagnosticWorkflow({ onBackToHome }: DiagnosticWorkflowProps) {
       <main className="app-main">
         {/* Case Metadata Section */}
         <section className="case-metadata">
-          <h2>Case Information</h2>
+          <h2>Clinical Case Overview</h2>
+          <p className="case-subtitle">Advanced Diagnostic Challenge in Radiology</p>
           <div className="metadata-grid">
             <div className="metadata-item">
-              <label>Case ID:</label>
-              <span>{caseMetadata?.id}</span>
+              <div className="metadata-item-header">
+                <span className="metadata-icon">🏥</span>
+                <label>Medical Record</label>
+              </div>
+              <div className="metadata-value">Case #{caseMetadata?.id?.toUpperCase()}</div>
             </div>
             <div className="metadata-item">
-              <label>Title:</label>
-              <span>{caseMetadata?.title}</span>
+              <div className="metadata-item-header">
+                <span className="metadata-icon">📋</span>
+                <label>Clinical Presentation</label>
+              </div>
+              <div className="metadata-value">
+                Pelvic Mass Investigation - Suspected Ovarian Pathology
+              </div>
             </div>
             <div className="metadata-item">
-              <label>Description:</label>
-              <span>{caseMetadata?.description}</span>
+              <div className="metadata-item-header">
+                <span className="metadata-icon">🔬</span>
+                <label>Imaging Study</label>
+              </div>
+              <div className="metadata-value">Contrast-Enhanced CT Abdomen & Pelvis</div>
+              <span className={`badge modality-${caseMetadata?.modality?.toLowerCase()}`}>
+                {caseMetadata?.modality} Imaging
+              </span>
             </div>
             <div className="metadata-item">
-              <label>Modality:</label>
-              <span className="badge">{caseMetadata?.modality}</span>
+              <div className="metadata-item-header">
+                <span className="metadata-icon">🎯</span>
+                <label>Anatomical Focus</label>
+              </div>
+              <div className="metadata-value">Pelvic Cavity & Adnexa</div>
+              <span className="badge body-region">
+                {caseMetadata?.body_region}
+              </span>
             </div>
             <div className="metadata-item">
-              <label>Body Region:</label>
-              <span className="badge">{caseMetadata?.body_region}</span>
+              <div className="metadata-item-header">
+                <span className="metadata-icon">👩‍⚕️</span>
+                <label>Patient Demographics</label>
+              </div>
+              <div className="metadata-value">
+                Adult Female Patient
+                <br />
+                <small style={{ color: '#a0aec0', fontSize: '0.9rem' }}>
+                  Age & identifiers anonymized for educational use
+                </small>
+              </div>
             </div>
             <div className="metadata-item">
-              <label>Difficulty:</label>
+              <div className="metadata-item-header">
+                <span className="metadata-icon">⚡</span>
+                <label>Complexity Level</label>
+              </div>
+              <div className="metadata-value">Advanced Clinical Case</div>
               <span className={`badge difficulty-${caseMetadata?.difficulty_level?.toLowerCase()}`}>
-                {caseMetadata?.difficulty_level}
+                {caseMetadata?.difficulty_level} Level
               </span>
             </div>
           </div>
