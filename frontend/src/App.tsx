@@ -12,6 +12,7 @@ interface CaseCategory {
   modality: string;
   caseCount: number;
   imageUrl?: string;
+  available: boolean; // New field to track availability
 }
 
 // Sample case categories
@@ -23,7 +24,8 @@ const CASE_CATEGORIES: CaseCategory[] = [
     difficulty: 'intermediate',
     modality: 'CT',
     caseCount: 1,
-    imageUrl: '/api/placeholder/ovarian'
+    imageUrl: '/api/placeholder/ovarian',
+    available: true
   },
   {
     id: 'chest-xray',
@@ -31,8 +33,9 @@ const CASE_CATEGORIES: CaseCategory[] = [
     description: 'Basic to advanced chest radiography interpretation',
     difficulty: 'beginner',
     modality: 'X-Ray',
-    caseCount: 5,
-    imageUrl: '/api/placeholder/chest'
+    caseCount: 0,
+    imageUrl: '/api/placeholder/chest',
+    available: false
   },
   {
     id: 'brain-mri',
@@ -40,8 +43,9 @@ const CASE_CATEGORIES: CaseCategory[] = [
     description: 'Neurological imaging cases including tumors and vascular conditions',
     difficulty: 'advanced',
     modality: 'MRI',
-    caseCount: 3,
-    imageUrl: '/api/placeholder/brain'
+    caseCount: 0,
+    imageUrl: '/api/placeholder/brain',
+    available: false
   },
   {
     id: 'abdomen-ct',
@@ -49,8 +53,9 @@ const CASE_CATEGORIES: CaseCategory[] = [
     description: 'Abdominal pathology and trauma cases',
     difficulty: 'intermediate',
     modality: 'CT',
-    caseCount: 4,
-    imageUrl: '/api/placeholder/abdomen'
+    caseCount: 0,
+    imageUrl: '/api/placeholder/abdomen',
+    available: false
   },
   {
     id: 'obstetric-ultrasound',
@@ -58,8 +63,9 @@ const CASE_CATEGORIES: CaseCategory[] = [
     description: 'Prenatal imaging and fetal development assessment',
     difficulty: 'beginner',
     modality: 'Ultrasound',
-    caseCount: 2,
-    imageUrl: '/api/placeholder/obstetric'
+    caseCount: 0,
+    imageUrl: '/api/placeholder/obstetric',
+    available: false
   },
   {
     id: 'cardiac-ct',
@@ -67,24 +73,27 @@ const CASE_CATEGORIES: CaseCategory[] = [
     description: 'Cardiovascular imaging and coronary artery assessment',
     difficulty: 'advanced',
     modality: 'CT',
-    caseCount: 2,
-    imageUrl: '/api/placeholder/cardiac'
+    caseCount: 0,
+    imageUrl: '/api/placeholder/cardiac',
+    available: false
   }
 ];
 
 // Navigation items
 const NAVIGATION_ITEMS = [
-  { id: 'home', label: 'Home', path: '/' },
-  { id: 'cases', label: 'Cases', path: '/cases' },
-  { id: 'progress', label: 'My Progress', path: '/progress' },
-  { id: 'leaderboard', label: 'Leaderboard', path: '/leaderboard' },
-  { id: 'resources', label: 'Resources', path: '/resources' },
-  { id: 'about', label: 'About', path: '/about' }
+  { id: 'home', label: 'Home', path: '/', available: true },
+  { id: 'cases', label: 'Cases', path: '/cases', available: false },
+  { id: 'progress', label: 'My Progress', path: '/progress', available: false },
+  { id: 'leaderboard', label: 'Leaderboard', path: '/leaderboard', available: false },
+  { id: 'resources', label: 'Resources', path: '/resources', available: false },
+  { id: 'about', label: 'About', path: '/about', available: false }
 ];
 
 function App() {
   const [currentPage, setCurrentPage] = useState('home');
   const [currentRoute, setCurrentRoute] = useState('home');
+  const [showComingSoonModal, setShowComingSoonModal] = useState(false);
+  const [comingSoonFeature, setComingSoonFeature] = useState('');
 
   // Handle route changes
   useEffect(() => {
@@ -97,24 +106,30 @@ function App() {
   }, []);
 
   const handleCaseClick = (categoryId: string) => {
-    if (categoryId === 'ovarian-cancer') {
+    const category = CASE_CATEGORIES.find(cat => cat.id === categoryId);
+    
+    if (category?.available) {
       // Navigate to the diagnostic workflow
       window.history.pushState({}, '', '/diagnostic');
       setCurrentRoute('diagnostic');
     } else {
-      // Show coming soon for other cases
-      alert('Coming Soon! This case category is under development.');
+      // Show coming soon modal instead of alert
+      setComingSoonFeature(category?.title || 'This feature');
+      setShowComingSoonModal(true);
     }
   };
 
   const handleNavigationClick = (pageId: string) => {
-    if (pageId === 'home') {
+    const navItem = NAVIGATION_ITEMS.find(item => item.id === pageId);
+    
+    if (navItem?.available) {
       window.history.pushState({}, '', '/');
       setCurrentRoute('home');
       setCurrentPage('home');
     } else {
-      // Show coming soon for other pages
-      alert('Coming Soon! This feature is under development.');
+      // Show coming soon modal instead of alert
+      setComingSoonFeature(navItem?.label || 'This feature');
+      setShowComingSoonModal(true);
     }
   };
 
@@ -122,6 +137,11 @@ function App() {
     window.history.pushState({}, '', '/');
     setCurrentRoute('home');
     setCurrentPage('home');
+  };
+
+  const closeComingSoonModal = () => {
+    setShowComingSoonModal(false);
+    setComingSoonFeature('');
   };
 
   const getDifficultyColor = (difficulty: string) => {
@@ -152,18 +172,21 @@ function App() {
   return (
     <div className="App">
       <header className="app-header">
-        <h1>CasewiseMD</h1>
-        <p className="app-subtitle">AI-Powered Radiology Education Platform</p>
+        <div className="header-content">
+          <h1>CasewiseMD</h1>
+          <p className="app-subtitle">AI-Powered Radiology Education Platform</p>
+        </div>
         
         {/* Navigation */}
         <nav className="main-navigation">
           {NAVIGATION_ITEMS.map((item) => (
             <button
               key={item.id}
-              className={`nav-item ${currentPage === item.id ? 'active' : ''}`}
+              className={`nav-item ${currentPage === item.id ? 'active' : ''} ${!item.available ? 'disabled' : ''}`}
               onClick={() => handleNavigationClick(item.id)}
             >
               {item.label}
+              {!item.available && <span className="coming-soon-badge">Soon</span>}
             </button>
           ))}
         </nav>
@@ -173,45 +196,48 @@ function App() {
         {/* Hero Section */}
         <section className="hero-section">
           <div className="hero-content">
-            <h2>Master Radiology Through Interactive Cases</h2>
-            <p>Practice with real-world scenarios, get instant feedback, and track your progress as you develop your diagnostic skills.</p>
+            <h2>Master Radiology with Interactive Cases</h2>
+            <p>Practice with real cases, get instant AI feedback, and track your progress. Start with our featured case and watch as thousands more cases become available.</p>
             <div className="hero-stats">
               <div className="stat-item">
-                <span className="stat-number">50+</span>
-                <span className="stat-label">Cases</span>
+                <span className="stat-number">1</span>
+                <span className="stat-label">Available Now</span>
               </div>
               <div className="stat-item">
-                <span className="stat-number">5</span>
-                <span className="stat-label">Modalities</span>
+                <span className="stat-number">1000+</span>
+                <span className="stat-label">Cases Coming Soon</span>
               </div>
               <div className="stat-item">
-                <span className="stat-number">3</span>
-                <span className="stat-label">Difficulty Levels</span>
+                <span className="stat-number">6</span>
+                <span className="stat-label">Modalities Planned</span>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Quick Actions - Moved to top */}
+        {/* Quick Actions */}
         <section className="quick-actions">
           <h2>Get Started</h2>
           <div className="actions-grid">
             <button className="action-btn primary featured" onClick={() => handleCaseClick('ovarian-cancer')}>
               <span className="action-icon">🚀</span>
-              <span className="action-title">Start Practice Case</span>
+              <span className="action-title">Start Available Case</span>
               <span className="action-subtitle">Ovarian Cancer - Interactive Diagnostic Workflow</span>
             </button>
-            <button className="action-btn" onClick={() => handleNavigationClick('progress')}>
+            <button className="action-btn disabled" onClick={() => handleNavigationClick('progress')}>
               <span className="action-icon">📈</span>
-              <span>View Progress</span>
+              <span>Progress Tracking</span>
+              <span className="coming-soon-text">Coming Soon</span>
             </button>
-            <button className="action-btn" onClick={() => handleNavigationClick('leaderboard')}>
+            <button className="action-btn disabled" onClick={() => handleNavigationClick('leaderboard')}>
               <span className="action-icon">🏅</span>
               <span>Leaderboard</span>
+              <span className="coming-soon-text">Coming Soon</span>
             </button>
-            <button className="action-btn" onClick={() => handleNavigationClick('resources')}>
+            <button className="action-btn disabled" onClick={() => handleNavigationClick('resources')}>
               <span className="action-icon">📖</span>
               <span>Learning Resources</span>
+              <span className="coming-soon-text">Coming Soon</span>
             </button>
           </div>
         </section>
@@ -219,13 +245,15 @@ function App() {
         {/* Case Categories */}
         <section className="case-categories">
           <h2>Case Categories</h2>
-          <p className="section-description">Choose a category to start practicing with interactive diagnostic cases</p>
+          <p className="section-description">
+            Start with our featured ovarian cancer case. More categories with hundreds of cases each are in development.
+          </p>
           
           <div className="categories-grid">
             {CASE_CATEGORIES.map((category) => (
               <div
                 key={category.id}
-                className="category-card"
+                className={`category-card ${!category.available ? 'disabled' : ''}`}
                 onClick={() => handleCaseClick(category.id)}
               >
                 <div className="category-header">
@@ -244,13 +272,54 @@ function App() {
                 </div>
                 <p className="category-description">{category.description}</p>
                 <div className="category-footer">
-                  <span className="case-count">{category.caseCount} cases available</span>
-                  <button className="start-case-btn">
-                    {category.id === 'ovarian-cancer' ? 'Start Case' : 'Coming Soon'}
+                  <span className="case-count">
+                    {category.available 
+                      ? `${category.caseCount} case${category.caseCount === 1 ? '' : 's'} available`
+                      : 'Cases in development'
+                    }
+                  </span>
+                  <button className={`start-case-btn ${!category.available ? 'disabled' : ''}`}>
+                    {category.available ? 'Start Case' : 'Coming Soon'}
                   </button>
                 </div>
+                {!category.available && (
+                  <div className="coming-soon-overlay">
+                    <div className="coming-soon-content">
+                      <span className="coming-soon-icon">🚧</span>
+                      <span className="coming-soon-label">In Development</span>
+                    </div>
+                  </div>
+                )}
               </div>
             ))}
+          </div>
+        </section>
+
+        {/* Development Status */}
+        <section className="development-status">
+          <h2>Platform Development</h2>
+          <div className="status-grid">
+            <div className="status-card completed">
+              <div className="status-icon">✅</div>
+              <h3>Available Now</h3>
+              <ul>
+                <li>Interactive diagnostic workflow</li>
+                <li>AI-powered feedback system</li>
+                <li>Professional DICOM viewer</li>
+                <li>Ovarian cancer case study</li>
+              </ul>
+            </div>
+            <div className="status-card in-progress">
+              <div className="status-icon">🔄</div>
+              <h3>Coming Soon</h3>
+              <ul>
+                <li>1000+ additional cases</li>
+                <li>Progress tracking & analytics</li>
+                <li>Student leaderboards</li>
+                <li>Comprehensive learning resources</li>
+                <li>Multiple imaging modalities</li>
+              </ul>
+            </div>
           </div>
         </section>
 
@@ -258,55 +327,89 @@ function App() {
         <section className="features-section">
           <h2>Platform Features</h2>
           <div className="features-grid">
-            <div className="feature-card">
+            <div className="feature-card available">
               <div className="feature-icon">🔍</div>
               <h3>Interactive Diagnosis</h3>
               <p>Step-by-step diagnostic workflow with AI-guided feedback</p>
+              <span className="feature-status available">Available Now</span>
             </div>
-            <div className="feature-card">
-              <div className="feature-icon">📊</div>
-              <h3>Progress Tracking</h3>
-              <p>Monitor your improvement with detailed analytics and performance metrics</p>
-            </div>
-            <div className="feature-card">
-              <div className="feature-icon">🏆</div>
-              <h3>Leaderboards</h3>
-              <p>Compete with peers and climb the rankings</p>
-            </div>
-            <div className="feature-card">
-              <div className="feature-icon">📚</div>
-              <h3>Learning Resources</h3>
-              <p>Access comprehensive educational materials and references</p>
-            </div>
-            <div className="feature-card">
+            <div className="feature-card available">
               <div className="feature-icon">🖼️</div>
               <h3>DICOM Viewer</h3>
               <p>Professional-grade image viewing with advanced tools</p>
+              <span className="feature-status available">Available Now</span>
             </div>
-            <div className="feature-card">
+            <div className="feature-card available">
               <div className="feature-icon">🤖</div>
               <h3>AI Assistance</h3>
               <p>Get intelligent hints and explanations throughout your practice</p>
+              <span className="feature-status available">Available Now</span>
+            </div>
+            <div className="feature-card coming-soon">
+              <div className="feature-icon">📊</div>
+              <h3>Progress Tracking</h3>
+              <p>Monitor your improvement with detailed analytics and performance metrics</p>
+              <span className="feature-status coming-soon">Coming Soon</span>
+            </div>
+            <div className="feature-card coming-soon">
+              <div className="feature-icon">🏆</div>
+              <h3>Leaderboards</h3>
+              <p>Compete with peers and climb the rankings</p>
+              <span className="feature-status coming-soon">Coming Soon</span>
+            </div>
+            <div className="feature-card coming-soon">
+              <div className="feature-icon">📚</div>
+              <h3>Learning Resources</h3>
+              <p>Access comprehensive educational materials and references</p>
+              <span className="feature-status coming-soon">Coming Soon</span>
             </div>
           </div>
         </section>
       </main>
 
+      {/* Coming Soon Modal */}
+      {showComingSoonModal && (
+        <div className="modal-overlay" onClick={closeComingSoonModal}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3>🚧 {comingSoonFeature} - Coming Soon!</h3>
+              <button className="modal-close" onClick={closeComingSoonModal}>×</button>
+            </div>
+            <div className="modal-body">
+              <p>We're working hard to bring you thousands of additional cases and features.</p>
+              <p>Start with our available ovarian cancer case while we develop more content!</p>
+            </div>
+            <div className="modal-footer">
+              <button className="modal-btn primary" onClick={() => {
+                closeComingSoonModal();
+                handleCaseClick('ovarian-cancer');
+              }}>
+                Try Available Case
+              </button>
+              <button className="modal-btn secondary" onClick={closeComingSoonModal}>
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <footer className="app-footer">
         <div className="footer-content">
           <div className="footer-section">
             <h4>CasewiseMD</h4>
-            <p>Advancing radiology education through AI-powered interactive learning.</p>
+            <p>Advancing radiology education through AI-powered interactive learning. Currently in active development.</p>
           </div>
           <div className="footer-section">
-            <h4>Contact</h4>
-            <p>Email: support@casewisemd.org</p>
-            <p>Follow us for updates</p>
+            <h4>Development Status</h4>
+            <p>✅ Core platform available</p>
+            <p>🔄 1000+ cases in development</p>
+            <p>🔄 Advanced features coming soon</p>
           </div>
           <div className="footer-section">
-            <h4>Legal</h4>
-            <p>Privacy Policy</p>
-            <p>Terms of Service</p>
+            <h4>Get Updates</h4>
+            <p>Follow our progress as we add more cases and features</p>
+            <p>Start practicing with our available case today!</p>
           </div>
         </div>
         <div className="footer-bottom">
