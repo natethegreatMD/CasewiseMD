@@ -154,18 +154,23 @@ async def submit_diagnostic_answer(answer_data: Dict[str, Any]):
         case_id = answer_data.get("case_id", "case001")
         current_step = answer_data.get("current_step", 1)
         answer = answer_data.get("answer", "")
+        previous_answers = answer_data.get("answers", {})
         
         # Read case metadata to get question count
         metadata = read_case_metadata(case_id)
         questions = generate_case_questions(case_id, metadata)
         
+        # Update answers with current response
+        updated_answers = previous_answers.copy()
+        updated_answers[str(current_step)] = answer
+        
         next_step = current_step + 1
         is_completed = next_step > len(questions)
         
-        # Get next question if not completed
-        next_question = None
+        # Get next question if not completed (this becomes the current question)
+        current_question = None
         if not is_completed and next_step <= len(questions):
-            next_question = questions[next_step - 1]  # Convert to 0-based index
+            current_question = questions[next_step - 1]  # Convert to 0-based index
         
         response = {
             "session_id": session_id,
@@ -176,15 +181,16 @@ async def submit_diagnostic_answer(answer_data: Dict[str, Any]):
             "current_step": current_step,
             "next_step": next_step if not is_completed else None,
             "completed": is_completed,
+            "answers": updated_answers,  # Include all answers so far
             "feedback": {
                 "message": f"Answer for step {current_step} received and processed",
                 "acknowledgment": "Thank you for your response. Your answer has been recorded."
             }
         }
         
-        # Add next question if not completed
-        if next_question:
-            response["next_question"] = next_question
+        # Add current question (was next_question) if not completed
+        if current_question:
+            response["current_question"] = current_question
         
         # Add completion message if done
         if is_completed:
