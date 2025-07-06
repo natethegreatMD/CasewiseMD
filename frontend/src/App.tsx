@@ -433,7 +433,7 @@ function App() {
           </div>
         </div>
         <div className="footer-bottom">
-          <p>&copy; 2024 CasewiseMD. All rights reserved.</p>
+          <p>&copy; 2025 CasewiseMD. All rights reserved.</p>
         </div>
       </footer>
     </div>

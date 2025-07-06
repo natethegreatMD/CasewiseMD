@@ -23,11 +23,17 @@ body {
   background: rgba(26, 32, 44, 0.95);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid #2d3748;
-  padding: 1.5rem 2rem;
+  padding: 1.5rem 0;
   text-align: center;
   position: sticky;
   top: 0;
   z-index: 100;
+}
+
+.header-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 2rem;
 }
 
 .app-header h1 {
@@ -50,6 +56,7 @@ body {
   justify-content: center;
   gap: 1rem;
   flex-wrap: wrap;
+  padding: 0 1rem;
 }
 
 .nav-item {
@@ -107,8 +114,53 @@ body {
 /* Main content */
 .app-main {
   flex: 1;
-  padding: 2rem;
   width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+/* Responsive container adjustments */
+@media (max-width: 1440px) {
+  .app-main {
+    max-width: calc(100% - 2rem);
+    margin: 0 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .app-header {
+    padding: 1rem 0;
+  }
+  
+  .header-content {
+    padding: 0 1rem;
+  }
+  
+  .app-header h1 {
+    font-size: 2rem;
+  }
+  
+  .app-main {
+    padding: 1rem;
+    margin: 0 0.5rem;
+  }
+  
+  .main-navigation {
+    gap: 0.5rem;
+    padding: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .app-main {
+    padding: 0.75rem;
+    margin: 0 0.25rem;
+  }
+  
+  .header-content {
+    padding: 0 0.75rem;
+  }
 }
 
 /* Hero Section */
@@ -119,9 +171,6 @@ body {
   background: rgba(26, 32, 44, 0.6);
   border-radius: 16px;
   border: 1px solid #2d3748;
-  max-width: 1400px;
-  margin-left: auto;
-  margin-right: auto;
 }
 
 .hero-content h2 {
@@ -173,9 +222,6 @@ body {
 /* Case Categories */
 .case-categories {
   margin-bottom: 4rem;
-  max-width: 1400px;
-  margin-left: auto;
-  margin-right: auto;
 }
 
 .case-categories h2 {
@@ -381,9 +427,6 @@ body {
 /* Development Status */
 .development-status {
   margin-bottom: 4rem;
-  max-width: 1400px;
-  margin-left: auto;
-  margin-right: auto;
 }
 
 .development-status h2 {
@@ -457,9 +500,6 @@ body {
 /* Features Section */
 .features-section {
   margin-bottom: 4rem;
-  max-width: 1400px;
-  margin-left: auto;
-  margin-right: auto;
 }
 
 .features-section h2 {
@@ -655,7 +695,7 @@ body {
 .app-footer {
   background: rgba(15, 20, 25, 0.95);
   border-top: 1px solid #2d3748;
-  padding: 3rem 2rem 1rem;
+  padding: 3rem 0 1rem;
   margin-top: auto;
 }
 
@@ -663,8 +703,9 @@ body {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 2rem;
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
+  padding: 0 2rem;
   margin-bottom: 2rem;
 }
 
@@ -686,6 +727,163 @@ body {
   padding-top: 2rem;
   border-top: 1px solid #2d3748;
   color: #718096;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+
+/* Comprehensive Responsive Design */
+@media (max-width: 1200px) {
+  .hero-content h2 {
+    font-size: 2.5rem;
+  }
+  
+  .categories-grid {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-content h2 {
+    font-size: 2rem;
+  }
+
+  .hero-stats {
+    gap: 2rem;
+  }
+
+  .categories-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .features-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .actions-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .nav-item {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  .footer-content {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    padding: 0 1rem;
+  }
+  
+  .footer-bottom {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .status-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .development-status h2 {
+    font-size: 2rem;
+  }
+
+  .modal-content {
+    width: 95%;
+    margin: 1rem;
+  }
+
+  .modal-header {
+    padding: 1rem 1.5rem;
+  }
+
+  .modal-body {
+    padding: 1.5rem;
+  }
+
+  .modal-footer {
+    padding: 1rem 1.5rem;
+    flex-direction: column;
+  }
+
+  .modal-btn {
+    width: 100%;
+  }
+  
+  /* Diagnostic workflow responsive */
+  .case-metadata,
+  .diagnostic-session,
+  .follow-up-questions,
+  .results-section {
+    padding: 1rem;
+    margin-bottom: 1rem;
+  }
+  
+  .metadata-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .action-buttons {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .action-btn {
+    width: 100%;
+    max-width: 250px;
+  }
+  
+  .score-summary {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .viewer-container iframe {
+    height: 400px;
+  }
+  
+  .strengths-improvements {
+    grid-template-columns: 1fr;
+  }
+  
+  .assessment-comparison {
+    grid-template-columns: 1fr;
+  }
+  
+  .metrics-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-content h2 {
+    font-size: 1.75rem;
+  }
+  
+  .case-categories h2,
+  .development-status h2,
+  .features-section h2,
+  .quick-actions h2 {
+    font-size: 1.75rem;
+  }
+  
+  .hero-stats {
+    gap: 1rem;
+  }
+  
+  .stat-number {
+    font-size: 2rem;
+  }
+  
+  .footer-content {
+    padding: 0 0.75rem;
+  }
+  
+  .footer-bottom {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
 }
 
 /* Loading and Error States */
@@ -739,85 +937,6 @@ body {
   transform: translateY(-2px);
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-  .app-header {
-    padding: 1rem;
-  }
-
-  .header-content h1 {
-    font-size: 2rem;
-  }
-
-  .app-main {
-    padding: 1rem;
-  }
-
-  .hero-content h2 {
-    font-size: 2rem;
-  }
-
-  .hero-stats {
-    gap: 2rem;
-  }
-
-  .categories-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .features-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .actions-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .main-navigation {
-    gap: 0.5rem;
-  }
-
-  .nav-item {
-    padding: 0.5rem 1rem;
-    font-size: 0.9rem;
-  }
-
-  .footer-content {
-    grid-template-columns: 1fr;
-    gap: 2rem;
-  }
-
-  .status-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .development-status h2 {
-    font-size: 2rem;
-  }
-
-  .modal-content {
-    width: 95%;
-    margin: 1rem;
-  }
-
-  .modal-header {
-    padding: 1rem 1.5rem;
-  }
-
-  .modal-body {
-    padding: 1.5rem;
-  }
-
-  .modal-footer {
-    padding: 1rem 1.5rem;
-    flex-direction: column;
-  }
-
-  .modal-btn {
-    width: 100%;
-  }
-}
-
 /* Diagnostic Workflow Styles */
 
 /* Case Metadata Section */
@@ -827,9 +946,6 @@ body {
   border-radius: 12px;
   padding: 2rem;
   margin-bottom: 2rem;
-  max-width: 1400px;
-  margin-left: auto;
-  margin-right: auto;
 }
 
 .case-metadata h2 {
@@ -892,9 +1008,6 @@ body {
 /* Medical Image Viewer Section */
 .medical-image-viewer {
   margin-bottom: 2rem;
-  max-width: 1400px;
-  margin-left: auto;
-  margin-right: auto;
 }
 
 .medical-image-viewer h3 {
@@ -928,9 +1041,6 @@ body {
   border-radius: 12px;
   padding: 2rem;
   margin-bottom: 2rem;
-  max-width: 1400px;
-  margin-left: auto;
-  margin-right: auto;
 }
 
 .diagnostic-session h2 {
@@ -1146,9 +1256,6 @@ body {
   border-radius: 12px;
   padding: 2rem;
   margin-bottom: 2rem;
-  max-width: 1400px;
-  margin-left: auto;
-  margin-right: auto;
 }
 
 .follow-up-questions h2 {
@@ -1209,9 +1316,6 @@ body {
   border-radius: 12px;
   padding: 2rem;
   margin-bottom: 2rem;
-  max-width: 1400px;
-  margin-left: auto;
-  margin-right: auto;
 }
 
 .results-section h2 {
@@ -1300,40 +1404,6 @@ body {
   color: #e2e8f0;
   font-weight: 600;
   min-width: 50px;
-}
-
-/* Responsive Design for Diagnostic Workflow */
-@media (max-width: 768px) {
-  .case-metadata,
-  .diagnostic-session,
-  .follow-up-questions,
-  .results-section {
-    padding: 1rem;
-    margin-bottom: 1rem;
-  }
-  
-  .metadata-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  .action-buttons {
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  .action-btn {
-    width: 100%;
-    max-width: 250px;
-  }
-  
-  .score-summary {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-  
-  .viewer-container iframe {
-    height: 400px;
-  }
 }
 
 /* Additional Results Section Styles */
@@ -1728,9 +1798,6 @@ body {
 /* Quick Actions Section */
 .quick-actions {
   margin-bottom: 4rem;
-  max-width: 1400px;
-  margin-left: auto;
-  margin-right: auto;
 }
 
 .quick-actions h2 {
@@ -1818,9 +1885,6 @@ body {
 .start-session-section {
   text-align: center;
   padding: 3rem 2rem;
-  max-width: 1400px;
-  margin-left: auto;
-  margin-right: auto;
 }
 
 .start-session-btn {

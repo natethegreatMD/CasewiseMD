@@ -510,7 +510,7 @@ function DiagnosticWorkflow({ onBackToHome }: DiagnosticWorkflowProps) {
     return (
       <div className="App">
         <header className="app-header">
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', maxWidth: '1200px', margin: '0 auto', width: '100%' }}>
+          <div className="header-content" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <button 
               onClick={onBackToHome}
               className="action-btn secondary"
@@ -619,7 +619,7 @@ function DiagnosticWorkflow({ onBackToHome }: DiagnosticWorkflowProps) {
     return (
       <div className="App">
         <header className="app-header">
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', maxWidth: '1200px', margin: '0 auto', width: '100%' }}>
+          <div className="header-content" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <button 
               onClick={onBackToHome}
               className="action-btn secondary"
@@ -924,7 +924,7 @@ function DiagnosticWorkflow({ onBackToHome }: DiagnosticWorkflowProps) {
     return (
       <div className="App">
         <header className="app-header">
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', maxWidth: '1200px', margin: '0 auto', width: '100%' }}>
+          <div className="header-content" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <button 
               onClick={onBackToHome}
               className="action-btn secondary"
@@ -935,7 +935,7 @@ function DiagnosticWorkflow({ onBackToHome }: DiagnosticWorkflowProps) {
               <h1>CasewiseMD</h1>
               <p className="app-subtitle">AI-Powered Radiology Education Platform</p>
             </div>
-            <div style={{ width: '100px' }}></div>
+            <div style={{ width: '100px' }}></div> {/* Spacer for centering */}
           </div>
         </header>
 
@@ -1019,7 +1019,7 @@ function DiagnosticWorkflow({ onBackToHome }: DiagnosticWorkflowProps) {
   return (
     <div className="App">
       <header className="app-header">
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', maxWidth: '1200px', margin: '0 auto', width: '100%' }}>
+        <div className="header-content" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <button 
             onClick={onBackToHome}
             className="action-btn secondary"
