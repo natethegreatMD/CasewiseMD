@@ -8,8 +8,6 @@ import logging
 import asyncio
 from typing import Dict, Any, List, Optional
 from pathlib import Path
-import aiohttp
-import aiofiles
 from openai import AsyncOpenAI
 import os
 from dotenv import load_dotenv
