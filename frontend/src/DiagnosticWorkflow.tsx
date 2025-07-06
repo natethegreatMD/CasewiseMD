@@ -566,3 +566,5 @@ function DiagnosticWorkflow({ onBackToHome }: DiagnosticWorkflowProps) {
     </div>
   );
 }
+
+export default DiagnosticWorkflow;
