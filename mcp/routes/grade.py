@@ -97,37 +97,33 @@ async def grade_submission(submission_data: Dict[str, Any]):
         
         grading_id = f"grade-{session_id}-{case_id}"
         
+        # Create flattened response structure for frontend
         return {
             "grading_id": grading_id,
             "session_id": session_id,
             "case_id": case_id,
             "agent": "grade",
             "status": "completed",
-            "overall_score": {
-                "total_points": feedback_data["total_score"],
-                "max_points": 100.0,
-                "percentage": feedback_data["total_score"],
-                "grade": "A" if feedback_data["total_score"] >= 90 else "B+" if feedback_data["total_score"] >= 85 else "B" if feedback_data["total_score"] >= 80 else "C+",
-                "passed": feedback_data["passed"]
-            },
-            "category_scores": feedback_data["category_scores"],
-            "detailed_feedback": {
-                "strengths": [
-                    "Systematic approach to image interpretation",
-                    "Good clinical correlation with imaging findings",
-                    "Appropriate use of medical terminology"
-                ],
-                "areas_for_improvement": [
-                    "Consider expanding differential diagnosis",
-                    "Include more specific imaging descriptors",
-                    "Elaborate on clinical significance"
-                ],
-                "next_steps": [
-                    "Review similar cases for pattern recognition",
-                    "Practice structured reporting techniques",
-                    f"Study {metadata.get('modality', 'imaging')} anatomy and pathology"
-                ]
-            },
+            # Flatten overall_score properties to root level
+            "total_score": feedback_data["total_score"],
+            "max_score": 100.0,
+            "percentage": feedback_data["total_score"],
+            "passed": feedback_data["passed"],
+            "confidence": 0.85,  # Add confidence indicator
+            "overall_feedback": f"Good diagnostic work on this {metadata.get('modality', 'imaging')} case. Your systematic approach and clinical reasoning demonstrate solid understanding.",
+            # Rename category_scores to category_results for frontend
+            "category_results": feedback_data["category_scores"],
+            # Flatten detailed_feedback arrays to root level
+            "strengths": [
+                "Systematic approach to image interpretation",
+                "Good clinical correlation with imaging findings",
+                "Appropriate use of medical terminology"
+            ],
+            "areas_for_improvement": [
+                "Consider expanding differential diagnosis",
+                "Include more specific imaging descriptors",
+                "Elaborate on clinical significance"
+            ],
             "case_specific_feedback": {
                 "modality": metadata.get("modality", "unknown"),
                 "patient_id": metadata.get("patient_id", "unknown"),
