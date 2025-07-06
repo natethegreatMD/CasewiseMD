@@ -10,7 +10,7 @@ services:
     environment:
       - ENV=production
     healthcheck:
-      test: ["CMD", "curl", "--fail", "http://localhost:8000/health", "||", "exit", "1"]
+      test: ["CMD-SHELL", "curl --fail http://localhost:8000/health || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 3
