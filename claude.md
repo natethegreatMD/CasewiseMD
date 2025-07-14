@@ -1,14 +1,27 @@
 # Casewise VPS - AI Assistant Guide
 
+## Working Context
+- **Ask for location**: Always ask "Are we working locally or on the VPS?" at session start
+- **Cursor Integration**: User codes with Cursor (AI editor) - provide specific, detailed tasks
+- **Task Style**: Break down work into small, explicit steps like for a junior developer
+- **VPS vs Local**: 
+  - VPS (143.244.154.89): nginx, docker, production/devnet deployments
+  - Local: development, code editing with Cursor
+
 ## Quick Start
 - **Project**: AI-powered medical education platform for radiology residents
 - **Status**: Production system with 1 case, planning major refactors
 - **Key Achievement**: Real AI grading with GPT-4o (replaced fake scoring)
-- **URLs**: 
+- **Production URLs**: 
   - Frontend: https://app.casewisemd.org
   - API: https://api.casewisemd.org
   - Viewer: https://viewer.casewisemd.org
   - DICOM: https://dicom.casewisemd.org
+- **Devnet URLs** (DNS records created, nginx pending):
+  - Frontend: https://dev-app.casewisemd.org
+  - API: https://dev-api.casewisemd.org
+  - Viewer: https://dev-viewer.casewisemd.org
+  - DICOM: https://dev-dicom.casewisemd.org
 
 ## Current Architecture
 
@@ -31,10 +44,102 @@
 └── docker/            # Docker configuration files
 ```
 
-## Active Development Goals (Priority Order)
+## CURRENT ACTIVE GOAL: Environment Variable Refactor
+**Status**: Planning phase
+**Reason**: Need to support devnet without maintaining two branches with different hardcoded URLs
+
+### Detailed Task List:
+
+#### Phase 1: Discovery and Planning
+1. [ ] Run search for all hardcoded URLs and save to `hardcoded_urls_audit.md`
+   - Search for: "casewisemd.org", "localhost", "8000", "8042", "https://", "http://"
+   - Include file path and line numbers
+   - Group by component (backend, frontend, config)
+
+2. [ ] Create environment variable mapping document `env_var_mapping.md`
+   - Map each hardcoded value to proposed env var name
+   - Include default values for production
+   - Include devnet values
+
+3. [ ] Identify all ports and services in `ports_and_services.md`
+   - Current production ports
+   - Proposed devnet ports (must not conflict)
+   - Docker container names
+
+#### Phase 2: Backend Updates
+4. [ ] Create `/mcp/config/settings.py` for centralized configuration
+   - Import os and load all env vars
+   - Provide defaults matching current production
+
+5. [ ] Update `mcp/main.py`
+   - Import settings from config/settings.py
+   - Replace CORS origins with settings.ALLOWED_ORIGINS
+   - Replace any other hardcoded values
+
+6. [ ] Update `mcp/tools/viewer_tools.py`
+   - Import settings
+   - Replace OHIF base URL with settings.OHIF_BASE_URL
+   - Replace DICOMweb endpoint with settings.DICOMWEB_ENDPOINT
+
+7. [ ] Update any other backend files identified in step 1
+   - Check all route files
+   - Check service files
+
+#### Phase 3: Frontend Updates
+8. [ ] Update frontend environment usage
+   - Check all uses of import.meta.env
+   - Ensure proper fallbacks
+   - Document required VITE_ prefixed variables
+
+9. [ ] Create `.env.example` for frontend
+   - Include all VITE_ variables
+   - Add comments explaining each
+
+#### Phase 4: Configuration Files
+10. [ ] Create backend `.env.example`
+    - Include all backend environment variables
+    - Add detailed comments
+    - Include both production and devnet examples
+
+11. [ ] Update `docker-compose.yml`
+    - Add env_file directive
+    - Ensure environment variables are passed to containers
+
+12. [ ] Create `docker-compose.dev.yml` 
+    - Override ports for devnet
+    - Override container names (add -dev suffix)
+    - Override environment variables
+
+#### Phase 5: Testing and Documentation
+13. [ ] Test with production values
+    - Create `.env` with current production values
+    - Verify nothing breaks
+    - Test all endpoints
+
+14. [ ] Update documentation
+    - Update README.md with env setup instructions
+    - Update this claude.md file
+    - Create `DEVNET_SETUP.md` guide
+
+15. [ ] Create devnet setup checklist
+    - DNS records to create
+    - Nginx configs needed
+    - Environment files to configure
+
+### Output Documents to Create:
+- `hardcoded_urls_audit.md` - All hardcoded values found
+- `env_var_mapping.md` - Mapping of hardcoded values to env vars
+- `ports_and_services.md` - Port assignments for prod/dev
+- `.env.example` - Backend environment template
+- `frontend/.env.example` - Frontend environment template
+- `docker-compose.dev.yml` - Devnet Docker configuration
+- `DEVNET_SETUP.md` - Complete devnet setup guide
+
+## Planned Development Goals (Priority Order)
 
 ### 1. Devnet Setup
 - **Goal**: Isolated development environment
+- **Blocked by**: Environment variable refactor (hardcoded URLs)
 - **Tasks**:
   - Create dev.*.casewisemd.org DNS records
   - Configure separate Docker environments
@@ -67,6 +172,31 @@
 - **Nginx**: On VPS at `/etc/nginx/sites-available/`
 - **Environment**: `.env` files (use `.env.dev` for devnet)
 - **Orthanc Config**: `/docker/orthanc-config.json`
+
+### Nginx Configuration (VPS Only)
+- **Location**: `/etc/nginx/sites-available/` and `/etc/nginx/sites-enabled/`
+- **Current sites**: casewisemd.org (all subdomains)
+- **SSL Certificates**: Managed by Certbot, located at `/etc/letsencrypt/`
+- **Upstream blocks**: Point to Docker containers on localhost ports
+- **To reload**: `sudo nginx -t && sudo systemctl reload nginx`
+
+#### Nginx Devnet Setup Tasks:
+1. Copy existing config files with dev- prefix
+2. Update server_name to dev- domains
+3. Update upstream ports to devnet Docker containers
+4. Create SSL certificates: `sudo certbot --nginx -d dev-app.casewisemd.org -d dev-api.casewisemd.org -d dev-viewer.casewisemd.org -d dev-dicom.casewisemd.org`
+5. Enable sites: `sudo ln -s /etc/nginx/sites-available/dev-* /etc/nginx/sites-enabled/`
+6. Test and reload: `sudo nginx -t && sudo systemctl reload nginx`
+
+#### Production Nginx Ports:
+- MCP API: localhost:8000
+- Orthanc: localhost:8042
+- Frontend: /var/www/casewise/dist
+
+#### Devnet Nginx Ports (proposed):
+- MCP API: localhost:8001
+- Orthanc: localhost:8043
+- Frontend: /var/www/casewise-dev/dist
 
 ### Critical Code
 - **AI Grading**: `/mcp/services/ai_grading.py`
@@ -253,6 +383,18 @@ Check these files for detailed context:
 - **AI costs** - Each GPT-4o call costs money
 - **Medical accuracy** - Critical for educational value
 - **Performance** - DICOM files are large, optimize carefully
+
+## Working with Cursor AI Editor
+- User codes with Cursor, which needs clear, specific tasks
+- Break down complex work into discrete, manageable steps
+- Provide clear guidance on what to change and where
+- Don't be overly prescriptive - Cursor can handle implementation details
+
+### Good Task Example:
+"In mcp/main.py, replace the hardcoded CORS origins list with environment variables. The current hardcoded list includes casewisemd.org domains."
+
+### Bad Task Example:
+"Fix CORS" or "Update all hardcoded values in the entire codebase"
 
 ## Contact & Resources
 - **Main domain**: casewisemd.org
