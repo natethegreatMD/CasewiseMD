@@ -8,6 +8,13 @@
   - VPS (143.244.154.89): nginx, docker, production/devnet deployments
   - Local: development, code editing with Cursor
 
+## Devnet Architecture (Important!)
+- **Same VPS**: Both prod and devnet run on 143.244.154.89
+- **Different Ports**: Prod uses 8000/8042, devnet uses 8001/8043
+- **Same Nginx**: Single nginx config handles both environments
+- **Simultaneous**: Both environments run at the same time
+- **No Switching**: Access prod at app.casewisemd.org, dev at dev-app.casewisemd.org
+
 ## Quick Start
 - **Project**: AI-powered medical education platform for radiology residents
 - **Status**: Production system with 1 case, planning major refactors
@@ -52,14 +59,57 @@
 
 #### Phase 1: Discovery and Planning
 1. [ ] Run search for all hardcoded URLs and save to `hardcoded_urls_audit.md`
-   - Search for: "casewisemd.org", "localhost", "8000", "8042", "https://", "http://"
+   - Search for these exact strings:
+     - "casewisemd.org"
+     - "app.casewisemd.org" 
+     - "api.casewisemd.org"
+     - "viewer.casewisemd.org"
+     - "dicom.casewisemd.org"
+     - "www.casewisemd.org"
+     - "localhost:8000"
+     - "localhost:8042"
+     - "0.0.0.0:8000"
+     - "https://casewisemd.org"
+     - "https://app.casewisemd.org"
+     - "https://api.casewisemd.org"
+     - "https://viewer.casewisemd.org"
+     - "https://dicom.casewisemd.org"
+     - "/orthanc/dicom-web"
+     - "/orthanc/"
+     - "8000" (port references)
+     - "8042" (port references)
+     - "5173" (Vite dev port)
+   - Also search for any other hardcoded configuration values that might need to be environment-specific
    - Include file path and line numbers
-   - Group by component (backend, frontend, config)
+   - Group by component (backend, frontend, docker, scripts)
 
 2. [ ] Create environment variable mapping document `env_var_mapping.md`
-   - Map each hardcoded value to proposed env var name
-   - Include default values for production
-   - Include devnet values
+   Use this exact mapping:
+   
+   **Backend Environment Variables:**
+   - `ALLOWED_ORIGINS` = "https://app.casewisemd.org,https://casewisemd.org,https://www.casewisemd.org" (prod) | "https://dev-app.casewisemd.org,http://localhost:5173" (dev)
+   - `API_BASE_URL` = "https://api.casewisemd.org" (prod) | "https://dev-api.casewisemd.org" (dev)
+   - `OHIF_BASE_URL` = "https://viewer.casewisemd.org/viewer" (prod) | "https://dev-viewer.casewisemd.org/viewer" (dev)
+   - `DICOMWEB_ENDPOINT` = "https://api.casewisemd.org/orthanc/dicom-web" (prod) | "https://dev-api.casewisemd.org/orthanc/dicom-web" (dev)
+   - `ORTHANC_URL` = "http://localhost:8042" (prod) | "http://localhost:8043" (dev)
+   - `MCP_PORT` = "8000" (prod) | "8001" (dev)
+   - `ORTHANC_PORT` = "8042" (prod) | "8043" (dev)
+   - `ENVIRONMENT` = "production" (prod) | "development" (dev)
+   - `OPENAI_API_KEY` = (keep same for both, already in use)
+   
+   **Frontend Environment Variables (must prefix with VITE_):**
+   - `VITE_API_URL` = "https://api.casewisemd.org" (prod) | "https://dev-api.casewisemd.org" (dev)
+   - `VITE_VIEWER_URL` = "https://viewer.casewisemd.org" (prod) | "https://dev-viewer.casewisemd.org" (dev)
+   - `VITE_APP_URL` = "https://app.casewisemd.org" (prod) | "https://dev-app.casewisemd.org" (dev)
+   - `VITE_DICOM_URL` = "https://dicom.casewisemd.org" (prod) | "https://dev-dicom.casewisemd.org" (dev)
+   - `VITE_ENVIRONMENT` = "production" (prod) | "development" (dev)
+   
+   **Docker Environment Variables:**
+   - `COMPOSE_PROJECT_NAME` = "casewise" (prod) | "casewise-dev" (dev)
+   - `DOCKER_MCP_PORT` = "8000" (prod) | "8001" (dev)  
+   - `DOCKER_ORTHANC_PORT` = "8042" (prod) | "8043" (dev)
+   - `DOCKER_MCP_CONTAINER` = "mcp" (prod) | "mcp-dev" (dev)
+   - `DOCKER_ORTHANC_CONTAINER` = "casewise_orthanc" (prod) | "casewise_orthanc-dev" (dev)
 
 3. [ ] Identify all ports and services in `ports_and_services.md`
    - Current production ports
@@ -104,27 +154,47 @@
 11. [ ] Update `docker-compose.yml`
     - Add env_file directive
     - Ensure environment variables are passed to containers
+    - Use ${DOCKER_MCP_PORT:-8000} syntax for defaults
 
 12. [ ] Create `docker-compose.dev.yml` 
-    - Override ports for devnet
-    - Override container names (add -dev suffix)
-    - Override environment variables
+    - Complete standalone file (not an override)
+    - Use ports: 8001 for MCP, 8043 for Orthanc
+    - Use container names with -dev suffix
+    - Point to .env.dev for environment variables
+    - Run with: `docker-compose -f docker-compose.dev.yml up -d`
+    - Completely independent from production docker-compose.yml
 
 #### Phase 5: Testing and Documentation
 13. [ ] Test with production values
     - Create `.env` with current production values
     - Verify nothing breaks
     - Test all endpoints
+    - Test OHIF viewer integration
+    - Test AI grading functionality
 
 14. [ ] Update documentation
     - Update README.md with env setup instructions
     - Update this claude.md file
     - Create `DEVNET_SETUP.md` guide
+    - Update memory-bank/activeContext.md
 
-15. [ ] Create devnet setup checklist
-    - DNS records to create
-    - Nginx configs needed
-    - Environment files to configure
+15. [ ] Create deployment scripts
+    - Keep existing `deploy-frontend.sh` for production
+    - Create `deploy-frontend-dev.sh` for devnet:
+      - Copy existing script and modify
+      - Must source .env.dev before npm run build
+      - Deploy to /var/www/frontend-dev/ (not frontend)
+      - Update success message to show dev URL
+    - Note: Frontend env vars are set at BUILD TIME, not runtime
+    - Both scripts run on VPS in /root/casewise-vps/
+
+16. [ ] Update nginx configs for devnet (VPS task)
+    - Create frontend directory: `mkdir -p /var/www/frontend-dev`
+    - Add new server blocks to existing config files
+    - Each file will handle both prod and dev domains
+    - Add upstream blocks for dev ports (8001, 8043)
+    - Run certbot for dev-* SSL certificates
+    - No switching needed - both run simultaneously
 
 ### Output Documents to Create:
 - `hardcoded_urls_audit.md` - All hardcoded values found
@@ -134,6 +204,9 @@
 - `frontend/.env.example` - Frontend environment template
 - `docker-compose.dev.yml` - Devnet Docker configuration
 - `DEVNET_SETUP.md` - Complete devnet setup guide
+- `scripts/deploy-prod.sh` - Production deployment script
+- `scripts/deploy-dev.sh` - Devnet deployment script
+- `CHANGELOG_CURRENT.md` - Track changes as we make them
 
 ## Planned Development Goals (Priority Order)
 
@@ -188,15 +261,17 @@
 5. Enable sites: `sudo ln -s /etc/nginx/sites-available/dev-* /etc/nginx/sites-enabled/`
 6. Test and reload: `sudo nginx -t && sudo systemctl reload nginx`
 
-#### Production Nginx Ports:
+#### Production Setup (Current):
 - MCP API: localhost:8000
 - Orthanc: localhost:8042
-- Frontend: /var/www/casewise/dist
+- Frontend: /var/www/frontend/ (copied from /root/casewise-vps/frontend/dist/)
+- Project location: /root/casewise-vps/
 
-#### Devnet Nginx Ports (proposed):
+#### Devnet Setup (Proposed):
 - MCP API: localhost:8001
 - Orthanc: localhost:8043
-- Frontend: /var/www/casewise-dev/dist
+- Frontend: /var/www/frontend-dev/ (will copy from /root/casewise-vps/frontend/dist/)
+- Uses same project folder, different build
 
 ### Critical Code
 - **AI Grading**: `/mcp/services/ai_grading.py`
