@@ -52,6 +52,7 @@
 ```
 
 ## CURRENT ACTIVE GOAL: Environment Variable Refactor
+- CUrsor will complete most of these tasks. you're role is basically to be cursor's supervisor and step in when cursor messes up
 **Status**: Planning phase
 **Reason**: Need to support devnet without maintaining two branches with different hardcoded URLs
 
