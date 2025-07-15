@@ -5,6 +5,7 @@ Handles case-specific viewer URLs and DICOM data orchestration
 
 import logging
 from typing import Dict, Any, Optional
+from ..config import settings
 
 logger = logging.getLogger(__name__)
 
@@ -17,11 +18,11 @@ class ViewerTools:
             "case001": "1.3.6.1.4.1.14519.5.2.1.7695.4007.250730721548000739633557298354"
         }
         
-        # OHIF viewer base URL
-        self.ohif_base_url = "https://viewer.casewisemd.org/viewer"
+        # OHIF viewer base URL from settings
+        self.ohif_base_url = settings.OHIF_BASE_URL
         
-        # DICOMweb server endpoint (through nginx proxy)
-        self.dicomweb_endpoint = "https://api.casewisemd.org/orthanc/dicom-web"
+        # DICOMweb server endpoint from settings
+        self.dicomweb_endpoint = settings.DICOMWEB_ENDPOINT
     
     async def get_case_viewer_url(self, case_id: str) -> Dict[str, Any]:
         """

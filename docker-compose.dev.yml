@@ -1,0 +1,64 @@
+# Development Docker Compose Configuration
+# This is a standalone file for the development environment
+# Run with: docker-compose -f docker-compose.dev.yml up -d
+
+services:
+  mcp-dev:
+    build:
+      context: .
+      dockerfile: ./mcp/Dockerfile
+    container_name: mcp-dev
+    ports:
+      - "8001:8001"
+    restart: unless-stopped
+    env_file:
+      - .env.dev
+    environment:
+      - ENVIRONMENT=development
+      - MCP_PORT=8001
+      - DEBUG=True
+      - ALLOWED_ORIGINS=https://dev-app.casewisemd.org,http://localhost:5173
+      - API_BASE_URL=https://dev-api.casewisemd.org
+      - OHIF_BASE_URL=https://dev-viewer.casewisemd.org/viewer
+      - DICOMWEB_ENDPOINT=https://dev-api.casewisemd.org/orthanc/dicom-web
+      - ORTHANC_URL=http://localhost:8043
+    healthcheck:
+      test: ["CMD-SHELL", "curl --fail http://localhost:8001/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    volumes:
+      - ./demo_cases:/app/demo_cases
+      - ./logs-dev:/app/logs
+    networks:
+      - casewise-dev
+
+  orthanc-dev:
+    image: orthancteam/orthanc:latest
+    container_name: casewise_orthanc-dev
+    ports:
+      - "8043:8042"
+    restart: unless-stopped
+    volumes:
+      - orthanc_data_dev:/var/lib/orthanc/db
+      - ./demo_cases:/data:ro
+      - ./docker/orthanc-config.json:/etc/orthanc/orthanc.json:ro
+    environment:
+      - ORTHANC__DICOM_WEB__ENABLE=true
+      - ORTHANC__DICOM_WEB__ROOT=/dicom-web/
+      - ORTHANC__HTTP_PORT=8042
+      - ORTHANC__AUTHENTICATION_ENABLED=false
+    healthcheck:
+      test: ["CMD-SHELL", "curl --fail http://localhost:8042/system || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    networks:
+      - casewise-dev
+
+networks:
+  casewise-dev:
+    name: casewise-dev_default
+
+volumes:
+  orthanc_data_dev:

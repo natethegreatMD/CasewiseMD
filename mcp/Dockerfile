@@ -19,12 +19,15 @@ COPY ./mcp/ ./mcp/
 # Copy demo cases
 COPY demo_cases /app/demo_cases
 
-# Expose port
-EXPOSE 8000
+# Set default port
+ENV MCP_PORT=8000
 
-# Health check
+# Expose port (will be overridden by docker-compose)
+EXPOSE ${MCP_PORT}
+
+# Health check using environment variable
 HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
-    CMD curl -f http://localhost:8000/health || exit 1
+    CMD curl -f http://localhost:${MCP_PORT}/health || exit 1
 
-# Run the application
-CMD ["uvicorn", "mcp.main:app", "--host", "0.0.0.0", "--port", "8000"] 
+# Run the application with port from environment
+CMD uvicorn mcp.main:app --host 0.0.0.0 --port ${MCP_PORT} 

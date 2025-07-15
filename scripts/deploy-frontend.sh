@@ -18,7 +18,7 @@ if [ $? -eq 0 ]; then
     sudo cp -r dist/* /var/www/frontend/
     
     echo "🎉 Frontend deployed successfully!"
-    echo "🌐 Changes are now live at https://casewisemd.org"
+    echo "🌐 Changes are now live at https://app.casewisemd.org"
 else
     echo "❌ Build failed! Deployment aborted."
     exit 1

@@ -11,8 +11,11 @@ env/
 venv/
 
 # dotenv environment variable files
+.env
+.env.*
 *.env
-*.env.*
+!.env.example
+!frontend/.env.example
 
 # Docker
 *.pid
@@ -25,6 +28,7 @@ Thumbs.db
 # Logs
 *.log
 logs/
+logs-dev/
 *.sqlite3
 
 # Build artifacts

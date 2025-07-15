@@ -3,31 +3,34 @@ services:
     build:
       context: .
       dockerfile: ./mcp/Dockerfile
-    container_name: mcp
+    container_name: ${DOCKER_MCP_CONTAINER:-mcp}
     ports:
-      - "8000:8000"
+      - "${DOCKER_MCP_PORT:-8000}:${MCP_PORT:-8000}"
     restart: unless-stopped
     env_file:
       - .env
     environment:
-      - ENV=production
+      - ENVIRONMENT=${ENVIRONMENT:-production}
+      - MCP_PORT=${MCP_PORT:-8000}
     healthcheck:
-      test: ["CMD-SHELL", "curl --fail http://localhost:8000/health || exit 1"]
+      test: ["CMD-SHELL", "curl --fail http://localhost:${MCP_PORT:-8000}/health || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 3
     volumes:
-      - ./demo_cases:/app/demo_cases 
+      - ./demo_cases:/app/demo_cases
+      - ./logs:/app/logs
 
   orthanc:
     image: orthancteam/orthanc:latest
-    container_name: casewise_orthanc
+    container_name: ${DOCKER_ORTHANC_CONTAINER:-casewise_orthanc}
     ports:
-      - "8042:8042"
+      - "${DOCKER_ORTHANC_PORT:-8042}:8042"
     restart: unless-stopped
     volumes:
       - orthanc_data:/var/lib/orthanc/db
       - ./demo_cases:/data:ro
+      - ./docker/orthanc-config.json:/etc/orthanc/orthanc.json:ro
     environment:
       - ORTHANC__DICOM_WEB__ENABLE=true
       - ORTHANC__DICOM_WEB__ROOT=/dicom-web/
@@ -40,4 +43,4 @@ services:
       retries: 3
 
 volumes:
-  orthanc_data: 
+  orthanc_data:
