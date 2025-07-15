@@ -13,12 +13,20 @@
 - **Status**: Production system live with real users, 1 case (TCGA-09-0364)
 - **Key Feature**: Real-time AI grading using GPT-4o for medical diagnostic accuracy
 - **Architecture**: FastAPI backend, React frontend, OHIF viewer, Orthanc DICOM server
-- **Current Focus**: Environment variable refactor completed, ready for devnet deployment
+- **Current Focus**: Devnet deployment COMPLETE! Both prod and dev environments running
 
-## Environment Setup (COMPLETED 2025-07-15)
+## Environment Setup & Devnet Deployment (COMPLETED 2025-07-15)
 
-### What Was Done
+### Environment Variable Refactor (Completed)
 The entire codebase has been refactored to use environment variables instead of hardcoded URLs. This enables running development (devnet) and production environments simultaneously on the same VPS.
+
+### Devnet Deployment (Completed)
+Successfully deployed the development environment alongside production on the same VPS:
+- ✅ Created nginx configurations for all dev-* domains
+- ✅ Obtained SSL certificates for dev-app, dev-api, dev-viewer, dev-dicom
+- ✅ Built and deployed frontend with development environment variables
+- ✅ Started development containers (mcp-dev on port 8001, orthanc-dev on port 8043)
+- ✅ Both environments now running simultaneously without conflicts
 
 ### Key Changes Made
 1. **Backend**: Created `/mcp/config/settings.py` for centralized configuration
@@ -34,10 +42,11 @@ Production (Current):
 - URLs: *.casewisemd.org
 - Config: .env files
 
-Development (Ready to Deploy):
+Development (DEPLOYED):
 - Ports: 8001 (MCP), 8043 (Orthanc)  
-- URLs: dev-*.casewisemd.org
+- URLs: dev-*.casewisemd.org (all SSL-enabled)
 - Config: .env.dev files
+- Status: Running alongside production
 ```
 
 ## Directory Structure
@@ -77,11 +86,11 @@ casewise-vps/
 - Viewer: https://viewer.casewisemd.org
 - DICOM: https://dicom.casewisemd.org
 
-### Development (DNS Ready, Nginx Pending)
-- Frontend: https://dev-app.casewisemd.org
-- API: https://dev-api.casewisemd.org
-- Viewer: https://dev-viewer.casewisemd.org
-- DICOM: https://dev-dicom.casewisemd.org
+### Development (LIVE - Deployed 2025-07-15)
+- Frontend: https://dev-app.casewisemd.org ✅
+- API: https://dev-api.casewisemd.org ✅
+- Viewer: https://dev-viewer.casewisemd.org ✅
+- DICOM: https://dev-dicom.casewisemd.org ✅
 
 ## Quick Start Commands
 
@@ -133,26 +142,21 @@ cd /root/casewise-vps
 - `DOCKER_ORTHANC_PORT`: External Orthanc port
 - `COMPOSE_PROJECT_NAME`: Docker project name
 
-## Next Steps for Devnet Deployment
+## Devnet Deployment Steps (Completed 2025-07-15)
 
-### On VPS (One-time Setup)
-1. **Pull latest code**: `git pull origin main`
-2. **Copy env file**: Ensure `.env.dev` has OpenAI key
-3. **Create nginx configs** for dev-* domains
-4. **Get SSL certificates**: `certbot --nginx -d dev-*.casewisemd.org`
-5. **Create frontend directory**: `mkdir -p /var/www/frontend-dev`
-6. **Run deployment**: `./scripts/deploy-dev.sh`
+### What was done on VPS:
+1. ✅ **Pulled latest code** from repository
+2. ✅ **Verified .env.dev** has OpenAI key configured
+3. ✅ **Added nginx configs** to `/etc/nginx/sites-available/casewise.conf`
+4. ✅ **Got SSL certificates**: All dev-* domains have valid SSL
+5. ✅ **Created frontend directory**: `/var/www/frontend-dev` with built files
+6. ✅ **Ran deployment**: Both containers running successfully
 
-### Nginx Configuration Needed
-```nginx
-# For dev-api.casewisemd.org
-upstream mcp_backend_dev {
-    server localhost:8001;
-}
-
-# For dev-app.casewisemd.org  
-root /var/www/frontend-dev;
-```
+### Nginx Configuration Added:
+- All dev-* domains added to existing casewise.conf
+- SSL certificates obtained via certbot
+- Proper proxy configurations for API and DICOM
+- Frontend served from `/var/www/frontend-dev`
 
 ## Critical Files & Their Purpose
 
@@ -256,10 +260,13 @@ When starting a new session:
 
 Key context to remember:
 - Environment variable refactor is COMPLETE
+- Devnet deployment is COMPLETE - both environments running
 - Both .env and .env.dev files contain the OpenAI API key
 - Frontend uses Vite, requires VITE_ prefix for env vars
 - Deployment scripts handle environment switching
-- Nginx configuration on VPS still needs dev-* setup
+- Nginx configuration includes all dev-* domains with SSL
+- Docker containers: mcp/orthanc (prod), mcp-dev/orthanc-dev (dev)
+- Scripts had Windows line endings - fixed with sed
 
 ---
-*Last updated: 2025-07-15 - Environment Variable Refactor Complete, Ready for Devnet Deployment*
+*Last updated: 2025-07-15 - Devnet Successfully Deployed! Both environments running simultaneously*

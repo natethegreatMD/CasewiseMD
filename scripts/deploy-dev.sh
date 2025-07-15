@@ -3,7 +3,7 @@
 echo "🚀 Deploying CasewiseMD Development Environment..."
 
 # Change to project root
-cd /root/casewise-vps
+cd /root/casewise-dev
 
 # Check if .env.dev exists
 if [ ! -f ".env.dev" ]; then
@@ -14,9 +14,9 @@ fi
 
 # Deploy backend
 echo "🐳 Deploying development backend services..."
-docker-compose -f docker-compose.dev.yml down
-docker-compose -f docker-compose.dev.yml build
-docker-compose -f docker-compose.dev.yml up -d
+docker compose -f docker-compose.dev.yml down
+docker compose -f docker-compose.dev.yml build
+docker compose -f docker-compose.dev.yml up -d
 
 # Check if Docker services are running
 if docker ps | grep -q "mcp-dev"; then

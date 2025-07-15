@@ -23,18 +23,19 @@
 - Viewer: https://viewer.casewisemd.org
 - DICOM: https://dicom.casewisemd.org
 
-### Development (DNS Ready, Nginx Pending)
+### Development (LIVE - Deployed 2025-07-15)
 - Frontend: https://dev-app.casewisemd.org
 - API: https://dev-api.casewisemd.org
 - Viewer: https://dev-viewer.casewisemd.org
 - DICOM: https://dev-dicom.casewisemd.org
 
-## Devnet Architecture (Important!)
-- **Same VPS**: Both prod and devnet run on 143.244.154.89
-- **Different Ports**: Prod uses 8000/8042, devnet uses 8001/8043
-- **Same Nginx**: Single nginx config handles both environments
-- **Simultaneous**: Both environments run at the same time
-- **No Switching**: Access prod at app.casewisemd.org, dev at dev-app.casewisemd.org
+## Devnet Architecture (DEPLOYED!)
+- **Same VPS**: Both prod and devnet run on 143.244.154.89 ✅
+- **Different Ports**: Prod uses 8000/8042, devnet uses 8001/8043 ✅
+- **Same Nginx**: Single nginx config handles both environments ✅
+- **Simultaneous**: Both environments run at the same time ✅
+- **No Switching**: Access prod at app.casewisemd.org, dev at dev-app.casewisemd.org ✅
+- **Containers**: mcp/orthanc (prod), mcp-dev/orthanc-dev (dev) ✅
 
 ## System Architecture
 
@@ -62,13 +63,23 @@
 
 ## Planned Development Goals (Priority Order)
 
-### 1. Devnet Setup ✅ (Code Complete, Deployment Pending)
+### 1. Devnet Setup ✅ (FULLY DEPLOYED - 2025-07-15)
 - **Goal**: Isolated development environment
-- **Status**: Environment variable refactor COMPLETE (2025-07-15)
-- **Next**: Deploy to VPS with nginx configuration
+- **Status**: COMPLETE - Both environments running simultaneously on VPS
+- **Deployed**: All dev-* domains live with SSL certificates
 
-#### Environment Variable Refactor Details (COMPLETED)
+#### Implementation Details (What Was Done)
+
+**Environment Variable Refactor (Completed):**
 The entire codebase has been refactored to use environment variables instead of hardcoded URLs.
+
+**Devnet Deployment (Completed):**
+- Added nginx configurations for all dev-* domains to existing config
+- Obtained SSL certificates via certbot for all dev domains
+- Built frontend with development environment variables
+- Deployed containers: mcp-dev (port 8001), orthanc-dev (port 8043)
+- Fixed deployment scripts (Windows line endings → Unix)
+- Created /var/www/frontend-dev for development frontend files
 
 **Backend Environment Variables:**
 - `ENVIRONMENT`: production/development
@@ -103,7 +114,7 @@ The entire codebase has been refactored to use environment variables instead of 
 - `scripts/deploy-prod.sh`: Production deployment
 - `scripts/deploy-dev.sh`: Development deployment
 
-### 2. MCP Case Loader Refactor
+### 2. MCP Case Loader Refactor (Next Priority)
 - **Current**: Hardcoded case001, basic filesystem scanning
 - **Goal**: Dynamic, cached, modular case loading
 - **New structure**: `/mcp/case_loader/`
@@ -113,6 +124,7 @@ The entire codebase has been refactored to use environment variables instead of 
   - Dynamic file watching for development
   - Case filtering by subspecialty/difficulty
   - Metadata indexing for fast queries
+- **Why Important**: Enables multi-case support, essential for platform growth
 
 ### 3. Core MCP Refactor  
 - **Current**: Monolithic services (ai_grading.py has 923 lines)
@@ -245,5 +257,12 @@ The entire codebase has been refactored to use environment variables instead of 
 - **GitHub**: Private repository
 - **OpenAI**: GPT-4o for grading
 
+## Recent Accomplishments (2025-07-15)
+- ✅ Completed environment variable refactor across entire codebase
+- ✅ Successfully deployed devnet environment on VPS
+- ✅ Both prod and dev environments running simultaneously
+- ✅ All dev-* domains have SSL certificates and are live
+- ✅ Fixed deployment script issues (Windows → Unix line endings)
+
 ---
-*This is the main project overview. For current active work, see claude-current-task.md*
+*Last updated: 2025-07-15 - Devnet deployment complete! Next priority: MCP Case Loader Refactor*
