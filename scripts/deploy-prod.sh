@@ -3,7 +3,7 @@
 echo "🚀 Deploying CasewiseMD Production Environment..."
 
 # Change to project root
-cd /root/CasewiseMD
+cd /root/CasewiseMD-workspace/production
 
 # Deploy backend
 echo "🐳 Deploying backend services..."

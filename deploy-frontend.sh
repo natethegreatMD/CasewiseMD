@@ -3,7 +3,7 @@
 echo "🚀 Deploying CasewiseMD Frontend..."
 
 # Change to frontend directory
-cd /root/CasewiseMD/frontend
+cd /root/CasewiseMD-workspace/production/frontend
 
 # Build the frontend
 echo "📦 Building frontend..."
