@@ -3,7 +3,7 @@
 echo "🚀 Deploying CasewiseMD Frontend (Development)..."
 
 # Change to frontend directory
-cd /root/casewise-vps/frontend
+cd /root/CasewiseMD-workspace/development/frontend
 
 # Source the development environment variables
 if [ -f "../.env.dev" ]; then

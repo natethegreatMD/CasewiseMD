@@ -3,7 +3,7 @@
 echo "🚀 Deploying CasewiseMD Development Environment..."
 
 # Change to project root
-cd /root/casewise-dev
+cd /root/CasewiseMD-workspace/development
 
 # Check if .env.dev exists
 if [ ! -f ".env.dev" ]; then
