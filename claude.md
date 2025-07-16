@@ -1,4 +1,4 @@
-# Casewise VPS - AI Assistant Guide
+# CasewiseMD - AI Assistant Guide
 
 ## Working Context
 - **Ask for location**: Always ask "Are we working locally or on the VPS?" at session start
@@ -13,7 +13,15 @@
 - **Status**: Production system live with real users, 1 case (TCGA-09-0364)
 - **Key Feature**: Real-time AI grading using GPT-4o for medical diagnostic accuracy
 - **Architecture**: FastAPI backend, React frontend, OHIF viewer, Orthanc DICOM server
-- **Current Focus**: Devnet deployment COMPLETE! Both prod and dev environments running
+- **Current Focus**: Production renamed to CasewiseMD! Using environment-based config, no hardcoded URLs
+
+## Project Rename & Environment Setup (COMPLETED 2025-07-16)
+
+**Major Update**: Project renamed from casewise-vps to CasewiseMD
+- GitHub repository renamed: https://github.com/natethegreatMD/CasewiseMD
+- VPS directory renamed: /root/casewise-vps → /root/CasewiseMD
+- Docker volume migrated: casewise-vps_orthanc_data → CasewiseMD_orthanc_data
+- All references updated in deployment scripts
 
 ## Environment Setup & Devnet Deployment (COMPLETED 2025-07-15)
 
@@ -51,7 +59,10 @@ Development (DEPLOYED):
 
 ## Directory Structure
 ```
-casewise-vps/
+CasewiseMD/                 # Production (renamed from casewise-vps)
+casewise-dev/               # Development environment
+
+CasewiseMD/
 ├── frontend/               # React 19 + TypeScript + Vite
 │   ├── src/               # Source code
 │   ├── .env               # Production environment
@@ -116,7 +127,7 @@ docker logs mcp-dev      # Development
 ssh root@143.244.154.89
 
 # Deploy production
-cd /root/casewise-vps
+cd /root/CasewiseMD
 ./scripts/deploy-prod.sh
 
 # Deploy development (after nginx setup)
@@ -269,4 +280,4 @@ Key context to remember:
 - Scripts had Windows line endings - fixed with sed
 
 ---
-*Last updated: 2025-07-15 - Devnet Successfully Deployed! Both environments running simultaneously*
+*Last updated: 2025-07-16 - Project renamed to CasewiseMD! Production uses environment-based config with no hardcoded URLs*
