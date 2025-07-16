@@ -313,25 +313,29 @@ Key context to remember:
 - Production tagged as v1.0.0 (first official release)
 - Git workflow: dev branch → main branch → tag release
 
-## Maintaining CLAUDE.md
+## Maintaining Documentation
 
-**Important**: When updating this file, copy it to both environments:
+**Important**: When updating CLAUDE.md or claude-project-overview.md, copy both to both environments:
 ```bash
 cd /root/CasewiseMD-workspace
 cp CLAUDE.md production/
 cp CLAUDE.md development/
+cp claude-project-overview.md production/
+cp claude-project-overview.md development/
 
 # Then commit in each:
 cd production
-git add CLAUDE.md && git commit -m "Update CLAUDE.md"
+git add CLAUDE.md claude-project-overview.md
+git commit -m "Update documentation"
 git push origin main
 
 cd ../development
-git add CLAUDE.md && git commit -m "Update CLAUDE.md"
+git add CLAUDE.md claude-project-overview.md
+git commit -m "Update documentation"
 git push origin dev
 ```
 
-This ensures the documentation is available when cloning the repo locally.
+This ensures both documentation files are available when cloning the repo locally.
 
 ---
 *Last updated: 2025-07-16 - Project renamed to CasewiseMD! Production v1.0.0 tagged with environment-based config*
