@@ -125,8 +125,9 @@ function DiagnosticWorkflow({ onBackToHome }: DiagnosticWorkflowProps) {
   const [viewerUrl, setViewerUrl] = useState<string | null>(null);
   const [caseLoading, setCaseLoading] = useState(false);
 
-  // API Base URL from environment variables
+  // API and Viewer Base URLs from environment variables
   const API_URL = `${import.meta.env.VITE_API_URL || 'https://api.casewisemd.org'}/api/v1`;
+  const VIEWER_BASE_URL = import.meta.env.VITE_VIEWER_URL || 'https://viewer.casewisemd.org';
 
   // Load case metadata and viewer URL when component mounts
   useEffect(() => {
@@ -182,7 +183,7 @@ function DiagnosticWorkflow({ onBackToHome }: DiagnosticWorkflowProps) {
       } else {
         console.warn('Failed to get viewer URL:', viewerData.error);
         // Set fallback URL
-        setViewerUrl('https://viewer.casewisemd.org/viewer');
+        setViewerUrl(`${VIEWER_BASE_URL}/viewer`);
       }
       
     } catch (err: any) {
