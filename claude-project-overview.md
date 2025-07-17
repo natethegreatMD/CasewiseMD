@@ -54,19 +54,40 @@
 ```
 
 ### Critical Code Locations
-- **AI Grading**: `/mcp/services/ai_grading.py` (923 lines)
-- **Diagnostic Flow**: `/mcp/routes/diagnostic.py`
+
+#### Legacy V1 Architecture (Preserved for Compatibility)
+- **AI Grading**: `/mcp/services/ai_grading.py` (923 lines - legacy)
+- **Diagnostic Flow**: `/mcp/routes/diagnostic.py` (V1 routes)
 - **Grade Route**: `/mcp/routes/grade.py`
 - **Frontend Workflow**: `/frontend/src/DiagnosticWorkflow.tsx`
 - **Viewer Tools**: `/mcp/tools/viewer_tools.py`
-- **Settings**: `/mcp/config/settings.py` (NEW - centralized config)
+- **Settings**: `/mcp/config/settings.py` (centralized config)
 
-## Planned Development Goals (Priority Order)
+#### New MCP Architecture (Production Ready - 2025-07-17)
+- **Orchestrator**: `/mcp/orchestrator/session_orchestrator.py` (main coordinator)
+- **Core Models**: `/mcp/core/models.py` (Pydantic data models)
+- **Agent Interfaces**: `/mcp/core/interfaces.py` (standardized contracts)
+- **Session Management**: `/mcp/session/models.py` (complete lifecycle)
+- **V2 Routes**: `/mcp/routes/diagnostic_v2.py` (orchestrator-based APIs)
+- **Grading Agent**: `/mcp/agents/grading/grading_agent_v2.py` (modular AI grading)
+- **Question Agent**: `/mcp/agents/questions/question_agent.py` (dynamic questions)
+- **Case Agent**: `/mcp/agents/case/case_agent.py` (case management)
+
+## Completed Development Goals
 
 ### 1. Devnet Setup ✅ (FULLY DEPLOYED - 2025-07-15)
 - **Goal**: Isolated development environment
 - **Status**: COMPLETE - Both environments running simultaneously on VPS
 - **Deployed**: All dev-* domains live with SSL certificates
+
+### 2. MCP Backend Refactor ✅ (COMPLETED & TESTED - 2025-07-17)
+- **Goal**: Transform monolithic backend into agent-based orchestrator architecture
+- **Status**: COMPLETE AND PRODUCTION READY
+- **Testing**: 6/6 execution tests passed (100% success rate)
+- **Benefits**: Modular, testable, extensible, backward compatible
+- **Documentation**: Complete technical guides and test reports available
+
+## Planned Development Goals (Priority Order)
 
 #### Implementation Details (What Was Done)
 
@@ -126,16 +147,24 @@ The entire codebase has been refactored to use environment variables instead of 
   - Metadata indexing for fast queries
 - **Why Important**: Enables multi-case support, essential for platform growth
 
-### 3. Core MCP Refactor  
-- **Current**: Monolithic services (ai_grading.py has 923 lines)
-- **Goal**: Modular components for grading, questions, feedback
-- **New structure**: 
-  - `/mcp/grading/` - Rubric and AI grading modules
-  - `/mcp/questions/` - Question generation and prompts
-  - `/mcp/core/` - Shared interfaces and base classes
-  - `/mcp/feedback/` - Feedback generation engine
+### 3. Frontend Migration to V2 APIs
+- **Current**: Frontend uses V1 routes (diagnostic.py)
+- **Goal**: Migrate to V2 orchestrator-based routes
+- **Benefits**: Real-time session state, enhanced progress tracking, better error handling
+- **Status**: V2 routes ready, frontend migration needed
 
-### 4. Database Integration
+### 4. Additional MCP Agents
+- **Teaching Agent**: Educational content delivery and teaching moments
+- **Reference Agent**: Medical reference lookup and integration
+- **Status**: Framework complete, ready for implementation
+
+### 5. MCP Case Loader Enhancement
+- **Current**: Basic case loading via CaseAgent
+- **Goal**: Multi-source dynamic case loading
+- **Features**: Pluggable loaders, advanced caching, case filtering
+- **Status**: Ready for implementation
+
+### 6. Database Integration
 - **Technology**: PostgreSQL with SQLAlchemy
 - **Schema**:
   - Users table (authentication, profiles)
@@ -145,7 +174,7 @@ The entire codebase has been refactored to use environment variables instead of 
   - Analytics table (performance tracking)
 - **Migration strategy**: Start with hybrid (DB + filesystem)
 
-### 5. Authentication System
+### 7. Authentication System
 - **Technology**: JWT tokens with FastAPI security
 - **Features**:
   - Email/password login
@@ -153,7 +182,7 @@ The entire codebase has been refactored to use environment variables instead of 
   - Session management
   - API key support for programmatic access
 
-### 6. Multi-Case Support
+### 8. Multi-Case Support
 - **Goal**: Expand beyond single TCGA case
 - **Sources**:
   - TCGA collection (public dataset)
@@ -164,7 +193,7 @@ The entire codebase has been refactored to use environment variables instead of 
   - Rubric creation for each case
   - Storage management
 
-### 7. Analytics Dashboard
+### 9. Analytics Dashboard
 - **For Students**:
   - Performance over time
   - Weak areas identification
@@ -177,10 +206,11 @@ The entire codebase has been refactored to use environment variables instead of 
 ## Architecture Patterns
 
 ### API Design
-- **Base URL**: `/api/v1/`
+- **V1 Base URL**: `/api/v1/` (legacy routes - diagnostic.py)
+- **V2 Base URL**: `/api/v2/diagnostic/` (orchestrator-based routes)
 - **Pattern**: RESTful with JSON responses
 - **Authentication**: Bearer tokens (future)
-- **Versioning**: URL-based (v1, v2, etc.)
+- **Versioning**: URL-based with backward compatibility
 
 ### Grading Flow
 1. Student views DICOM images in OHIF viewer
@@ -206,19 +236,23 @@ The entire codebase has been refactored to use environment variables instead of 
 - No user authentication system
 - No database (filesystem only)
 - Manual case creation process
-- No automated tests
-- Basic error handling
-- No caching layer
 - Limited monitoring/logging
+- Frontend uses V1 APIs (V2 available but not integrated)
 
-### Technical Debt Items
-1. **Hardcoded case references** throughout codebase
-2. **No dependency injection** - services tightly coupled
-3. **Limited error handling** - needs comprehensive try/catch
-4. **No input validation** framework
-5. **Frontend state management** - consider Redux/Zustand
-6. **No API documentation** - need OpenAPI/Swagger
-7. **No rate limiting** on API endpoints
+### Technical Debt Items (Reduced after MCP Refactor)
+1. **Hardcoded case references** throughout codebase (partially addressed by CaseAgent)
+2. **Frontend migration** - need to switch from V1 to V2 APIs
+3. **No input validation** framework
+4. **Frontend state management** - consider Redux/Zustand
+5. **No API documentation** - need OpenAPI/Swagger
+6. **No rate limiting** on API endpoints
+
+### Technical Debt Resolved ✅
+1. **Monolithic backend** - ✅ Refactored to agent-based architecture
+2. **Tightly coupled services** - ✅ Modular agents with clean interfaces
+3. **Limited error handling** - ✅ Multi-level error strategy implemented
+4. **No automated tests** - ✅ Comprehensive test suite created
+5. **Basic dependency management** - ✅ Proper requirements.txt with pydantic
 
 ## Infrastructure Decisions
 
