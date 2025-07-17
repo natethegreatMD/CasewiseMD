@@ -6,7 +6,7 @@
 - **Task Style**: Break down work into small, explicit steps like for a junior developer
 - **VPS vs Local**: 
   - VPS (143.244.154.89): nginx, docker, production/devnet deployments
-  - Local: development, code editing with Cursor
+  - Local: development, code editing with Cursor (no Docker needed)
 
 ## Project Overview
 - **What**: AI-powered medical education platform for radiology residents
@@ -126,18 +126,10 @@ production/
 
 ### Local Development
 ```bash
-# Start production environment
-docker-compose up -d
-
-# Start development environment
-docker-compose -f docker-compose.dev.yml up -d
-
-# Check services
-docker ps
-
-# View logs
-docker logs mcp          # Production
-docker logs mcp-dev      # Development
+# Local is for code editing only - NO deployment
+# All testing and running happens on VPS
+# Use Cursor editor for development
+# Push changes to git, then deploy on VPS
 ```
 
 ### VPS Deployment
@@ -269,28 +261,49 @@ This verifies:
 - Basic error handling
 
 ## Planned Improvements
-1. MCP Case Loader Refactor
-  - **Current**: Hardcoded case001, basic filesystem scanning
-  - **Goal**: Dynamic, cached, modular case loading
-  - **New structure**: `/mcp/case_loader/`
-  - **Features**:
-    - Pluggable loader classes (demo_cases, TCGA, custom)
-    - In-memory caching
-    - Dynamic file watching
-    - Case filtering by subspecialty/difficulty
-2. Core MCP Refactor  
-- **Current**: Monolithic services (ai_grading.py has 923 lines)
-- **Goal**: Modular components for grading, questions, feedback
-- **New structure**: 
-  - `/mcp/grading/` - Rubric and AI grading modules
-  - `/mcp/questions/` - Question generation and prompts
-  - `/mcp/core/` - Shared interfaces and base classes
 
+### 1. Core MCP Backend Refactor (IN PROGRESS - 2025-07-17)
+**Status**: Partially Complete
+- **Goal**: Transform monolithic services into proper MCP architecture with session orchestrator
+- **Completed**:
+  - ✅ `/mcp/core/` - Core interfaces, models, and exceptions
+  - ✅ `/mcp/orchestrator/` - Session orchestrator and state machine
+  - ✅ `/mcp/session/` - Session state management and persistence
+  - ✅ `/mcp/agents/grading/` - Grading agent extracted from ai_grading.py
+  - ✅ `/mcp/routes/diagnostic_v2.py` - Example refactored routes
+- **Remaining**:
+  - ❌ `/mcp/agents/questions/` - Question generation agent
+  - ❌ `/mcp/agents/teaching/` - Teaching/feedback agent
+  - ❌ `/mcp/agents/reference/` - Reference lookup agent
+  - ❌ Full migration of existing routes to use orchestrator
+  - ❌ Integration testing of new architecture
 
-3. **Database Integration**: PostgreSQL for user/case management
-4. **Authentication**: JWT-based auth system
-5. **More Cases**: Expand beyond single case
-6. **Enhanced Analytics**: Track student performance
+### 2. MCP Case Loader Refactor
+- **Status**: Not Started (Depends on MCP Backend completion)
+- **Current**: Hardcoded case001, basic filesystem scanning
+- **Goal**: Dynamic, cached, modular case loading
+- **New structure**: `/mcp/case_loader/`
+- **Features**:
+  - Pluggable loader classes (demo_cases, TCGA, custom)
+  - In-memory caching
+  - Dynamic file watching
+  - Case filtering by subspecialty/difficulty
+
+### 3. Database Integration
+- **Status**: Not Started
+- PostgreSQL for user/case management
+
+### 4. Authentication System
+- **Status**: Not Started
+- JWT-based auth system
+
+### 5. More Cases
+- **Status**: Not Started
+- Expand beyond single case
+
+### 6. Enhanced Analytics
+- **Status**: Not Started
+- Track student performance
 
 ## For New Claude Sessions
 
@@ -339,3 +352,4 @@ This ensures both documentation files are available when cloning the repo locall
 
 ---
 *Last updated: 2025-07-16 - Project renamed to CasewiseMD! Production v1.0.0 tagged with environment-based config*
+*2025-07-17 - MCP Backend refactor in progress (refactor/mcp-backend branch)*
