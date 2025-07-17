@@ -4,7 +4,6 @@ Core module for MCP backend - defines interfaces and shared models
 
 from .interfaces import (
     Agent,
-    SessionContext,
     OrchestratorInterface,
     AgentResponse,
     AgentRequest
@@ -29,7 +28,6 @@ from .exceptions import (
 __all__ = [
     # Interfaces
     'Agent',
-    'SessionContext',
     'OrchestratorInterface',
     'AgentResponse',
     'AgentRequest',
