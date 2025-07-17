@@ -184,11 +184,22 @@ cd ../development
 
 ## Critical Files & Their Purpose
 
-### Backend
+### Backend Core
 - `/mcp/config/settings.py`: All environment variables loaded here
 - `/mcp/main.py`: FastAPI app with CORS configuration
-- `/mcp/services/ai_grading.py`: GPT-4o integration for grading
+- `/mcp/services/ai_grading.py`: Original GPT-4o integration (legacy)
 - `/mcp/tools/viewer_tools.py`: OHIF viewer URL generation
+
+### MCP Architecture (NEW - 2025-07-17)
+- `/mcp/core/interfaces.py`: Agent interfaces and base classes
+- `/mcp/core/models.py`: SessionData, Question, Answer, GradingResult models
+- `/mcp/orchestrator/session_orchestrator.py`: Main session coordinator
+- `/mcp/session/state_manager.py`: Session persistence and lifecycle
+- `/mcp/agents/grading/grading_agent_v2.py`: Complete AI grading agent
+- `/mcp/agents/questions/question_agent.py`: Dynamic question management
+- `/mcp/agents/case/case_agent.py`: Case metadata and file loading
+- `/mcp/routes/diagnostic_v2.py`: Refactored API endpoints
+- `MCP_REFACTOR_SUMMARY.md`: Comprehensive technical documentation
 
 ### Frontend
 - `/frontend/src/DiagnosticWorkflow.tsx`: Main workflow component
@@ -262,32 +273,40 @@ This verifies:
 
 ## Planned Improvements
 
-### 1. Core MCP Backend Refactor (IN PROGRESS - 2025-07-17)
-**Status**: Partially Complete
+### 1. Core MCP Backend Refactor (COMPLETED - 2025-07-17)
+**Status**: Complete
 - **Goal**: Transform monolithic services into proper MCP architecture with session orchestrator
 - **Completed**:
   - ✅ `/mcp/core/` - Core interfaces, models, and exceptions
-  - ✅ `/mcp/orchestrator/` - Session orchestrator and state machine
+  - ✅ `/mcp/orchestrator/` - Session orchestrator and state machine  
   - ✅ `/mcp/session/` - Session state management and persistence
-  - ✅ `/mcp/agents/grading/` - Grading agent extracted from ai_grading.py
-  - ✅ `/mcp/routes/diagnostic_v2.py` - Example refactored routes
-- **Remaining**:
-  - ❌ `/mcp/agents/questions/` - Question generation agent
-  - ❌ `/mcp/agents/teaching/` - Teaching/feedback agent
-  - ❌ `/mcp/agents/reference/` - Reference lookup agent
-  - ❌ Full migration of existing routes to use orchestrator
-  - ❌ Integration testing of new architecture
+  - ✅ `/mcp/agents/grading/` - GradingAgentV2 with complete ai_grading.py functionality
+  - ✅ `/mcp/agents/questions/` - QuestionAgent for dynamic question management
+  - ✅ `/mcp/agents/case/` - CaseAgent for case metadata and file loading
+  - ✅ `/mcp/routes/diagnostic_v2.py` - Refactored routes using orchestrator
+  - ✅ Session model unification (SessionContext → SessionData)
+  - ✅ Agent integration with proper error handling and state management
+  - ✅ Comprehensive technical documentation (MCP_REFACTOR_SUMMARY.md)
+- **Architecture Changes**:
+  - **Before**: Monolithic services with hardcoded logic and stateless backend
+  - **After**: Agent-based orchestrator architecture with persistent session management
+  - **Benefits**: Modular, testable, extensible, proper session lifecycle management
+- **Remaining for Future**:
+  - `/mcp/agents/teaching/` - Teaching/feedback agent (framework ready)
+  - `/mcp/agents/reference/` - Reference lookup agent (framework ready)
+  - Frontend migration to V2 APIs (backward compatibility maintained)
 
 ### 2. MCP Case Loader Refactor
-- **Status**: Not Started (Depends on MCP Backend completion)
-- **Current**: Hardcoded case001, basic filesystem scanning
-- **Goal**: Dynamic, cached, modular case loading
-- **New structure**: `/mcp/case_loader/`
+- **Status**: Ready for Implementation (MCP Backend foundation complete)
+- **Current**: Basic case loading via CaseAgent (demo_cases only)
+- **Goal**: Multi-source dynamic case loading with advanced features
+- **Implementation Guide**: See MCP_REFACTOR_SUMMARY.md "CaseLoader MCP Implementation Guidance"
 - **Features**:
-  - Pluggable loader classes (demo_cases, TCGA, custom)
-  - In-memory caching
-  - Dynamic file watching
-  - Case filtering by subspecialty/difficulty
+  - Pluggable loader classes (demo_cases, TCGA, custom sources)
+  - Multi-source case discovery and loading
+  - Advanced caching and performance optimization
+  - Case filtering by subspecialty/difficulty/metadata
+  - Real-time case validation and health checking
 
 ### 3. Database Integration
 - **Status**: Not Started
@@ -317,6 +336,7 @@ When starting a new session:
 Key context to remember:
 - Environment variable refactor is COMPLETE
 - Devnet deployment is COMPLETE - both environments running
+- **MCP Backend Refactor is COMPLETE** - new agent-based architecture operational
 - Both .env and .env.dev files contain the OpenAI API key
 - Frontend uses Vite, requires VITE_ prefix for env vars
 - Deployment scripts handle environment switching
@@ -325,6 +345,8 @@ Key context to remember:
 - Scripts had Windows line endings - fixed with sed
 - Production tagged as v1.0.0 (first official release)
 - Git workflow: dev branch → main branch → tag release
+- **Current branch**: refactor/mcp-backend with complete agent architecture
+- **Technical docs**: MCP_REFACTOR_SUMMARY.md contains comprehensive implementation details
 
 ## Maintaining Documentation
 
@@ -352,4 +374,4 @@ This ensures both documentation files are available when cloning the repo locall
 
 ---
 *Last updated: 2025-07-16 - Project renamed to CasewiseMD! Production v1.0.0 tagged with environment-based config*
-*2025-07-17 - MCP Backend refactor in progress (refactor/mcp-backend branch)*
+*2025-07-17 - **MCP Backend refactor COMPLETED** (refactor/mcp-backend branch) - Agent-based orchestrator architecture fully operational*

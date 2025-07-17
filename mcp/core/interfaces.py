@@ -3,9 +3,12 @@ Core interfaces for the MCP architecture
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, Dict, Optional, List
+from typing import Any, Dict, Optional, TYPE_CHECKING
 from pydantic import BaseModel
-from datetime import datetime
+
+# Import proper session models
+if TYPE_CHECKING:
+    from ..session.models import SessionData
 
 
 class AgentRequest(BaseModel):
@@ -24,59 +27,11 @@ class AgentResponse(BaseModel):
     metadata: Optional[Dict[str, Any]] = None
 
 
-class SessionContext:
-    """Context object passed to agents containing session state and history"""
-    def __init__(self, session_id: str, case_id: str):
-        self.session_id = session_id
-        self.case_id = case_id
-        self.current_question_index: int = 0
-        self.answers: List[Dict[str, Any]] = []
-        self.grades: List[Dict[str, Any]] = []
-        self.follow_ups_completed: List[str] = []
-        self.teaching_points_delivered: List[str] = []
-        self.state: str = "initialized"
-        self.metadata: Dict[str, Any] = {}
-        self.created_at: datetime = datetime.utcnow()
-        self.updated_at: datetime = datetime.utcnow()
-    
-    def add_answer(self, question_id: str, answer: str, metadata: Optional[Dict] = None):
-        """Record an answer in the session context"""
-        self.answers.append({
-            "question_id": question_id,
-            "answer": answer,
-            "timestamp": datetime.utcnow(),
-            "metadata": metadata or {}
-        })
-        self.updated_at = datetime.utcnow()
-    
-    def add_grade(self, question_id: str, score: float, feedback: str, metadata: Optional[Dict] = None):
-        """Record a grade in the session context"""
-        self.grades.append({
-            "question_id": question_id,
-            "score": score,
-            "feedback": feedback,
-            "timestamp": datetime.utcnow(),
-            "metadata": metadata or {}
-        })
-        self.updated_at = datetime.utcnow()
-    
-    def get_current_progress(self) -> Dict[str, Any]:
-        """Get current progress summary"""
-        return {
-            "questions_answered": len(self.answers),
-            "current_question_index": self.current_question_index,
-            "grades_received": len(self.grades),
-            "follow_ups_completed": len(self.follow_ups_completed),
-            "teaching_points": len(self.teaching_points_delivered),
-            "state": self.state
-        }
-
-
 class Agent(ABC):
     """Base interface for all MCP agents"""
     
     @abstractmethod
-    async def execute(self, request: AgentRequest, context: SessionContext) -> AgentResponse:
+    async def execute(self, request: AgentRequest, session_data: "SessionData") -> AgentResponse:
         """Execute the agent's primary function"""
         pass
     
